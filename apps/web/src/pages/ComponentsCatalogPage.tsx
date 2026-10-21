@@ -30,6 +30,7 @@ export interface CatalogComponentItem {
   slug: string;
   title: string;
   category: string;
+  categories?: string[];
   subcategory: string;
   version: string;
   price: string;
@@ -43,19 +44,13 @@ export interface CatalogComponentItem {
   codeSnippet: string;
 }
 
-export interface ComponentCategoryGroup {
-  name: string;
-  icon: React.ComponentType<{ className?: string }>;
-}
-
-const COMPONENT_CATEGORIES: ComponentCategoryGroup[] = [
-  { name: 'Forms & Auth', icon: Lock },
-  { name: 'Navigation', icon: Compass },
-  { name: 'Marketing & Pricing', icon: CreditCard },
-  { name: 'Data & Dashboards', icon: BarChart2 },
-  { name: 'Feedback & Overlays', icon: Bell },
-  { name: 'Buttons & Controls', icon: Sliders },
-  { name: 'Cards & Surfaces', icon: Layers },
+const CATEGORY_COLUMNS: string[][] = [
+  ['All', 'Accordions', 'Backgrounds'],
+  ['Buttons', 'Cards', 'Carousels'],
+  ['Charts', 'Cursors', 'Effects'],
+  ['Forms', 'Galleries', 'Interactive'],
+  ['Loaders', 'Maps', 'Navigation'],
+  ['Players', 'Sections', 'Text'],
 ];
 
 const AVAILABLE_COMPONENTS: CatalogComponentItem[] = [
@@ -63,7 +58,8 @@ const AVAILABLE_COMPONENTS: CatalogComponentItem[] = [
     id: 'comp_1',
     slug: 'animated-login-form',
     title: 'Animated Login Form',
-    category: 'Forms & Auth',
+    category: 'Forms',
+    categories: ['Forms', 'Interactive'],
     subcategory: 'Authentication',
     version: '1.0.0',
     price: 'Free',
@@ -95,6 +91,7 @@ export function AnimatedLoginForm({ onSubmit }) {
     slug: 'glassmorphism-navbar',
     title: 'Glassmorphism Navbar',
     category: 'Navigation',
+    categories: ['Navigation', 'Sections'],
     subcategory: 'Headers',
     version: '1.0.0',
     price: 'Free',
@@ -120,7 +117,8 @@ export function AnimatedLoginForm({ onSubmit }) {
     id: 'comp_3',
     slug: 'interactive-pricing',
     title: 'Interactive Pricing Tier',
-    category: 'Marketing & Pricing',
+    category: 'Interactive',
+    categories: ['Interactive', 'Cards', 'Sections'],
     subcategory: 'Pricing',
     version: '1.0.0',
     price: 'Free',
@@ -145,7 +143,8 @@ export function AnimatedLoginForm({ onSubmit }) {
     id: 'comp_4',
     slug: 'analytics-dashboard',
     title: 'Analytics Metrics Matrix',
-    category: 'Data & Dashboards',
+    category: 'Charts',
+    categories: ['Charts', 'Sections'],
     subcategory: 'Metrics',
     version: '1.0.0',
     price: 'Free',
@@ -170,7 +169,8 @@ export function AnimatedLoginForm({ onSubmit }) {
     id: 'comp_5',
     slug: 'notification-center',
     title: 'Notification Center Feed',
-    category: 'Feedback & Overlays',
+    category: 'Loaders',
+    categories: ['Loaders', 'Effects', 'Interactive'],
     subcategory: 'Alerts',
     version: '1.0.0',
     price: 'Free',
@@ -194,7 +194,8 @@ export function AnimatedLoginForm({ onSubmit }) {
     id: 'comp_6',
     slug: 'file-upload',
     title: 'Drag & Drop File Upload',
-    category: 'Forms & Auth',
+    category: 'Forms',
+    categories: ['Forms', 'Loaders', 'Interactive'],
     subcategory: 'File Inputs',
     version: '1.0.0',
     price: 'Free',
@@ -219,7 +220,8 @@ export function AnimatedLoginForm({ onSubmit }) {
     id: 'comp_7',
     slug: 'glass-button',
     title: 'Glass Pill Button',
-    category: 'Buttons & Controls',
+    category: 'Buttons',
+    categories: ['Buttons', 'Effects'],
     subcategory: 'Pills',
     version: '1.0.0',
     price: 'Free',
@@ -241,7 +243,8 @@ export function AnimatedLoginForm({ onSubmit }) {
     id: 'comp_8',
     slug: 'toggle-switch',
     title: 'Animated Toggle Switch',
-    category: 'Buttons & Controls',
+    category: 'Buttons',
+    categories: ['Buttons', 'Interactive'],
     subcategory: 'Switches',
     version: '1.0.0',
     price: 'Free',
@@ -263,7 +266,8 @@ export function AnimatedLoginForm({ onSubmit }) {
     id: 'comp_9',
     slug: 'dark-glass-card',
     title: 'Spotlight Ambient Card',
-    category: 'Cards & Surfaces',
+    category: 'Cards',
+    categories: ['Cards', 'Backgrounds', 'Effects'],
     subcategory: 'Containers',
     version: '1.0.0',
     price: 'Free',
@@ -303,13 +307,14 @@ export const ComponentsCatalogPage: React.FC = () => {
   const [inspectingComponent, setInspectingComponent] = useState<CatalogComponentItem | null>(null);
 
   const normalizeCategory = (cat: string) => {
-    if (cat.includes('Form') || cat.includes('Auth')) return 'Forms & Auth';
-    if (cat.includes('Nav')) return 'Navigation';
-    if (cat.includes('Pricing') || cat.includes('Market')) return 'Marketing & Pricing';
-    if (cat.includes('Data') || cat.includes('Dash')) return 'Data & Dashboards';
-    if (cat.includes('Feed') || cat.includes('Alert') || cat.includes('Overlay')) return 'Feedback & Overlays';
-    if (cat.includes('Button') || cat.includes('Control')) return 'Buttons & Controls';
-    if (cat.includes('Card') || cat.includes('Surface')) return 'Cards & Surfaces';
+    const c = cat.toLowerCase();
+    if (c.includes('form') || c.includes('auth')) return 'Forms';
+    if (c.includes('nav')) return 'Navigation';
+    if (c.includes('button')) return 'Buttons';
+    if (c.includes('card')) return 'Cards';
+    if (c.includes('chart') || c.includes('data') || c.includes('dash')) return 'Charts';
+    if (c.includes('pricing') || c.includes('market') || c.includes('interact')) return 'Interactive';
+    if (c.includes('feed') || c.includes('alert') || c.includes('load') || c.includes('overlay')) return 'Loaders';
     return cat;
   };
 
@@ -345,8 +350,20 @@ export const ComponentsCatalogPage: React.FC = () => {
     if (selectedSlug && comp.slug !== selectedSlug) {
       return false;
     }
-    if (selectedCategory && comp.category !== selectedCategory) {
-      return false;
+    if (selectedCategory && selectedCategory !== 'All') {
+      const targetCat = selectedCategory.toLowerCase();
+      const matchCategory =
+        comp.category.toLowerCase() === targetCat ||
+        comp.categories?.some((c) => c.toLowerCase() === targetCat) ||
+        (targetCat === 'forms' && (comp.category.includes('Form') || comp.category.includes('Auth'))) ||
+        (targetCat === 'buttons' && comp.category.includes('Button')) ||
+        (targetCat === 'cards' && comp.category.includes('Card')) ||
+        (targetCat === 'charts' && (comp.category.includes('Chart') || comp.category.includes('Data') || comp.category.includes('Dash'))) ||
+        (targetCat === 'navigation' && comp.category.includes('Nav')) ||
+        (targetCat === 'loaders' && (comp.category.includes('Load') || comp.category.includes('Feed') || comp.category.includes('Alert') || comp.category.includes('Overlay')));
+      if (!matchCategory) {
+        return false;
+      }
     }
     if (priceFilter !== 'All' && comp.price !== priceFilter) {
       return false;
@@ -370,7 +387,7 @@ export const ComponentsCatalogPage: React.FC = () => {
 
   return (
     <div className="min-h-full bg-[#F8F9FC] dark:bg-[#0A0B10] text-[#161722] dark:text-[#E4E4E7] px-6 sm:px-10 lg:px-14 py-10 transition-colors duration-200 selection:bg-purple-500/30">
-      <div className="max-w-[1560px] mx-auto space-y-10">
+      <div className="max-w-[1560px] mx-auto space-y-8">
         
         {/* ============================================================== */}
         {/* HEADER SECTION (Component Catalog)                            */}
@@ -390,88 +407,48 @@ export const ComponentsCatalogPage: React.FC = () => {
         </div>
 
         {/* ============================================================== */}
-        {/* COMPONENT CATEGORIES (Show only headings, click to filter)     */}
+        {/* CATEGORIES GRID (Exact 6-column layout matching reference)     */}
         {/* ============================================================== */}
-        <div className="pt-1 pb-6 border-b border-[#E8EAEF] dark:border-white/[0.08] transition-colors space-y-3">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-[#6B7280] dark:text-[#8E8F99]">
-              Categories {selectedCategory && <span className="text-[#5B4FF5] font-bold">· Filtered by {selectedCategory}</span>}
-            </span>
-            {selectedCategory && (
-              <button
-                onClick={() => {
-                  setSelectedCategory(null);
-                  setSelectedSlug(null);
-                }}
-                className="text-xs text-[#5B4FF5] hover:underline font-medium"
-              >
-                Reset to All ({AVAILABLE_COMPONENTS.length})
-              </button>
-            )}
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2 sm:gap-2.5">
-            {/* All Components heading button */}
-            <button
-              onClick={() => {
-                setSelectedCategory(null);
-                setSelectedSlug(null);
-              }}
-              className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold tracking-tight transition-all duration-150 border cursor-pointer select-none ${
-                selectedCategory === null
-                  ? 'bg-[#5B4FF5] text-white border-[#5B4FF5] shadow-sm shadow-[#5B4FF5]/25'
-                  : 'bg-white dark:bg-white/[0.04] text-[#161722] dark:text-[#E4E4E7] border-[#E8EAEF] dark:border-white/[0.08] hover:border-[#5B4FF5]/40 hover:bg-[#5B4FF5]/5 dark:hover:bg-white/[0.08]'
-              }`}
-            >
-              <Sparkles className={`w-3.5 h-3.5 ${selectedCategory === null ? 'text-white' : 'text-[#5B4FF5]'}`} />
-              <span>All Components</span>
-              <span
-                className={`text-[10px] font-mono px-1.5 py-0.5 rounded-full ${
-                  selectedCategory === null
-                    ? 'bg-white/20 text-white'
-                    : 'bg-gray-100 dark:bg-white/[0.08] text-gray-500 dark:text-gray-400'
-                }`}
-              >
-                {AVAILABLE_COMPONENTS.length}
-              </span>
-            </button>
-
-            {COMPONENT_CATEGORIES.map((cat) => {
-              const Icon = cat.icon;
-              const isCategoryActive = selectedCategory === cat.name;
-              const count = AVAILABLE_COMPONENTS.filter((c) => c.category === cat.name).length;
-              return (
-                <button
-                  key={cat.name}
-                  onClick={() => {
-                    if (selectedCategory === cat.name) {
-                      setSelectedCategory(null);
-                      setSelectedSlug(null);
-                    } else {
-                      setSelectedCategory(cat.name);
-                      setSelectedSlug(null);
-                    }
-                  }}
-                  className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold tracking-tight transition-all duration-150 border cursor-pointer select-none ${
-                    isCategoryActive
-                      ? 'bg-[#5B4FF5] text-white border-[#5B4FF5] shadow-sm shadow-[#5B4FF5]/25'
-                      : 'bg-white dark:bg-white/[0.04] text-[#161722] dark:text-[#E4E4E7] border-[#E8EAEF] dark:border-white/[0.08] hover:border-[#5B4FF5]/40 hover:text-[#5B4FF5] dark:hover:text-white hover:bg-[#5B4FF5]/5 dark:hover:bg-white/[0.08]'
-                  }`}
-                >
-                  <Icon className={`w-3.5 h-3.5 ${isCategoryActive ? 'text-white' : 'text-[#5B4FF5]'}`} />
-                  <span>{cat.name}</span>
-                  <span
-                    className={`text-[10px] font-mono px-1.5 py-0.5 rounded-full ${
-                      isCategoryActive
-                        ? 'bg-white/20 text-white'
-                        : 'bg-gray-100 dark:bg-white/[0.08] text-gray-500 dark:text-gray-400'
-                    }`}
-                  >
-                    {count}
-                  </span>
-                </button>
-              );
-            })}
+        <div className="pt-2 pb-8 border-b border-[#E8EAEF] dark:border-white/[0.08] transition-colors">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-x-8 gap-y-4">
+            {CATEGORY_COLUMNS.map((column, colIdx) => (
+              <div key={colIdx} className="space-y-3.5">
+                {column.map((cat) => {
+                  const isActive = (selectedCategory === null && cat === 'All') || selectedCategory === cat;
+                  return (
+                    <button
+                      key={cat}
+                      onClick={() => {
+                        if (cat === 'All') {
+                          setSelectedCategory(null);
+                          setSelectedSlug(null);
+                        } else if (selectedCategory === cat) {
+                          setSelectedCategory(null);
+                          setSelectedSlug(null);
+                        } else {
+                          setSelectedCategory(cat);
+                          setSelectedSlug(null);
+                        }
+                      }}
+                      className={`block text-left text-sm sm:text-[15px] transition-colors duration-150 cursor-pointer select-none group ${
+                        isActive
+                          ? 'text-[#161722] dark:text-white font-semibold'
+                          : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#161722] dark:hover:text-white font-normal'
+                      }`}
+                    >
+                      {isActive ? (
+                        <span className="flex items-center gap-1.5">
+                          <span className="text-[#5B4FF5] dark:text-white text-base leading-none font-bold">•</span>
+                          <span>{cat}</span>
+                        </span>
+                      ) : (
+                        <span>{cat}</span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            ))}
           </div>
         </div>
 
