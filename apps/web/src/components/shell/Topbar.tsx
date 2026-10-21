@@ -14,7 +14,6 @@ import {
 } from 'lucide-react';
 import { useTheme } from '../../features/theme/themeStore';
 import { useAuth } from '../../features/auth/authStore';
-import { VacLogo } from '../ui/VacLogo';
 
 interface TopbarProps {
   onOpenCommandPalette: () => void;
@@ -35,14 +34,6 @@ export const Topbar: React.FC<TopbarProps> = ({ onOpenCommandPalette }) => {
     <header className="h-14 border-b border-[#E8EAEF] dark:border-white/10 bg-white dark:bg-[#11131A] px-5 flex items-center justify-between shrink-0 z-20">
       {/* Breadcrumbs */}
       <nav className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400 overflow-hidden max-w-xs md:max-w-md">
-        <Link
-          to="/"
-          className="flex items-center hover:opacity-80 transition-opacity shrink-0 mr-0.5"
-          title="VAC UI Home"
-        >
-          <VacLogo size="xs" showSubtitle={false} />
-        </Link>
-        <ChevronRight className="w-3.5 h-3.5 shrink-0 text-gray-300 dark:text-gray-600" />
         {pathParts.length === 0 ? (
           <span className="font-semibold text-[#161722] dark:text-[#F4F5F8] truncate">
             Workspace
