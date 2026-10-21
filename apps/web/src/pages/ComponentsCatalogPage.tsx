@@ -8,7 +8,13 @@ import {
   Eye,
   Layers,
   X,
+  Bookmark,
+  FolderPlus,
 } from 'lucide-react';
+import { useFavorites } from '../features/favorites/useFavorites';
+import { useCollections } from '../features/collections/useCollections';
+import { useRecentlyViewed } from '../features/history/useRecentlyViewed';
+import { ComponentLivePreview } from '../components/previews/ComponentLivePreview';
 
 export interface CatalogComponentItem {
   id: string;
@@ -285,6 +291,12 @@ export const ComponentsCatalogPage: React.FC = () => {
   const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
   const [copiedSlug, setCopiedSlug] = useState<string | null>(null);
   const [inspectingComponent, setInspectingComponent] = useState<CatalogComponentItem | null>(null);
+  const [collectionMenuOpen, setCollectionMenuOpen] = useState(false);
+  const [collectionFeedback, setCollectionFeedback] = useState<string | null>(null);
+
+  const { isFavorite, toggleFavorite } = useFavorites();
+  const { collections, addComponentToCollection } = useCollections();
+  const { recordVisit } = useRecentlyViewed();
 
   const isAllCategory = (cat: string | null) => !cat || cat === 'All Elements' || cat === 'All';
 
@@ -319,11 +331,12 @@ export const ComponentsCatalogPage: React.FC = () => {
         setSelectedCategory(match.category);
         setSelectedSlug(match.slug);
         setInspectingComponent(match);
+        recordVisit(match.slug);
       }
     } else if (categoryParam) {
       setSelectedCategory(normalizeCategory(categoryParam));
     }
-  }, [targetSlug, categoryParam]);
+  }, [targetSlug, categoryParam, recordVisit]);
 
   const handleCloseInspector = () => {
     setInspectingComponent(null);
@@ -552,12 +565,97 @@ export const ComponentsCatalogPage: React.FC = () => {
                   {inspectingComponent.description}
                 </p>
               </div>
-              <button
-                onClick={handleCloseInspector}
-                className="p-1 rounded-full text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
-              >
-                <X className="w-5 h-5" />
-              </button>
+
+              <div className="flex items-center gap-1.5 relative">
+                {/* Favorite Bookmark Toggle */}
+                <button
+                  onClick={() => toggleFavorite(inspectingComponent.slug)}
+                  className={`p-2 rounded-full border transition-all ${
+                    isFavorite(inspectingComponent.slug)
+                      ? 'bg-purple-500/10 border-purple-500/30 text-[#5B4FF5]'
+                      : 'border-[#E8EAEF] dark:border-white/10 text-gray-400 hover:text-[#5B4FF5]'
+                  }`}
+                  title={isFavorite(inspectingComponent.slug) ? 'Remove favorite' : 'Add to favorites'}
+                >
+                  <Bookmark
+                    className={`w-4 h-4 ${
+                      isFavorite(inspectingComponent.slug) ? 'fill-[#5B4FF5]' : ''
+                    }`}
+                  />
+                </button>
+
+                {/* Add to Collection Dropdown */}
+                <div className="relative">
+                  <button
+                    onClick={() => setCollectionMenuOpen(!collectionMenuOpen)}
+                    className="p-2 rounded-full border border-[#E8EAEF] dark:border-white/10 text-gray-400 hover:text-[#5B4FF5] transition-all"
+                    title="Add to collection"
+                  >
+                    <FolderPlus className="w-4 h-4" />
+                  </button>
+
+                  {collectionMenuOpen && (
+                    <div className="absolute right-0 mt-2 w-56 rounded-2xl bg-white dark:bg-[#161722] border border-[#E8EAEF] dark:border-white/15 p-2 shadow-2xl z-50 text-xs">
+                      <p className="px-2 py-1 font-semibold text-gray-500 text-[10px] uppercase">
+                        Save to Collection
+                      </p>
+                      {collections.length === 0 ? (
+                        <p className="px-2 py-2 text-gray-400 text-[11px]">
+                          No collections found. Create one in Collections page.
+                        </p>
+                      ) : (
+                        <div className="space-y-1 max-h-40 overflow-y-auto">
+                          {collections.map((col) => {
+                            const inCol = col.items.some((it) => it.componentSlug === inspectingComponent.slug);
+                            return (
+                              <button
+                                key={col.id}
+                                onClick={async () => {
+                                  try {
+                                    await addComponentToCollection(col.id, inspectingComponent.slug);
+                                    setCollectionFeedback(`Added to "${col.name}"`);
+                                    setTimeout(() => setCollectionFeedback(null), 2500);
+                                  } catch (err: any) {
+                                    setCollectionFeedback(err.message || 'Error adding');
+                                  }
+                                  setCollectionMenuOpen(false);
+                                }}
+                                className="w-full text-left px-2.5 py-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 flex items-center justify-between transition-colors"
+                              >
+                                <span className="truncate">{col.name}</span>
+                                {inCol && <Check className="w-3.5 h-3.5 text-emerald-500 shrink-0" />}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                <button
+                  onClick={handleCloseInspector}
+                  className="p-2 rounded-full text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+
+            {/* Collection Feedback Alert */}
+            {collectionFeedback && (
+              <div className="px-3 py-1.5 rounded-xl bg-purple-500/10 border border-purple-500/20 text-[#5B4FF5] text-xs font-medium flex items-center gap-1.5">
+                <Check className="w-3.5 h-3.5" />
+                <span>{collectionFeedback}</span>
+              </div>
+            )}
+
+            {/* Live Interactive Preview */}
+            <div className="space-y-2">
+              <h4 className="text-xs font-semibold text-[#161722] dark:text-white uppercase tracking-wider">
+                Live Interactive Preview
+              </h4>
+              <ComponentLivePreview slug={inspectingComponent.slug} />
             </div>
 
             {/* Quick Install Command */}

@@ -9,10 +9,16 @@ import {
   ArrowRight,
   ShieldCheck,
   Zap,
-  Package,
+  Bookmark,
+  FolderHeart,
+  Clock,
 } from 'lucide-react';
 import { api } from '../lib/api';
 import { ComponentSummary } from '@vac/shared';
+import { useRecentlyViewed } from '../features/history/useRecentlyViewed';
+import { useFavorites } from '../features/favorites/useFavorites';
+import { useCollections } from '../features/collections/useCollections';
+import { useAuth } from '../features/auth/authStore';
 
 const FALLBACK_COMPONENTS: ComponentSummary[] = [
   {
@@ -20,7 +26,7 @@ const FALLBACK_COMPONENTS: ComponentSummary[] = [
     slug: 'animated-login-form',
     name: 'Animated Login Form',
     description: 'Smooth interactive login card with spring animations, floating labels, validation states, and theme toggling.',
-    category: 'Forms & Auth',
+    category: 'Auth & Form Fields',
     tags: ['Auth', 'Form', 'Animation', 'Tailwind', 'Motion'],
     status: 'published',
     currentVersion: '1.0.0',
@@ -35,7 +41,7 @@ const FALLBACK_COMPONENTS: ComponentSummary[] = [
     slug: 'file-upload',
     name: 'Drag & Drop File Upload',
     description: 'Interactive file dropzone with progress tracking, file type validation, and remove actions.',
-    category: 'Forms & Auth',
+    category: 'Auth & Form Fields',
     tags: ['Upload', 'Files', 'DragAndDrop'],
     status: 'published',
     currentVersion: '1.0.0',
@@ -50,7 +56,7 @@ const FALLBACK_COMPONENTS: ComponentSummary[] = [
     slug: 'glassmorphism-navbar',
     name: 'Glassmorphism Navbar',
     description: 'Translucent floating header with frosted glass refraction, responsive menu, and quick action buttons.',
-    category: 'Navigation',
+    category: 'Navigation Shells',
     tags: ['Navigation', 'Glassmorphism', 'Header'],
     status: 'published',
     currentVersion: '1.0.0',
@@ -65,7 +71,7 @@ const FALLBACK_COMPONENTS: ComponentSummary[] = [
     slug: 'interactive-pricing',
     name: 'Interactive Pricing Tier',
     description: 'Tiered subscription pricing grid with monthly/annual billing switch, highlight badges, and feature comparison list.',
-    category: 'Marketing & Pricing',
+    category: 'Tactile Micro-UX',
     tags: ['Pricing', 'Billing', 'Interactive'],
     status: 'published',
     currentVersion: '1.0.0',
@@ -80,7 +86,7 @@ const FALLBACK_COMPONENTS: ComponentSummary[] = [
     slug: 'analytics-dashboard',
     name: 'Analytics Dashboard',
     description: 'Metric summary panels with sparkline indicators, trend percentages, and time-range filtering.',
-    category: 'Data & Dashboards',
+    category: 'Telemetry & Charts',
     tags: ['Dashboard', 'Analytics', 'Metrics'],
     status: 'published',
     currentVersion: '1.0.0',
@@ -95,7 +101,7 @@ const FALLBACK_COMPONENTS: ComponentSummary[] = [
     slug: 'notification-center',
     name: 'Notification Center Feed',
     description: 'Actionable alert feed with read/unread markers, category tabs, and mark-all-read shortcuts.',
-    category: 'Feedback & Overlays',
+    category: 'Feedback & Loaders',
     tags: ['Notifications', 'Flyout', 'Alerts'],
     status: 'published',
     currentVersion: '1.0.0',
@@ -110,7 +116,7 @@ const FALLBACK_COMPONENTS: ComponentSummary[] = [
     slug: 'glass-button',
     name: 'Glass Pill Button',
     description: 'High-contrast backdrop blurred action button with ambient glow and tactile click physics.',
-    category: 'Buttons & Controls',
+    category: 'Action Triggers',
     tags: ['Button', 'Glass', 'Controls'],
     status: 'published',
     currentVersion: '1.0.0',
@@ -125,7 +131,7 @@ const FALLBACK_COMPONENTS: ComponentSummary[] = [
     slug: 'toggle-switch',
     name: 'Animated Toggle Switch',
     description: 'Tactile boolean toggle switch with spring physics and keyboard focus indicators.',
-    category: 'Buttons & Controls',
+    category: 'Action Triggers',
     tags: ['Toggle', 'Switch', 'Motion'],
     status: 'published',
     currentVersion: '1.0.0',
@@ -140,7 +146,7 @@ const FALLBACK_COMPONENTS: ComponentSummary[] = [
     slug: 'dark-glass-card',
     name: 'Spotlight Ambient Card',
     description: 'Deep translucent component card with mouse-tracking radial ambient illumination.',
-    category: 'Cards & Surfaces',
+    category: 'Surface Cards',
     tags: ['Card', 'Spotlight', 'Dark'],
     status: 'published',
     currentVersion: '1.0.0',
@@ -156,6 +162,11 @@ export const OverviewPage: React.FC = () => {
   const [copiedCmd, setCopiedCmd] = useState(false);
   const [components, setComponents] = useState<ComponentSummary[]>(FALLBACK_COMPONENTS);
   const [isLoading, setIsLoading] = useState(false);
+
+  const { user } = useAuth();
+  const { history } = useRecentlyViewed();
+  const { favorites } = useFavorites();
+  const { collections } = useCollections();
 
   const installCommand = 'npx vac-ui-components add animated-login-form';
 
@@ -220,11 +231,11 @@ export const OverviewPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Metrics Row */}
+      {/* Metrics & Personal Summary Row */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
         <Link
           to="/components"
-          className="p-5 rounded-2xl border border-[#E8EAEF] dark:border-white/10 bg-white dark:bg-[#11131A] shadow-xs flex flex-col justify-between hover:border-[#5B4FF5]/50 transition-all group"
+          className="p-5 rounded-2xl border border-[#E8EAEF] dark:border-white/10 bg-white dark:bg-[#11131A] shadow-xs flex flex-col justify-between hover:border-[#5B4FF5]/50 transition-all group cursor-pointer"
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold uppercase tracking-wider text-[#7C7299]">Official Catalog</span>
@@ -237,45 +248,116 @@ export const OverviewPage: React.FC = () => {
               {displayComponents.length}
             </p>
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-              Curated components ready for production · Click to browse →
+              Curated components ready for production →
             </p>
           </div>
         </Link>
 
-        <div className="p-5 rounded-2xl border border-[#E8EAEF] dark:border-white/10 bg-white dark:bg-[#11131A] shadow-xs flex flex-col justify-between">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-[#7C7299]">Total Installs</span>
-            <div className="w-8 h-8 rounded-xl bg-emerald-50 dark:bg-white/5 flex items-center justify-center text-[#10B981]">
-              <Zap className="w-4 h-4" />
+        {user ? (
+          <Link
+            to="/favorites"
+            className="p-5 rounded-2xl border border-[#E8EAEF] dark:border-white/10 bg-white dark:bg-[#11131A] shadow-xs flex flex-col justify-between hover:border-[#5B4FF5]/50 transition-all group cursor-pointer"
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-semibold uppercase tracking-wider text-[#7C7299]">Saved Favorites</span>
+              <div className="w-8 h-8 rounded-xl bg-purple-500/10 flex items-center justify-center text-[#5B4FF5] group-hover:scale-110 transition-transform">
+                <Bookmark className="w-4 h-4" />
+              </div>
+            </div>
+            <div>
+              <p className="text-3xl font-bold text-[#161722] dark:text-white mt-3">
+                {favorites.length}
+              </p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                Components bookmarked in your workspace →
+              </p>
+            </div>
+          </Link>
+        ) : (
+          <div className="p-5 rounded-2xl border border-[#E8EAEF] dark:border-white/10 bg-white dark:bg-[#11131A] shadow-xs flex flex-col justify-between">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-semibold uppercase tracking-wider text-[#7C7299]">CLI Additions</span>
+              <div className="w-8 h-8 rounded-xl bg-emerald-50 dark:bg-white/5 flex items-center justify-center text-[#10B981]">
+                <Zap className="w-4 h-4" />
+              </div>
+            </div>
+            <div>
+              <p className="text-3xl font-bold text-[#161722] dark:text-white mt-3">
+                6,390+
+              </p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                Verified developer additions
+              </p>
             </div>
           </div>
-          <div>
-            <p className="text-3xl font-bold text-[#161722] dark:text-white mt-3">
-              6,390+
-            </p>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-              CLI additions across verified projects
-            </p>
-          </div>
-        </div>
+        )}
 
-        <div className="p-5 rounded-2xl border border-[#E8EAEF] dark:border-white/10 bg-white dark:bg-[#11131A] shadow-xs flex flex-col justify-between">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-[#7C7299]">Registry Status</span>
-            <div className="w-8 h-8 rounded-xl bg-amber-50 dark:bg-white/5 flex items-center justify-center text-[#F59E0B]">
-              <ShieldCheck className="w-4 h-4" />
+        {user ? (
+          <Link
+            to="/collections"
+            className="p-5 rounded-2xl border border-[#E8EAEF] dark:border-white/10 bg-white dark:bg-[#11131A] shadow-xs flex flex-col justify-between hover:border-[#5B4FF5]/50 transition-all group cursor-pointer"
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-semibold uppercase tracking-wider text-[#7C7299]">My Collections</span>
+              <div className="w-8 h-8 rounded-xl bg-purple-500/10 flex items-center justify-center text-[#5B4FF5] group-hover:scale-110 transition-transform">
+                <FolderHeart className="w-4 h-4" />
+              </div>
+            </div>
+            <div>
+              <p className="text-3xl font-bold text-[#161722] dark:text-white mt-3">
+                {collections.length}
+              </p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                Custom project boards organized →
+              </p>
+            </div>
+          </Link>
+        ) : (
+          <div className="p-5 rounded-2xl border border-[#E8EAEF] dark:border-white/10 bg-white dark:bg-[#11131A] shadow-xs flex flex-col justify-between">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-semibold uppercase tracking-wider text-[#7C7299]">Registry Status</span>
+              <div className="w-8 h-8 rounded-xl bg-amber-50 dark:bg-white/5 flex items-center justify-center text-[#F59E0B]">
+                <ShieldCheck className="w-4 h-4" />
+              </div>
+            </div>
+            <div>
+              <p className="text-3xl font-bold text-[#161722] dark:text-white mt-3">
+                100% Immutable
+              </p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                Semver releases & integrity verification
+              </p>
             </div>
           </div>
-          <div>
-            <p className="text-3xl font-bold text-[#161722] dark:text-white mt-3">
-              100% Immutable
-            </p>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-              Semver releases & integrity verification
-            </p>
-          </div>
-        </div>
+        )}
       </div>
+
+      {/* Recently Viewed Resume Bar (when user has recent activity) */}
+      {history.length > 0 && (
+        <div className="p-4 rounded-2xl bg-white dark:bg-[#11131A] border border-[#E8EAEF] dark:border-white/10 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-2 text-xs font-semibold text-[#161722] dark:text-white shrink-0">
+            <Clock className="w-4 h-4 text-[#5B4FF5]" />
+            <span>Recently Viewed:</span>
+          </div>
+          <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5">
+            {history.slice(0, 5).map((it) => (
+              <Link
+                key={it.slug}
+                to={`/components/${it.slug}`}
+                className="px-3 py-1 rounded-full bg-gray-100 hover:bg-gray-200 dark:bg-white/5 dark:hover:bg-white/10 text-[11px] font-mono text-[#5B4FF5] shrink-0 transition-colors"
+              >
+                {it.slug}
+              </Link>
+            ))}
+          </div>
+          <Link
+            to="/history"
+            className="text-xs text-[#5B4FF5] hover:underline shrink-0 font-medium"
+          >
+            All history →
+          </Link>
+        </div>
+      )}
 
       {/* Featured Components Grid */}
       <div className="space-y-4">

@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { RegisterRequest, LoginRequest, AuthResponse, UserProfile } from '@vac/shared';
+import { RegisterRequest, LoginRequest, AuthResponse, UserProfile, UpdateProfileRequest } from '@vac/shared';
 import { UserModel, IUser } from '../../models/User';
 import { env } from '../../config/env';
 import { AppError } from '../../middleware/errorHandler';
@@ -14,6 +14,8 @@ export class AuthService {
       email: user.email,
       role: user.role,
       avatarUrl: user.avatarUrl,
+      codePreference: user.codePreference || 'typescript',
+      themePreference: user.themePreference || 'dark',
       createdAt: user.createdAt.toISOString(),
       updatedAt: user.updatedAt?.toISOString(),
     };
@@ -83,6 +85,28 @@ export class AuthService {
 
   static async getCurrentUser(userId: string): Promise<UserProfile> {
     const user = await UserModel.findById(userId);
+    if (!user) {
+      throw new AppError('User not found.', 404, 'USER_NOT_FOUND');
+    }
+    return this.formatUser(user);
+  }
+
+  static async updateProfile(userId: string, data: UpdateProfileRequest): Promise<UserProfile> {
+    const dbStatus = getDatabaseStatus();
+    if (dbStatus.status !== 'connected') {
+      throw new AppError('Database connection unavailable.', 503, 'SERVICE_UNAVAILABLE');
+    }
+
+    const updateObj: Record<string, any> = {};
+    if (data.name !== undefined) updateObj.name = data.name.trim();
+    if (data.codePreference !== undefined) updateObj.codePreference = data.codePreference;
+    if (data.themePreference !== undefined) updateObj.themePreference = data.themePreference;
+
+    const user = await UserModel.findByIdAndUpdate(
+      userId,
+      { $set: updateObj },
+      { new: true, runValidators: true }
+    );
     if (!user) {
       throw new AppError('User not found.', 404, 'USER_NOT_FOUND');
     }

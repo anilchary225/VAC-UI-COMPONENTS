@@ -7,6 +7,8 @@ export interface IUser extends Document {
   passwordHash?: string;
   role: UserRole;
   avatarUrl?: string;
+  codePreference?: 'typescript' | 'javascript';
+  themePreference?: 'light' | 'dark' | 'system';
   githubId?: string;
   googleId?: string;
   createdAt: Date;
@@ -32,6 +34,16 @@ const UserSchema = new Schema<IUser>(
       index: true,
     },
     avatarUrl: { type: String },
+    codePreference: {
+      type: String,
+      enum: ['typescript', 'javascript'],
+      default: 'typescript',
+    },
+    themePreference: {
+      type: String,
+      enum: ['light', 'dark', 'system'],
+      default: 'dark',
+    },
     githubId: { type: String, sparse: true, index: true },
     googleId: { type: String, sparse: true, index: true },
   },

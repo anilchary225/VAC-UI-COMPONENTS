@@ -16,12 +16,21 @@ export const LoginRequestSchema = z.object({
 });
 export type LoginRequest = z.infer<typeof LoginRequestSchema>;
 
+export const UpdateProfileRequestSchema = z.object({
+  name: z.string().min(2, 'Name must be at least 2 characters').max(50).optional(),
+  codePreference: z.enum(['typescript', 'javascript']).optional(),
+  themePreference: z.enum(['light', 'dark', 'system']).optional(),
+});
+export type UpdateProfileRequest = z.infer<typeof UpdateProfileRequestSchema>;
+
 export const UserProfileSchema = z.object({
   id: z.string(),
   name: z.string(),
   email: z.string().email(),
   role: UserRoleSchema,
   avatarUrl: z.string().url().optional(),
+  codePreference: z.enum(['typescript', 'javascript']).optional(),
+  themePreference: z.enum(['light', 'dark', 'system']).optional(),
   createdAt: z.string(),
   updatedAt: z.string().optional(),
 });

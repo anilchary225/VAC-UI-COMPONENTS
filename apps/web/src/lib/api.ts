@@ -1,4 +1,13 @@
-import { ComponentSummary, ComponentDetail, Category, AuthResponse, UserProfile } from '@vac/shared';
+import {
+  ComponentSummary,
+  ComponentDetail,
+  Category,
+  AuthResponse,
+  UserProfile,
+  Collection,
+  CreateCollectionRequest,
+  UpdateProfileRequest,
+} from '@vac/shared';
 
 const getApiBase = () => {
   if (import.meta.env.VITE_API_URL) {
@@ -86,6 +95,13 @@ class ApiClient {
     return this.request<UserProfile>('/auth/me');
   }
 
+  async updateProfile(data: UpdateProfileRequest): Promise<UserProfile> {
+    return this.request<UserProfile>('/auth/profile', {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
+  }
+
   logout() {
     this.setToken(null);
   }
@@ -108,6 +124,66 @@ class ApiClient {
   async getCategories(): Promise<Category[]> {
     return this.request<Category[]>('/categories');
   }
+
+  // Favorites
+  async getFavorites(): Promise<string[]> {
+    return this.request<string[]>('/favorites');
+  }
+
+  async addFavorite(slug: string): Promise<{ componentSlug: string }> {
+    return this.request<{ componentSlug: string }>(`/favorites/${slug}`, {
+      method: 'POST',
+    });
+  }
+
+  async removeFavorite(slug: string): Promise<void> {
+    await this.request<void>(`/favorites/${slug}`, {
+      method: 'DELETE',
+    });
+  }
+
+  // Collections
+  async getCollections(): Promise<Collection[]> {
+    return this.request<Collection[]>('/collections');
+  }
+
+  async createCollection(data: CreateCollectionRequest): Promise<Collection> {
+    return this.request<Collection>('/collections', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async getCollectionById(id: string): Promise<Collection> {
+    return this.request<Collection>(`/collections/${id}`);
+  }
+
+  async updateCollection(id: string, data: { name?: string; description?: string }): Promise<Collection> {
+    return this.request<Collection>(`/collections/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async deleteCollection(id: string): Promise<void> {
+    await this.request<void>(`/collections/${id}`, {
+      method: 'DELETE',
+    });
+  }
+
+  async addComponentToCollection(collectionId: string, componentSlug: string): Promise<Collection> {
+    return this.request<Collection>(`/collections/${collectionId}/items`, {
+      method: 'POST',
+      body: JSON.stringify({ componentSlug }),
+    });
+  }
+
+  async removeComponentFromCollection(collectionId: string, componentSlug: string): Promise<Collection> {
+    return this.request<Collection>(`/collections/${collectionId}/items/${componentSlug}`, {
+      method: 'DELETE',
+    });
+  }
 }
 
 export const api = new ApiClient();
+
