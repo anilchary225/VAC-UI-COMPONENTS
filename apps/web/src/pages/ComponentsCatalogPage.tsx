@@ -30,12 +30,12 @@ export interface CatalogComponentItem {
 }
 
 const CATEGORY_COLUMNS: string[][] = [
-  ['All', 'Accordions', 'Backgrounds'],
-  ['Buttons', 'Cards', 'Carousels'],
-  ['Charts', 'Cursors', 'Effects'],
-  ['Forms', 'Galleries', 'Interactive'],
-  ['Loaders', 'Maps', 'Navigation'],
-  ['Players', 'Sections', 'Text'],
+  ['All Elements', 'Collapsibles', 'Ambient Backdrops'],
+  ['Action Triggers', 'Surface Cards', 'Motion Sliders'],
+  ['Telemetry & Charts', 'Pointer Dynamics', 'Visual Shaders'],
+  ['Auth & Form Fields', 'Media Showcases', 'Tactile Micro-UX'],
+  ['Feedback & Loaders', 'Spatial Overlays', 'Navigation Shells'],
+  ['Media Consoles', 'Section Blocks', 'Kinetic Typography'],
 ];
 
 const AVAILABLE_COMPONENTS: CatalogComponentItem[] = [
@@ -43,8 +43,8 @@ const AVAILABLE_COMPONENTS: CatalogComponentItem[] = [
     id: 'comp_1',
     slug: 'animated-login-form',
     title: 'Animated Login Form',
-    category: 'Forms',
-    categories: ['Forms', 'Interactive'],
+    category: 'Auth & Form Fields',
+    categories: ['Auth & Form Fields', 'Tactile Micro-UX'],
     subcategory: 'Authentication',
     version: '1.0.0',
     price: 'Free',
@@ -75,8 +75,8 @@ export function AnimatedLoginForm({ onSubmit }) {
     id: 'comp_2',
     slug: 'glassmorphism-navbar',
     title: 'Glassmorphism Navbar',
-    category: 'Navigation',
-    categories: ['Navigation', 'Sections'],
+    category: 'Navigation Shells',
+    categories: ['Navigation Shells', 'Section Blocks'],
     subcategory: 'Headers',
     version: '1.0.0',
     price: 'Free',
@@ -102,8 +102,8 @@ export function AnimatedLoginForm({ onSubmit }) {
     id: 'comp_3',
     slug: 'interactive-pricing',
     title: 'Interactive Pricing Tier',
-    category: 'Interactive',
-    categories: ['Interactive', 'Cards', 'Sections'],
+    category: 'Tactile Micro-UX',
+    categories: ['Tactile Micro-UX', 'Surface Cards', 'Section Blocks'],
     subcategory: 'Pricing',
     version: '1.0.0',
     price: 'Free',
@@ -128,8 +128,8 @@ export function AnimatedLoginForm({ onSubmit }) {
     id: 'comp_4',
     slug: 'analytics-dashboard',
     title: 'Analytics Metrics Matrix',
-    category: 'Charts',
-    categories: ['Charts', 'Sections'],
+    category: 'Telemetry & Charts',
+    categories: ['Telemetry & Charts', 'Section Blocks'],
     subcategory: 'Metrics',
     version: '1.0.0',
     price: 'Free',
@@ -154,8 +154,8 @@ export function AnimatedLoginForm({ onSubmit }) {
     id: 'comp_5',
     slug: 'notification-center',
     title: 'Notification Center Feed',
-    category: 'Loaders',
-    categories: ['Loaders', 'Effects', 'Interactive'],
+    category: 'Feedback & Loaders',
+    categories: ['Feedback & Loaders', 'Visual Shaders', 'Tactile Micro-UX'],
     subcategory: 'Alerts',
     version: '1.0.0',
     price: 'Free',
@@ -179,8 +179,8 @@ export function AnimatedLoginForm({ onSubmit }) {
     id: 'comp_6',
     slug: 'file-upload',
     title: 'Drag & Drop File Upload',
-    category: 'Forms',
-    categories: ['Forms', 'Loaders', 'Interactive'],
+    category: 'Auth & Form Fields',
+    categories: ['Auth & Form Fields', 'Feedback & Loaders', 'Tactile Micro-UX'],
     subcategory: 'File Inputs',
     version: '1.0.0',
     price: 'Free',
@@ -205,8 +205,8 @@ export function AnimatedLoginForm({ onSubmit }) {
     id: 'comp_7',
     slug: 'glass-button',
     title: 'Glass Pill Button',
-    category: 'Buttons',
-    categories: ['Buttons', 'Effects'],
+    category: 'Action Triggers',
+    categories: ['Action Triggers', 'Visual Shaders'],
     subcategory: 'Pills',
     version: '1.0.0',
     price: 'Free',
@@ -228,8 +228,8 @@ export function AnimatedLoginForm({ onSubmit }) {
     id: 'comp_8',
     slug: 'toggle-switch',
     title: 'Animated Toggle Switch',
-    category: 'Buttons',
-    categories: ['Buttons', 'Interactive'],
+    category: 'Action Triggers',
+    categories: ['Action Triggers', 'Tactile Micro-UX'],
     subcategory: 'Switches',
     version: '1.0.0',
     price: 'Free',
@@ -251,8 +251,8 @@ export function AnimatedLoginForm({ onSubmit }) {
     id: 'comp_9',
     slug: 'dark-glass-card',
     title: 'Spotlight Ambient Card',
-    category: 'Cards',
-    categories: ['Cards', 'Backgrounds', 'Effects'],
+    category: 'Surface Cards',
+    categories: ['Surface Cards', 'Ambient Backdrops', 'Visual Shaders'],
     subcategory: 'Containers',
     version: '1.0.0',
     price: 'Free',
@@ -286,15 +286,27 @@ export const ComponentsCatalogPage: React.FC = () => {
   const [copiedSlug, setCopiedSlug] = useState<string | null>(null);
   const [inspectingComponent, setInspectingComponent] = useState<CatalogComponentItem | null>(null);
 
+  const isAllCategory = (cat: string | null) => !cat || cat === 'All Elements' || cat === 'All';
+
   const normalizeCategory = (cat: string) => {
     const c = cat.toLowerCase();
-    if (c.includes('form') || c.includes('auth')) return 'Forms';
-    if (c.includes('nav')) return 'Navigation';
-    if (c.includes('button')) return 'Buttons';
-    if (c.includes('card')) return 'Cards';
-    if (c.includes('chart') || c.includes('data') || c.includes('dash')) return 'Charts';
-    if (c.includes('pricing') || c.includes('market') || c.includes('interact')) return 'Interactive';
-    if (c.includes('feed') || c.includes('alert') || c.includes('load') || c.includes('overlay')) return 'Loaders';
+    if (c.includes('form') || c.includes('auth') || c.includes('input')) return 'Auth & Form Fields';
+    if (c.includes('nav') || c.includes('header') || c.includes('shell')) return 'Navigation Shells';
+    if (c.includes('button') || c.includes('action') || c.includes('trigger')) return 'Action Triggers';
+    if (c.includes('card') || c.includes('surface')) return 'Surface Cards';
+    if (c.includes('chart') || c.includes('telemetry') || c.includes('data') || c.includes('dash')) return 'Telemetry & Charts';
+    if (c.includes('pricing') || c.includes('interact') || c.includes('tactile')) return 'Tactile Micro-UX';
+    if (c.includes('load') || c.includes('feed') || c.includes('alert') || c.includes('feedback')) return 'Feedback & Loaders';
+    if (c.includes('backdrop') || c.includes('ambient') || c.includes('back')) return 'Ambient Backdrops';
+    if (c.includes('slider') || c.includes('motion') || c.includes('carousel')) return 'Motion Sliders';
+    if (c.includes('pointer') || c.includes('cursor')) return 'Pointer Dynamics';
+    if (c.includes('shader') || c.includes('effect') || c.includes('visual')) return 'Visual Shaders';
+    if (c.includes('showcase') || c.includes('gallery') || c.includes('media')) return 'Media Showcases';
+    if (c.includes('spatial') || c.includes('map') || c.includes('overlay')) return 'Spatial Overlays';
+    if (c.includes('console') || c.includes('player') || c.includes('audio')) return 'Media Consoles';
+    if (c.includes('section') || c.includes('block') || c.includes('layout')) return 'Section Blocks';
+    if (c.includes('kinetic') || c.includes('typo') || c.includes('text')) return 'Kinetic Typography';
+    if (c.includes('expander') || c.includes('collaps') || c.includes('accordion')) return 'Collapsibles';
     return cat;
   };
 
@@ -330,17 +342,11 @@ export const ComponentsCatalogPage: React.FC = () => {
     if (selectedSlug && comp.slug !== selectedSlug) {
       return false;
     }
-    if (selectedCategory && selectedCategory !== 'All') {
+    if (selectedCategory && !isAllCategory(selectedCategory)) {
       const targetCat = selectedCategory.toLowerCase();
       const matchCategory =
         comp.category.toLowerCase() === targetCat ||
-        comp.categories?.some((c) => c.toLowerCase() === targetCat) ||
-        (targetCat === 'forms' && (comp.category.includes('Form') || comp.category.includes('Auth'))) ||
-        (targetCat === 'buttons' && comp.category.includes('Button')) ||
-        (targetCat === 'cards' && comp.category.includes('Card')) ||
-        (targetCat === 'charts' && (comp.category.includes('Chart') || comp.category.includes('Data') || comp.category.includes('Dash'))) ||
-        (targetCat === 'navigation' && comp.category.includes('Nav')) ||
-        (targetCat === 'loaders' && (comp.category.includes('Load') || comp.category.includes('Feed') || comp.category.includes('Alert') || comp.category.includes('Overlay')));
+        comp.categories?.some((c) => c.toLowerCase() === targetCat);
       if (!matchCategory) {
         return false;
       }
@@ -370,19 +376,19 @@ export const ComponentsCatalogPage: React.FC = () => {
         </div>
 
         {/* ============================================================== */}
-        {/* CATEGORIES GRID (Exact 6-column layout matching reference)     */}
+        {/* CATEGORIES GRID (6-column layout with unique VAC vocabulary)  */}
         {/* ============================================================== */}
         <div className="pt-2 pb-8 border-b border-[#E8EAEF] dark:border-white/[0.08] transition-colors">
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-x-8 gap-y-4">
             {CATEGORY_COLUMNS.map((column, colIdx) => (
               <div key={colIdx} className="space-y-3.5">
                 {column.map((cat) => {
-                  const isActive = (selectedCategory === null && cat === 'All') || selectedCategory === cat;
+                  const isActive = (isAllCategory(selectedCategory) && isAllCategory(cat)) || selectedCategory === cat;
                   return (
                     <button
                       key={cat}
                       onClick={() => {
-                        if (cat === 'All') {
+                        if (isAllCategory(cat)) {
                           setSelectedCategory(null);
                           setSelectedSlug(null);
                         } else if (selectedCategory === cat) {
