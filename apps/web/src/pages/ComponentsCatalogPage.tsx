@@ -2,17 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Search,
-  Filter,
   Layers,
   ArrowRight,
   Terminal,
   Check,
-  Copy,
-  Sparkles,
+  ChevronDown,
 } from 'lucide-react';
 import { api } from '../lib/api';
 import { ComponentSummary, Category } from '@vac/shared';
-import { Button } from '../components/ui/Button';
 
 export const ComponentsCatalogPage: React.FC = () => {
   const [components, setComponents] = useState<ComponentSummary[]>([]);
@@ -48,51 +45,54 @@ export const ComponentsCatalogPage: React.FC = () => {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#161722] dark:text-white">
           Component Catalog
         </h1>
         <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-          Explore accessible, customizable React components ready for quick CLI integration.
+          Explore accessible, customizable React components styled with the Atrium twilight palette.
         </p>
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between pb-4 border-b border-[#E7E9F0] dark:border-white/10">
+      <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between pb-3 border-b border-[#E8EAEF] dark:border-white/10">
         {/* Search */}
         <div className="relative flex-1 max-w-md">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+          <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search by name, tag, or keyword..."
-            className="w-full h-9 pl-9 pr-4 rounded-btn border border-[#E7E9F0] dark:border-white/10 bg-white dark:bg-[#11131A] text-xs text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-indigo-500 transition-colors"
+            placeholder="Search by name, category, or prop..."
+            className="w-full h-9 pl-9 pr-4 rounded-full border border-[#E8EAEF] dark:border-white/10 bg-white dark:bg-[#11131A] text-xs text-[#161722] dark:text-white placeholder-gray-400 focus:outline-none focus:border-[#5B4FF5] transition-colors shadow-xs"
           />
         </div>
 
         {/* Sort selector */}
         <div className="flex items-center gap-2">
           <span className="text-xs text-gray-400">Sort:</span>
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-            className="h-9 px-3 rounded-btn border border-[#E7E9F0] dark:border-white/10 bg-white dark:bg-[#11131A] text-xs text-gray-800 dark:text-gray-200 focus:outline-none"
-          >
-            <option value="downloads">Most Downloaded</option>
-            <option value="favorites">Most Favorited</option>
-            <option value="newest">Recently Published</option>
-          </select>
+          <div className="relative">
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="h-9 pl-3.5 pr-8 rounded-full border border-[#E8EAEF] dark:border-white/10 bg-white dark:bg-[#11131A] text-xs text-gray-800 dark:text-gray-200 focus:outline-none focus:border-[#5B4FF5] appearance-none shadow-xs cursor-pointer font-medium"
+            >
+              <option value="downloads">Most Downloaded</option>
+              <option value="favorites">Most Favorited</option>
+              <option value="newest">Recently Published</option>
+            </select>
+            <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+          </div>
         </div>
       </div>
 
-      {/* Category Tabs */}
-      <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+      {/* Category Pills matching image tabs */}
+      <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
         <button
           onClick={() => setSelectedCategory('all')}
-          className={`px-3 py-1.5 rounded-btn text-xs font-medium whitespace-nowrap transition-colors ${
+          className={`px-3.5 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all shadow-xs ${
             selectedCategory === 'all'
-              ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-600/20'
-              : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/[0.04]'
+              ? 'bg-[#181A25] text-white'
+              : 'bg-white hover:bg-gray-50 text-gray-700 dark:bg-[#11131A] dark:text-gray-300 border border-[#E8EAEF] dark:border-white/10'
           }`}
         >
           All Components
@@ -103,10 +103,10 @@ export const ComponentsCatalogPage: React.FC = () => {
             <button
               key={cat.id}
               onClick={() => setSelectedCategory(cat.name)}
-              className={`px-3 py-1.5 rounded-btn text-xs font-medium whitespace-nowrap transition-colors ${
+              className={`px-3.5 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all shadow-xs ${
                 selectedCategory === cat.name
-                  ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-600/20'
-                  : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/[0.04]'
+                  ? 'bg-[#181A25] text-white'
+                  : 'bg-white hover:bg-gray-50 text-gray-700 dark:bg-[#11131A] dark:text-gray-300 border border-[#E8EAEF] dark:border-white/10'
               }`}
             >
               {cat.name}
@@ -120,12 +120,12 @@ export const ComponentsCatalogPage: React.FC = () => {
           {[1, 2, 3, 4, 5, 6].map((i) => (
             <div
               key={i}
-              className="h-56 rounded-panel bg-gray-100 dark:bg-[#11131A] animate-pulse border border-[#E7E9F0] dark:border-white/5"
+              className="h-56 rounded-2xl bg-gray-100 dark:bg-[#11131A] animate-pulse border border-[#E8EAEF] dark:border-white/5"
             />
           ))}
         </div>
       ) : components.length === 0 ? (
-        <div className="text-center py-16 rounded-panel border border-dashed border-[#E7E9F0] dark:border-white/10 p-8">
+        <div className="text-center py-16 rounded-2xl border border-dashed border-[#E8EAEF] dark:border-white/10 p-8">
           <Layers className="w-8 h-8 text-gray-400 mx-auto mb-2" />
           <h3 className="text-sm font-semibold text-gray-900 dark:text-white">No components found</h3>
           <p className="text-xs text-gray-400 mt-1">Try adjusting your search or category filter.</p>
@@ -136,11 +136,11 @@ export const ComponentsCatalogPage: React.FC = () => {
             <Link
               key={comp.slug}
               to={`/components/${comp.slug}`}
-              className="group flex flex-col justify-between rounded-panel border border-[#E7E9F0] dark:border-white/10 bg-white dark:bg-[#11131A] p-5 hover:border-indigo-500/40 hover:shadow-lg dark:hover:shadow-indigo-500/5 transition-all"
+              className="group flex flex-col justify-between rounded-2xl border border-[#E8EAEF] dark:border-white/10 bg-white dark:bg-[#11131A] p-5 hover:border-[#5B4FF5]/50 hover:shadow-lg dark:hover:shadow-purple-500/5 transition-all"
             >
               <div>
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-[10px] font-mono uppercase tracking-wider text-indigo-500 bg-indigo-500/10 px-2 py-0.5 rounded">
+                  <span className="text-[10px] font-mono uppercase tracking-wider text-[#5B4FF5] bg-[#5B4FF5]/10 px-2.5 py-0.5 rounded-full font-medium">
                     {comp.category}
                   </span>
                   <span className="text-[11px] font-mono text-gray-400">
@@ -148,7 +148,7 @@ export const ComponentsCatalogPage: React.FC = () => {
                   </span>
                 </div>
 
-                <h3 className="text-base font-semibold text-gray-900 dark:text-white group-hover:text-indigo-500 transition-colors">
+                <h3 className="text-base font-bold text-[#161722] dark:text-white group-hover:text-[#5B4FF5] transition-colors">
                   {comp.name}
                 </h3>
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-1.5 line-clamp-2 leading-relaxed">
@@ -156,11 +156,11 @@ export const ComponentsCatalogPage: React.FC = () => {
                 </p>
 
                 {/* Tags */}
-                <div className="flex flex-wrap gap-1.5 mt-3">
+                <div className="flex flex-wrap gap-1.5 mt-3.5">
                   {comp.tags.map((t) => (
                     <span
                       key={t}
-                      className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-gray-100 dark:bg-white/[0.04] text-gray-600 dark:text-gray-400"
+                      className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#F5F6FA] dark:bg-white/[0.04] text-gray-600 dark:text-gray-400"
                     >
                       {t}
                     </span>
@@ -169,15 +169,15 @@ export const ComponentsCatalogPage: React.FC = () => {
               </div>
 
               {/* Card Footer: Quick copy CLI & Details link */}
-              <div className="mt-5 pt-3.5 border-t border-[#E7E9F0] dark:border-white/10 flex items-center justify-between text-xs">
+              <div className="mt-5 pt-3.5 border-t border-[#E8EAEF] dark:border-white/10 flex items-center justify-between text-xs">
                 <button
                   onClick={(e) => copyCliCommand(comp.slug, e)}
                   title="Copy CLI install command"
-                  className="flex items-center gap-1.5 font-mono text-[11px] text-gray-500 hover:text-indigo-500 dark:text-gray-400 dark:hover:text-indigo-400 transition-colors"
+                  className="flex items-center gap-1.5 font-mono text-[11px] text-gray-500 hover:text-[#5B4FF5] dark:text-gray-400 dark:hover:text-[#8B5CF6] transition-colors"
                 >
                   <Terminal className="w-3.5 h-3.5" />
                   {copiedSlug === comp.slug ? (
-                    <span className="text-emerald-500 flex items-center gap-1">
+                    <span className="text-emerald-500 flex items-center gap-1 font-semibold">
                       <Check className="w-3 h-3" /> Copied!
                     </span>
                   ) : (
@@ -185,7 +185,7 @@ export const ComponentsCatalogPage: React.FC = () => {
                   )}
                 </button>
 
-                <span className="text-indigo-600 dark:text-indigo-400 font-medium flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
+                <span className="text-[#5B4FF5] font-semibold flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
                   Preview <ArrowRight className="w-3.5 h-3.5" />
                 </span>
               </div>

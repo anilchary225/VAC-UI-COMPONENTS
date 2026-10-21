@@ -1,5 +1,5 @@
 import React from 'react';
-import { createBrowserRouter, Navigate } from 'react-router-dom';
+import { createBrowserRouter } from 'react-router-dom';
 import { AppLayout } from '../layouts/AppLayout';
 import { OverviewPage } from '../pages/OverviewPage';
 import { ComponentsCatalogPage } from '../pages/ComponentsCatalogPage';

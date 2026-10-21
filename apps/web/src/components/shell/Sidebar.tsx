@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import {
   Layers,
@@ -16,6 +16,11 @@ import {
   ChevronLeft,
   ChevronRight,
   Sparkles,
+  Bot,
+  Wrench,
+  Globe,
+  MoreHorizontal,
+  ChevronDown,
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { useAuth } from '../../features/auth/authStore';
@@ -32,9 +37,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggleCollapse 
 
   const userNav = [
     { label: 'Overview', href: '/dashboard', icon: LayoutDashboard },
-    { label: 'Components', href: '/components', icon: Layers },
-    { label: 'Favorites', href: '/favorites', icon: Bookmark, badge: 'Auth' },
-    { label: 'Collections', href: '/collections', icon: FolderHeart, badge: 'Auth' },
+    { label: 'Components', href: '/components', icon: Layers, badge: '6' },
+    { label: 'Favorites', href: '/favorites', icon: Bookmark },
+    { label: 'Collections', href: '/collections', icon: FolderHeart },
     { label: 'Recently Viewed', href: '/history', icon: Clock },
     { label: 'Settings', href: '/settings', icon: Settings },
   ];
@@ -46,46 +51,60 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggleCollapse 
     { label: 'Releases & Registry', href: '/admin/registry', icon: PackageCheck },
     { label: 'User Directory', href: '/admin/users', icon: Users },
     { label: 'Analytics', href: '/admin/analytics', icon: BarChart2 },
-    { label: 'Admin Settings', href: '/admin/settings', icon: Settings },
   ];
 
   return (
     <aside
       className={cn(
-        'relative flex flex-col border-r transition-all duration-200 select-none z-30',
-        'bg-white dark:bg-[#0A0B10] border-[#E7E9F0] dark:border-white/10',
-        isCollapsed ? 'w-16' : 'w-60'
+        'relative flex flex-col transition-all duration-200 select-none z-30 shrink-0 border-r border-white/5',
+        'bg-gradient-to-b from-[#251A48] via-[#1A1236] to-[#120C27] text-white',
+        isCollapsed ? 'w-16 p-2' : 'w-[260px] p-4'
       )}
     >
-      {/* Brand Header */}
-      <div className="h-14 flex items-center px-4 border-b border-[#E7E9F0] dark:border-white/10 justify-between">
-        <NavLink to="/" className="flex items-center gap-2.5 overflow-hidden">
-          <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white shrink-0 shadow-sm shadow-indigo-600/30">
-            <Sparkles className="w-4 h-4" />
+      {/* Brand Header / Workspace Card */}
+      <div className="mb-5">
+        <NavLink
+          to="/"
+          className={cn(
+            'flex items-center gap-2.5 transition-all',
+            isCollapsed
+              ? 'justify-center py-2'
+              : 'bg-white/[0.07] hover:bg-white/[0.1] border border-white/10 rounded-2xl p-2.5 shadow-sm'
+          )}
+        >
+          {/* Iridescent Gradient Squircle */}
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-purple-600 via-pink-500 to-indigo-400 p-[1px] shadow-sm flex items-center justify-center shrink-0 overflow-hidden">
+            <div className="w-full h-full rounded-[11px] bg-gradient-to-tr from-indigo-950/70 to-purple-800/80 backdrop-blur-xs flex items-center justify-center text-white">
+              <Sparkles className="w-4 h-4 text-purple-200" />
+            </div>
           </div>
+
           {!isCollapsed && (
-            <div className="flex flex-col">
-              <span className="font-semibold text-sm tracking-tight text-gray-900 dark:text-white">
-                VAC<span className="text-indigo-500 font-bold">.UI</span>
-              </span>
-              <span className="text-[10px] text-gray-400 dark:text-gray-500 font-mono tracking-wider uppercase">
-                Dev Studio
-              </span>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center justify-between">
+                <span className="font-semibold text-xs text-white tracking-tight flex items-center gap-1">
+                  VAC<span className="text-purple-300 font-bold">.UI</span>
+                </span>
+                <ChevronDown className="w-3.5 h-3.5 text-purple-300/60" />
+              </div>
+              <p className="text-[10px] text-purple-200/60 leading-none mt-0.5 truncate font-normal">
+                Developer Component Studio
+              </p>
             </div>
           )}
         </NavLink>
       </div>
 
       {/* Navigation Links */}
-      <div className="flex-1 overflow-y-auto py-4 px-2 space-y-6">
-        {/* User Navigation Section */}
+      <div className="flex-1 overflow-y-auto space-y-5 pr-1 scrollbar-none">
+        {/* WORKSPACE Section */}
         <div>
           {!isCollapsed && (
-            <div className="px-3 pb-2 text-[10px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">
+            <div className="px-3 pb-1.5 text-[10px] font-bold text-[#7C7299] uppercase tracking-widest">
               Workspace
             </div>
           )}
-          <nav className="space-y-1">
+          <nav className="space-y-0.5">
             {userNav.map((item) => {
               const Icon = item.icon;
               const isActive =
@@ -99,31 +118,38 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggleCollapse 
                   to={item.href}
                   title={isCollapsed ? item.label : undefined}
                   className={cn(
-                    'flex items-center gap-3 px-3 py-2 rounded-btn text-sm font-medium transition-colors',
+                    'flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-all',
                     isActive
-                      ? 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 dark:bg-indigo-500/15'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100 dark:text-[#9CA3AF] dark:hover:text-[#F4F5F8] dark:hover:bg-white/[0.04]',
+                      ? 'bg-[#3A2968]/80 border border-purple-500/30 text-white shadow-sm'
+                      : 'text-purple-200/70 hover:text-white hover:bg-white/[0.04]',
                     isCollapsed && 'justify-center px-0'
                   )}
                 >
-                  <Icon className="w-4 h-4 shrink-0" />
-                  {!isCollapsed && <span className="truncate">{item.label}</span>}
+                  <div className="flex items-center gap-2.5 truncate">
+                    <Icon className={cn('w-4 h-4 shrink-0', isActive ? 'text-purple-300' : 'text-purple-300/60')} />
+                    {!isCollapsed && <span className="truncate">{item.label}</span>}
+                  </div>
+                  {!isCollapsed && item.badge && (
+                    <span className="text-[10px] font-semibold px-2 py-0.2 rounded-full bg-[#43355F] text-amber-200">
+                      {item.badge}
+                    </span>
+                  )}
                 </NavLink>
               );
             })}
           </nav>
         </div>
 
-        {/* Admin Section (Strictly displayed only to authenticated admins) */}
+        {/* ADMIN STUDIO Section */}
         {isAdmin && (
           <div>
             {!isCollapsed && (
-              <div className="px-3 pb-2 text-[10px] font-semibold text-amber-500 uppercase tracking-wider flex items-center gap-1.5">
+              <div className="px-3 pb-1.5 text-[10px] font-bold text-amber-400 uppercase tracking-widest flex items-center gap-1.5">
                 <Shield className="w-3 h-3" />
-                Admin Studio
+                Configure
               </div>
             )}
-            <nav className="space-y-1">
+            <nav className="space-y-0.5">
               {adminNav.map((item) => {
                 const Icon = item.icon;
                 const isActive = location.pathname.startsWith(item.href);
@@ -134,14 +160,14 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggleCollapse 
                     to={item.href}
                     title={isCollapsed ? item.label : undefined}
                     className={cn(
-                      'flex items-center gap-3 px-3 py-2 rounded-btn text-sm font-medium transition-colors',
+                      'flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium transition-all',
                       isActive
-                        ? 'bg-amber-500/10 text-amber-500 dark:bg-amber-500/15'
-                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100 dark:text-[#9CA3AF] dark:hover:text-[#F4F5F8] dark:hover:bg-white/[0.04]',
+                        ? 'bg-[#3A2968]/80 text-white border border-amber-500/30'
+                        : 'text-purple-200/70 hover:text-white hover:bg-white/[0.04]',
                       isCollapsed && 'justify-center px-0'
                     )}
                   >
-                    <Icon className="w-4 h-4 shrink-0" />
+                    <Icon className="w-4 h-4 shrink-0 text-amber-400/80" />
                     {!isCollapsed && <span className="truncate">{item.label}</span>}
                   </NavLink>
                 );
@@ -151,11 +177,60 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggleCollapse 
         )}
       </div>
 
-      {/* Collapse Footer */}
-      <div className="p-2 border-t border-[#E7E9F0] dark:border-white/10 flex items-center justify-between">
+      {/* Bottom Footer Section: Active Engine Status & Profile */}
+      <div className="pt-3 space-y-3 border-t border-white/5">
+        {!isCollapsed && (
+          <div className="bg-[#1C143B]/80 border border-purple-500/20 rounded-2xl p-2.5 shadow-sm">
+            <div className="flex items-center gap-2 mb-1">
+              <div className="flex -space-x-1.5">
+                <span className="w-5 h-5 rounded-full bg-purple-600 border border-[#1C143B] flex items-center justify-center text-[9px] text-white">
+                  <Wrench className="w-2.5 h-2.5" />
+                </span>
+                <span className="w-5 h-5 rounded-full bg-indigo-500 border border-[#1C143B] flex items-center justify-center text-[9px] text-white">
+                  <Bot className="w-2.5 h-2.5" />
+                </span>
+                <span className="w-5 h-5 rounded-full bg-pink-500 border border-[#1C143B] flex items-center justify-center text-[9px] text-white">
+                  <Sparkles className="w-2.5 h-2.5" />
+                </span>
+                <span className="w-5 h-5 rounded-full bg-violet-400 border border-[#1C143B] flex items-center justify-center text-[9px] text-white">
+                  <Globe className="w-2.5 h-2.5" />
+                </span>
+              </div>
+              <span className="text-[11px] font-semibold text-white">CLI Registry Live</span>
+            </div>
+            <div className="flex items-center gap-1.5 text-[10px] text-purple-300/60 pl-0.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span>Synced with registry v1.0.0</span>
+            </div>
+          </div>
+        )}
+
+        {/* Profile Card */}
+        {user ? (
+          <div className="flex items-center justify-between px-1.5 py-1">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-purple-500 to-indigo-600 text-white flex items-center justify-center font-bold text-xs shrink-0">
+                {user.name.charAt(0).toUpperCase()}
+              </div>
+              {!isCollapsed && (
+                <div className="truncate">
+                  <h4 className="text-xs font-semibold text-white leading-tight truncate">{user.name}</h4>
+                  <p className="text-[10px] text-purple-300/60 leading-tight uppercase font-mono">{user.role}</p>
+                </div>
+              )}
+            </div>
+            {!isCollapsed && (
+              <button className="text-purple-300/60 hover:text-white p-1">
+                <MoreHorizontal className="w-4 h-4" />
+              </button>
+            )}
+          </div>
+        ) : null}
+
+        {/* Collapse Control */}
         <button
           onClick={onToggleCollapse}
-          className="w-full flex items-center justify-center p-2 rounded-btn text-gray-500 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-white/[0.05] transition-colors text-xs gap-2"
+          className="w-full flex items-center justify-center p-2 rounded-xl text-purple-300/60 hover:text-white hover:bg-white/[0.04] transition-all text-xs gap-2"
           aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         >
           {isCollapsed ? (
@@ -163,7 +238,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggleCollapse 
           ) : (
             <>
               <ChevronLeft className="w-4 h-4" />
-              <span>Collapse Sidebar</span>
+              <span className="text-[11px]">Collapse sidebar</span>
             </>
           )}
         </button>

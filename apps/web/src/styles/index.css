@@ -3,29 +3,31 @@
 @tailwind utilities;
 
 :root {
-  --vac-bg: #FFFFFF;
-  --vac-surface: #FFFFFF;
-  --vac-surface-elevated: #F8F9FC;
-  --vac-text: #171923;
-  --vac-text-secondary: #667085;
-  --vac-border: #E7E9F0;
-  --vac-accent: #5B5CE2;
+  --twilight-bg: #F5F6FA;
+  --twilight-card: #FFFFFF;
+  --twilight-card-border: #E8EAEF;
+  --twilight-text: #161722;
+  --twilight-text-muted: #6B7280;
+  --twilight-accent: #5B4FF5;
+  --twilight-sidebar-top: #251A48;
+  --twilight-sidebar-mid: #1A1236;
+  --twilight-sidebar-bot: #120C27;
+  --twilight-sidebar-active: #3A2968;
 }
 
 html.dark {
-  --vac-bg: #0A0B10;
-  --vac-surface: #11131A;
-  --vac-surface-elevated: #171A23;
-  --vac-text: #F4F5F8;
-  --vac-text-secondary: #9CA3AF;
-  --vac-border: rgba(255, 255, 255, 0.08);
-  --vac-accent: #6366F1;
+  --twilight-bg: #0A0B10;
+  --twilight-card: #11131A;
+  --twilight-card-border: rgba(255, 255, 255, 0.08);
+  --twilight-text: #F4F5F8;
+  --twilight-text-muted: #9CA3AF;
+  --twilight-accent: #5B4FF5;
 }
 
 @layer base {
   body {
-    background-color: var(--vac-bg);
-    color: var(--vac-text);
+    background-color: var(--twilight-bg);
+    color: var(--twilight-text);
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 
@@ -45,12 +47,12 @@ html.dark {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(156, 163, 175, 0.2);
+  background: rgba(167, 139, 250, 0.25);
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(156, 163, 175, 0.4);
+  background: rgba(167, 139, 250, 0.45);
 }
 
 @media (prefers-reduced-motion: reduce) {
