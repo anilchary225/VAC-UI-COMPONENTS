@@ -381,7 +381,7 @@ export const ComponentsCatalogPage: React.FC = () => {
         <div className="pt-2 pb-8 border-b border-[#E8EAEF] dark:border-white/[0.08] transition-colors">
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-x-8 gap-y-4">
             {CATEGORY_COLUMNS.map((column, colIdx) => (
-              <div key={colIdx} className="space-y-3.5">
+              <div key={colIdx} className="space-y-2.5">
                 {column.map((cat) => {
                   const isActive = (isAllCategory(selectedCategory) && isAllCategory(cat)) || selectedCategory === cat;
                   return (
@@ -399,7 +399,7 @@ export const ComponentsCatalogPage: React.FC = () => {
                           setSelectedSlug(null);
                         }
                       }}
-                      className={`block text-left text-sm sm:text-[15px] transition-colors duration-150 cursor-pointer select-none group ${
+                      className={`block text-left text-xs sm:text-[13px] transition-colors duration-150 cursor-pointer select-none group ${
                         isActive
                           ? 'text-[#161722] dark:text-white font-semibold'
                           : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#161722] dark:hover:text-white font-normal'
@@ -407,7 +407,7 @@ export const ComponentsCatalogPage: React.FC = () => {
                     >
                       {isActive ? (
                         <span className="flex items-center gap-1.5">
-                          <span className="text-[#5B4FF5] dark:text-white text-base leading-none font-bold">•</span>
+                          <span className="text-[#5B4FF5] dark:text-white text-xs leading-none font-bold">•</span>
                           <span>{cat}</span>
                         </span>
                       ) : (
