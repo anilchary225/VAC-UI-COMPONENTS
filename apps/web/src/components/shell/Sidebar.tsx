@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { useAuth } from '../../features/auth/authStore';
+import { VacLogo } from '../ui/VacLogo';
 
 interface SidebarProps {
   isCollapsed: boolean;
@@ -69,29 +70,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggleCollapse 
             'flex items-center gap-2.5 transition-all',
             isCollapsed
               ? 'justify-center py-2'
-              : 'bg-white/[0.07] hover:bg-white/[0.1] border border-white/10 rounded-2xl p-2.5 shadow-sm'
+              : 'bg-white/[0.07] hover:bg-white/[0.1] border border-white/10 rounded-2xl p-3 shadow-sm'
           )}
         >
-          {/* Iridescent Gradient Squircle */}
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-purple-600 via-pink-500 to-indigo-400 p-[1px] shadow-sm flex items-center justify-center shrink-0 overflow-hidden">
-            <div className="w-full h-full rounded-[11px] bg-gradient-to-tr from-indigo-950/70 to-purple-800/80 backdrop-blur-xs flex items-center justify-center text-white">
-              <Sparkles className="w-4 h-4 text-purple-200" />
-            </div>
-          </div>
-
-          {!isCollapsed && (
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center justify-between">
-                <span className="font-semibold text-xs text-white tracking-tight flex items-center gap-1">
-                  VAC<span className="text-purple-300 font-bold">.UI</span>
-                </span>
-                <ChevronDown className="w-3.5 h-3.5 text-purple-300/60" />
-              </div>
-              <p className="text-[10px] text-purple-200/60 leading-none mt-0.5 truncate font-normal">
-                Developer Component Studio
-              </p>
-            </div>
-          )}
+          <VacLogo size={isCollapsed ? 'sm' : 'md'} showSubtitle={!isCollapsed} />
         </NavLink>
       </div>
 

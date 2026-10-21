@@ -4,10 +4,10 @@ import React from 'react';
 import { App } from '../app/App';
 
 describe('Web Application Shell Smoke Tests', () => {
-  it('renders application brand in the sidebar', () => {
+  it('renders application brand logo in the sidebar', () => {
     render(<App />);
-    expect(screen.getByText('VAC')).toBeInTheDocument();
-    expect(screen.getByText('.UI')).toBeInTheDocument();
+    expect(screen.getAllByLabelText('VAC Logo').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getByText('UI-COMPONENTS', { exact: true })).toBeInTheDocument();
   });
 
   it('renders primary navigation items', () => {

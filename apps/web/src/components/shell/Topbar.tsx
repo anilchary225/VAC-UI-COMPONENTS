@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { useTheme } from '../../features/theme/themeStore';
 import { useAuth } from '../../features/auth/authStore';
+import { VacLogo } from '../ui/VacLogo';
 
 interface TopbarProps {
   onOpenCommandPalette: () => void;
@@ -40,7 +41,8 @@ export const Topbar: React.FC<TopbarProps> = ({ onOpenCommandPalette }) => {
   return (
     <header className="h-14 border-b border-[#E8EAEF] dark:border-white/10 bg-white dark:bg-[#11131A] px-5 flex items-center justify-between shrink-0 z-20">
       {/* Breadcrumbs */}
-      <nav className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400 overflow-hidden max-w-xs md:max-w-md">
+      <nav className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400 overflow-hidden max-w-xs md:max-w-md">
+        <VacLogo size="sm" showSubtitle={false} className="shrink-0 mr-1" />
         {breadcrumbs.map((crumb, idx) => {
           const isLast = idx === breadcrumbs.length - 1;
           return (
