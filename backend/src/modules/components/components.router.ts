@@ -3,6 +3,7 @@ import { ComponentModel } from '../../models/Component';
 import { ComponentVersionModel } from '../../models/ComponentVersion';
 import { getDatabaseStatus } from '../../config/database';
 import { INITIAL_OFFICIAL_COMPONENTS } from './components.seed';
+import { AdminStore } from '../admin/admin.store';
 import { AppError } from '../../middleware/errorHandler';
 
 export const componentsRouter = Router();
@@ -67,8 +68,9 @@ componentsRouter.get('/', async (req: Request, res: Response, next: NextFunction
       }
     }
 
-    // Static fallback for seed / offline catalog
-    let results = [...INITIAL_OFFICIAL_COMPONENTS];
+    // Fallback for seed / offline catalog
+    const memPublished = AdminStore.getMemoryPublished();
+    let results: any[] = memPublished.length > 0 ? memPublished : [...INITIAL_OFFICIAL_COMPONENTS];
     if (category && category !== 'all') {
       results = results.filter((c) => c.category.toLowerCase() === category.toLowerCase());
     }
@@ -77,8 +79,9 @@ componentsRouter.get('/', async (req: Request, res: Response, next: NextFunction
       results = results.filter(
         (c) =>
           c.name.toLowerCase().includes(q) ||
+          c.slug.toLowerCase().includes(q) ||
           c.description.toLowerCase().includes(q) ||
-          c.tags.some((t) => t.toLowerCase().includes(q))
+          c.tags.some((t: string) => t.toLowerCase().includes(q))
       );
     }
 
@@ -115,7 +118,7 @@ componentsRouter.get('/', async (req: Request, res: Response, next: NextFunction
 // GET /api/components/:slug - Get component detail
 componentsRouter.get('/:slug', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { slug } = req.params;
+    const slug = req.params.slug as string;
     const db = getDatabaseStatus();
 
     if (db.status === 'connected') {
@@ -140,6 +143,19 @@ componentsRouter.get('/:slug', async (req: Request, res: Response, next: NextFun
       } catch (dbErr) {
         console.warn('DB detail query failed, falling back to static:', dbErr);
       }
+    }
+
+    const memComp = await AdminStore.findBySlugOrId(slug);
+    if (memComp && memComp.status === 'published') {
+      const versions = await AdminStore.getVersions(slug);
+      return res.json({
+        success: true,
+        data: {
+          ...memComp,
+          versions,
+          latestRelease: versions[0],
+        },
+      });
     }
 
     const staticComp = INITIAL_OFFICIAL_COMPONENTS.find((c) => c.slug === slug);

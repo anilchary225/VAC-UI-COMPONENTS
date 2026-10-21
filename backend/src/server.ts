@@ -6,9 +6,17 @@ const startServer = async () => {
   const app = createApp();
 
   // Connect to DB asynchronously (safe failure handling)
-  connectDatabase().catch((err) => {
-    console.error('Initial database connection failure:', err);
-  });
+  connectDatabase()
+    .then((connected) => {
+      if (connected) {
+        import('./modules/components/components.seed.service')
+          .then(({ ensureInitialComponentsSeeded }) => ensureInitialComponentsSeeded())
+          .catch((err) => console.warn('Seeding check failed:', err));
+      }
+    })
+    .catch((err) => {
+      console.error('Initial database connection failure:', err);
+    });
 
   const server = app.listen(env.PORT, () => {
     console.log(`🚀 VAC-UI-COMPONENTS API Server listening on port ${env.PORT} (${env.NODE_ENV})`);

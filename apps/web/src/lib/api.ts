@@ -183,6 +183,156 @@ class ApiClient {
       method: 'DELETE',
     });
   }
+
+  // ---------------------------------------------------------------------------
+  // Admin & Component Studio APIs
+  // ---------------------------------------------------------------------------
+  async getAdminOverview(): Promise<{
+    totalComponents: number;
+    publishedCount: number;
+    draftCount: number;
+    deprecatedCount: number;
+    validationIssuesCount: number;
+    recentComponents: Array<{
+      id: string;
+      slug: string;
+      name: string;
+      category: string;
+      status: string;
+      currentVersion: string;
+      updatedAt: string;
+    }>;
+    recentAuditLogs: Array<{
+      id: string;
+      action: string;
+      actorEmail: string;
+      actorName: string;
+      resourceType: string;
+      resourceId: string;
+      details: Record<string, any>;
+      createdAt: string;
+    }>;
+  }> {
+    return this.request('/admin/overview');
+  }
+
+  async getAdminComponents(params: {
+    search?: string;
+    category?: string;
+    status?: string;
+    sort?: string;
+    order?: string;
+    page?: number;
+    limit?: number;
+  } = {}): Promise<{
+    components: any[];
+    pagination: {
+      total: number;
+      page: number;
+      limit: number;
+      totalPages: number;
+    };
+  }> {
+    const query = new URLSearchParams();
+    if (params.search) query.set('search', params.search);
+    if (params.category && params.category !== 'all') query.set('category', params.category);
+    if (params.status && params.status !== 'all') query.set('status', params.status);
+    if (params.sort) query.set('sort', params.sort);
+    if (params.order) query.set('order', params.order);
+    if (params.page) query.set('page', params.page.toString());
+    if (params.limit) query.set('limit', params.limit.toString());
+
+    return this.request(`/admin/components?${query.toString()}`);
+  }
+
+  async getAdminComponent(idOrSlug: string): Promise<any> {
+    return this.request(`/admin/components/${idOrSlug}`);
+  }
+
+  async createAdminComponent(data: {
+    name: string;
+    slug: string;
+    description: string;
+    category: string;
+    tags?: string[];
+    documentation?: string;
+    license?: string;
+    author?: string;
+  }): Promise<any> {
+    return this.request('/admin/components', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async updateAdminComponent(idOrSlug: string, data: any): Promise<any> {
+    return this.request(`/admin/components/${idOrSlug}`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async validateAdminComponent(idOrSlug: string): Promise<{
+    report: {
+      valid: boolean;
+      errors: string[];
+      issues: Array<{ field?: string; file?: string; message: string }>;
+      checkedAt: string;
+    };
+    component: any;
+  }> {
+    return this.request(`/admin/components/${idOrSlug}/validate`, {
+      method: 'POST',
+    });
+  }
+
+  async publishAdminComponent(idOrSlug: string, data: { version?: string; changelog?: string }): Promise<{
+    component: any;
+    version: any;
+  }> {
+    return this.request(`/admin/components/${idOrSlug}/publish`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async deprecateAdminComponent(idOrSlug: string, reason?: string): Promise<any> {
+    return this.request(`/admin/components/${idOrSlug}/deprecate`, {
+      method: 'POST',
+      body: JSON.stringify({ reason }),
+    });
+  }
+
+  async getAdminVersions(idOrSlug: string): Promise<any[]> {
+    return this.request(`/admin/components/${idOrSlug}/versions`);
+  }
+
+  async getAdminCategories(): Promise<any[]> {
+    return this.request('/admin/categories');
+  }
+
+  async createAdminCategory(data: { name: string; slug: string; description?: string; icon?: string }): Promise<any> {
+    return this.request('/admin/categories', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async getAdminAuditLogs(params: { action?: string; resourceType?: string; page?: number; limit?: number } = {}): Promise<{
+    logs: any[];
+    pagination: { total: number; page: number; limit: number; totalPages: number };
+  }> {
+    const query = new URLSearchParams();
+    if (params.action) query.set('action', params.action);
+    if (params.resourceType) query.set('resourceType', params.resourceType);
+    if (params.page) query.set('page', params.page.toString());
+    if (params.limit) query.set('limit', params.limit.toString());
+    return this.request(`/admin/audit-logs?${query.toString()}`);
+  }
+
+  async getAdminAnalytics(): Promise<any> {
+    return this.request('/admin/analytics');
+  }
 }
 
 export const api = new ApiClient();

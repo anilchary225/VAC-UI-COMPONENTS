@@ -8,6 +8,7 @@ import { componentsRouter } from './modules/components/components.router';
 import { categoriesRouter } from './modules/categories/categories.router';
 import { favoritesRouter } from './modules/favorites/favorites.router';
 import { collectionsRouter } from './modules/collections/collections.router';
+import { adminRouter } from './modules/admin/admin.router';
 import { errorHandler, AppError } from './middleware/errorHandler';
 
 export const createApp = (): Application => {
@@ -37,6 +38,7 @@ export const createApp = (): Application => {
   app.use('/api/categories', categoriesRouter);
   app.use('/api/favorites', favoritesRouter);
   app.use('/api/collections', collectionsRouter);
+  app.use('/api/admin', adminRouter);
 
   // Fallback for unhandled routes
   app.all('*', (req: Request, _res: Response, next) => {

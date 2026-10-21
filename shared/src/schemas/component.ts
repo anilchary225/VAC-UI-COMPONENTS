@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const ComponentStatusSchema = z.enum(['draft', 'in_review', 'published', 'deprecated']);
+export const ComponentStatusSchema = z.enum(['draft', 'validating', 'in_review', 'published', 'deprecated']);
 export type ComponentStatus = z.infer<typeof ComponentStatusSchema>;
 
 export const ComponentPropSchema = z.object({
