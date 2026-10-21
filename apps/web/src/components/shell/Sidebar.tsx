@@ -38,7 +38,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggleCollapse 
 
   const userNav = [
     { label: 'Overview', href: '/dashboard', icon: LayoutDashboard },
-    { label: 'Components', href: '/components', icon: Layers, badge: '6' },
+    { label: 'Components', href: '/components', icon: Layers, badge: '9' },
     { label: 'Favorites', href: '/favorites', icon: Bookmark },
     { label: 'Collections', href: '/collections', icon: FolderHeart },
     { label: 'Recently Viewed', href: '/history', icon: Clock },

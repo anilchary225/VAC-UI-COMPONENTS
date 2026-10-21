@@ -18,6 +18,10 @@ import {
   FileCode,
   ShieldCheck,
   Search,
+  CreditCard,
+  BarChart2,
+  Bell,
+  Sliders,
 } from 'lucide-react';
 
 export interface CatalogComponentItem {
@@ -38,46 +42,63 @@ export interface CatalogComponentItem {
   codeSnippet: string;
 }
 
-const CATEGORY_COLUMNS = [
+export interface ComponentCategoryGroup {
+  name: string;
+  icon: React.ComponentType<{ className?: string }>;
+  components: Array<{ title: string; slug: string; subcategory: string }>;
+}
+
+const COMPONENT_CATEGORIES: ComponentCategoryGroup[] = [
   {
-    name: 'Portfolio',
-    items: ['Artists', 'Designers', 'Photography', 'Resume'],
+    name: 'Forms & Auth',
+    icon: Lock,
+    components: [
+      { title: 'Animated Login Form', slug: 'animated-login-form', subcategory: 'Authentication' },
+      { title: 'Drag & Drop File Upload', slug: 'file-upload', subcategory: 'File Inputs' },
+    ],
   },
   {
-    name: 'Software',
-    items: ['AI', 'Apps', 'Fintech', 'SaaS'],
+    name: 'Navigation',
+    icon: Compass,
+    components: [
+      { title: 'Glassmorphism Navbar', slug: 'glassmorphism-navbar', subcategory: 'Headers' },
+    ],
   },
   {
-    name: 'Agency',
-    items: ['Architecture', 'Design', 'Marketing', 'Web'],
+    name: 'Marketing & Pricing',
+    icon: CreditCard,
+    components: [
+      { title: 'Interactive Pricing Tier', slug: 'interactive-pricing', subcategory: 'Pricing' },
+    ],
   },
   {
-    name: 'Ecommerce',
-    items: ['Beauty', 'Digital', 'Fashion', 'Furniture'],
+    name: 'Data & Dashboards',
+    icon: BarChart2,
+    components: [
+      { title: 'Analytics Metrics Matrix', slug: 'analytics-dashboard', subcategory: 'Metrics' },
+    ],
   },
   {
-    name: 'Services',
-    items: ['Consulting', 'Education', 'Home', 'Legal'],
+    name: 'Feedback & Overlays',
+    icon: Bell,
+    components: [
+      { title: 'Notification Center Feed', slug: 'notification-center', subcategory: 'Alerts' },
+    ],
   },
   {
-    name: 'Health',
-    items: ['Fitness', 'Medical', 'Therapy', 'Wellness'],
+    name: 'Buttons & Controls',
+    icon: Sliders,
+    components: [
+      { title: 'Glass Pill Button', slug: 'glass-button', subcategory: 'Pills' },
+      { title: 'Animated Toggle Switch', slug: 'toggle-switch', subcategory: 'Switches' },
+    ],
   },
   {
-    name: 'Publishing',
-    items: ['Blogs', 'Entertainment', 'Magazines', 'News'],
-  },
-  {
-    name: 'Real Estate',
-    items: ['Agents', 'Construction', 'Listings', 'Management'],
-  },
-  {
-    name: 'Hospitality',
-    items: ['Food', 'Hotels', 'Restaurants', 'Travel'],
-  },
-  {
-    name: 'Events',
-    items: ['Conferences', 'Music', 'Sports', 'Weddings'],
+    name: 'Cards & Surfaces',
+    icon: Layers,
+    components: [
+      { title: 'Spotlight Ambient Card', slug: 'dark-glass-card', subcategory: 'Containers' },
+    ],
   },
 ];
 
@@ -86,8 +107,8 @@ const AVAILABLE_COMPONENTS: CatalogComponentItem[] = [
     id: 'comp_1',
     slug: 'animated-login-form',
     title: 'Animated Login Form',
-    category: 'Software',
-    subcategory: 'AI',
+    category: 'Forms & Auth',
+    subcategory: 'Authentication',
     version: '1.0.0',
     price: 'Free',
     style: 'Dark',
@@ -98,6 +119,7 @@ const AVAILABLE_COMPONENTS: CatalogComponentItem[] = [
     dependencies: ['motion/react', 'lucide-react'],
     props: [
       { name: 'title', type: 'string', default: '"Welcome Back"', description: 'Top card title' },
+      { name: 'subtitle', type: 'string', default: '"Sign in to console"', description: 'Supporting text' },
       { name: 'onSubmit', type: '(data) => Promise<void>', description: 'Form submission handler' },
     ],
     codeSnippet: `import { motion } from "motion/react";
@@ -116,8 +138,8 @@ export function AnimatedLoginForm({ onSubmit }) {
     id: 'comp_2',
     slug: 'glassmorphism-navbar',
     title: 'Glassmorphism Navbar',
-    category: 'Agency',
-    subcategory: 'Design',
+    category: 'Navigation',
+    subcategory: 'Headers',
     version: '1.0.0',
     price: 'Free',
     style: 'Glass',
@@ -142,8 +164,8 @@ export function AnimatedLoginForm({ onSubmit }) {
     id: 'comp_3',
     slug: 'interactive-pricing',
     title: 'Interactive Pricing Tier',
-    category: 'Software',
-    subcategory: 'SaaS',
+    category: 'Marketing & Pricing',
+    subcategory: 'Pricing',
     version: '1.0.0',
     price: 'Free',
     style: 'Minimal',
@@ -167,8 +189,8 @@ export function AnimatedLoginForm({ onSubmit }) {
     id: 'comp_4',
     slug: 'analytics-dashboard',
     title: 'Analytics Metrics Matrix',
-    category: 'Software',
-    subcategory: 'Fintech',
+    category: 'Data & Dashboards',
+    subcategory: 'Metrics',
     version: '1.0.0',
     price: 'Free',
     style: 'Dark',
@@ -192,8 +214,8 @@ export function AnimatedLoginForm({ onSubmit }) {
     id: 'comp_5',
     slug: 'notification-center',
     title: 'Notification Center Feed',
-    category: 'Software',
-    subcategory: 'Apps',
+    category: 'Feedback & Overlays',
+    subcategory: 'Alerts',
     version: '1.0.0',
     price: 'Free',
     style: 'Editorial',
@@ -216,8 +238,8 @@ export function AnimatedLoginForm({ onSubmit }) {
     id: 'comp_6',
     slug: 'file-upload',
     title: 'Drag & Drop File Upload',
-    category: 'Portfolio',
-    subcategory: 'Designers',
+    category: 'Forms & Auth',
+    subcategory: 'File Inputs',
     version: '1.0.0',
     price: 'Free',
     style: 'Minimal',
@@ -241,8 +263,8 @@ export function AnimatedLoginForm({ onSubmit }) {
     id: 'comp_7',
     slug: 'glass-button',
     title: 'Glass Pill Button',
-    category: 'Agency',
-    subcategory: 'Marketing',
+    category: 'Buttons & Controls',
+    subcategory: 'Pills',
     version: '1.0.0',
     price: 'Free',
     style: 'Glass',
@@ -263,8 +285,8 @@ export function AnimatedLoginForm({ onSubmit }) {
     id: 'comp_8',
     slug: 'toggle-switch',
     title: 'Animated Toggle Switch',
-    category: 'Ecommerce',
-    subcategory: 'Digital',
+    category: 'Buttons & Controls',
+    subcategory: 'Switches',
     version: '1.0.0',
     price: 'Free',
     style: 'Minimal',
@@ -285,8 +307,8 @@ export function AnimatedLoginForm({ onSubmit }) {
     id: 'comp_9',
     slug: 'dark-glass-card',
     title: 'Spotlight Ambient Card',
-    category: 'Portfolio',
-    subcategory: 'Artists',
+    category: 'Cards & Surfaces',
+    subcategory: 'Containers',
     version: '1.0.0',
     price: 'Free',
     style: 'Dark',
@@ -303,168 +325,16 @@ export function AnimatedLoginForm({ onSubmit }) {
   );
 }`,
   },
-  {
-    id: 'comp_10',
-    slug: 'service-booking-modal',
-    title: 'Service Booking Modal',
-    category: 'Services',
-    subcategory: 'Consulting',
-    version: '1.0.0',
-    price: 'Free',
-    style: 'Minimal',
-    badge: 'New',
-    downloads: '540',
-    description: 'Interactive consultation scheduler with calendar date selection, time slot picking, and confirmation states.',
-    cliCommand: 'npx vac-ui-components add service-booking-modal',
-    dependencies: ['lucide-react', 'motion/react'],
-    props: [
-      { name: 'onConfirm', type: '(slot) => Promise<void>', description: 'Callback when booking is submitted' },
-      { name: 'timezone', type: 'string', default: '"UTC"', description: 'Display timezone' },
-    ],
-    codeSnippet: `export function ServiceBookingModal({ onConfirm }) {
-  return (
-    <div className="p-6 rounded-2xl bg-white dark:bg-[#11131A] border border-gray-200 dark:border-white/10 shadow-2xl">
-      {/* Interactive scheduling widget */}
-    </div>
-  );
-}`,
-  },
-  {
-    id: 'comp_11',
-    slug: 'health-vital-tracker',
-    title: 'Health Vital Metric Card',
-    category: 'Health',
-    subcategory: 'Fitness',
-    version: '1.0.0',
-    price: 'Free',
-    style: 'Dark',
-    downloads: '620',
-    description: 'Biometric telemetry monitor displaying heart rate pulse rhythm, activity targets, and recovery percentages.',
-    cliCommand: 'npx vac-ui-components add health-vital-tracker',
-    dependencies: ['lucide-react', 'motion/react'],
-    props: [
-      { name: 'heartRate', type: 'number', default: '72', description: 'Real-time BPM rate' },
-      { name: 'calories', type: 'number', default: '450', description: 'Burned calories' },
-    ],
-    codeSnippet: `export function HealthVitalTracker({ heartRate = 72 }) {
-  return (
-    <div className="p-5 rounded-2xl bg-[#0D0E15] border border-emerald-500/20 text-white">
-      <span className="text-emerald-400 font-bold">{heartRate} BPM</span>
-    </div>
-  );
-}`,
-  },
-  {
-    id: 'comp_12',
-    slug: 'editorial-article-card',
-    title: 'Editorial Article Showcase',
-    category: 'Publishing',
-    subcategory: 'Magazines',
-    version: '1.0.0',
-    price: 'Free',
-    style: 'Editorial',
-    downloads: '490',
-    description: 'Refined long-form journalism card featuring reading time estimation, author avatars, and typography scaling.',
-    cliCommand: 'npx vac-ui-components add editorial-article-card',
-    dependencies: ['lucide-react'],
-    props: [
-      { name: 'title', type: 'string', description: 'Headline story title' },
-      { name: 'readTime', type: 'string', default: '"5 min read"', description: 'Estimated read duration' },
-    ],
-    codeSnippet: `export function EditorialArticleCard({ title, readTime = "5 min read" }) {
-  return (
-    <article className="p-6 rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#11131A]">
-      <h3 className="font-serif text-xl font-bold">{title}</h3>
-      <span className="text-xs text-gray-500">{readTime}</span>
-    </article>
-  );
-}`,
-  },
-  {
-    id: 'comp_13',
-    slug: 'property-showcase-slider',
-    title: 'Property Showcase Gallery',
-    category: 'Real Estate',
-    subcategory: 'Listings',
-    version: '1.0.0',
-    price: 'Free',
-    style: 'Glass',
-    downloads: '710',
-    description: 'Architectural listing viewer with interactive floor plan overlays, image lightbox carousel, and agent inquiry CTA.',
-    cliCommand: 'npx vac-ui-components add property-showcase-slider',
-    dependencies: ['lucide-react', 'motion/react'],
-    props: [
-      { name: 'price', type: 'string', description: 'Listing valuation string' },
-      { name: 'location', type: 'string', description: 'Geographic address' },
-    ],
-    codeSnippet: `export function PropertyShowcaseSlider({ price, location }) {
-  return (
-    <div className="rounded-3xl overflow-hidden border border-gray-200 dark:border-white/10 shadow-lg">
-      {/* Property gallery view */}
-    </div>
-  );
-}`,
-  },
-  {
-    id: 'comp_14',
-    slug: 'reservation-calendar',
-    title: 'Reservation Calendar Picker',
-    category: 'Hospitality',
-    subcategory: 'Restaurants',
-    version: '1.0.0',
-    price: 'Free',
-    style: 'Minimal',
-    downloads: '580',
-    description: 'Dining table and room booking selector with guest count steppers, dietary restriction tags, and time slots.',
-    cliCommand: 'npx vac-ui-components add reservation-calendar',
-    dependencies: ['lucide-react'],
-    props: [
-      { name: 'maxGuests', type: 'number', default: '8', description: 'Party size limit' },
-    ],
-    codeSnippet: `export function ReservationCalendar({ maxGuests = 8 }) {
-  return (
-    <div className="p-5 rounded-2xl bg-white dark:bg-[#11131A] border border-gray-200 dark:border-white/10">
-      {/* Reservation time selection */}
-    </div>
-  );
-}`,
-  },
-  {
-    id: 'comp_15',
-    slug: 'event-ticket-pass',
-    title: 'Event Digital Ticket Pass',
-    category: 'Events',
-    subcategory: 'Conferences',
-    version: '1.0.0',
-    price: 'Free',
-    style: 'Dark',
-    badge: 'Trending',
-    downloads: '890',
-    description: 'Holographic conference attendee pass with dynamic QR check-in barcode, perforated edge divider, and Apple Wallet CTA.',
-    cliCommand: 'npx vac-ui-components add event-ticket-pass',
-    dependencies: ['lucide-react', 'motion/react'],
-    props: [
-      { name: 'attendeeName', type: 'string', description: 'Ticket holder name' },
-      { name: 'seatTier', type: 'string', default: '"VIP Access"', description: 'Pass tier' },
-    ],
-    codeSnippet: `export function EventTicketPass({ attendeeName, seatTier = "VIP Access" }) {
-  return (
-    <div className="p-6 rounded-3xl bg-gradient-to-b from-[#1C143B] to-[#100B22] text-white border border-purple-500/30">
-      <h3 className="font-bold">{attendeeName}</h3>
-      <span className="text-xs font-mono text-purple-300">{seatTier}</span>
-    </div>
-  );
-}`,
-  },
 ];
 
 export const ComponentsCatalogPage: React.FC = () => {
-  const [selectedSubcategory, setSelectedSubcategory] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
   const [activeSort, setActiveSort] = useState<'Trending' | 'Best' | 'Recent'>('Trending');
   const [priceFilter, setPriceFilter] = useState<'All' | 'Free' | 'Pro'>('All');
   const [styleFilter, setStyleFilter] = useState<'All' | 'Minimal' | 'Dark' | 'Glass' | 'Editorial'>('All');
   const [searchQuery, setSearchQuery] = useState('');
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
+  const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
   const [copiedSlug, setCopiedSlug] = useState<string | null>(null);
   const [inspectingComponent, setInspectingComponent] = useState<CatalogComponentItem | null>(null);
 
@@ -475,7 +345,10 @@ export const ComponentsCatalogPage: React.FC = () => {
   };
 
   const filteredComponents = AVAILABLE_COMPONENTS.filter((comp) => {
-    if (selectedSubcategory && comp.subcategory !== selectedSubcategory) {
+    if (selectedSlug && comp.slug !== selectedSlug) {
+      return false;
+    }
+    if (selectedCategory && comp.category !== selectedCategory) {
       return false;
     }
     if (priceFilter !== 'All' && comp.price !== priceFilter) {
@@ -503,49 +376,81 @@ export const ComponentsCatalogPage: React.FC = () => {
       <div className="max-w-[1560px] mx-auto space-y-10">
         
         {/* ============================================================== */}
-        {/* HEADER SECTION (Dark mode compatible typography)              */}
+        {/* HEADER SECTION (Component Catalog)                            */}
         {/* ============================================================== */}
         <div className="space-y-3">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-[#5B4FF5] text-xs font-mono">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>VAC-UI-COMPONENTS · Official Library</span>
+          </div>
           <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#161722] dark:text-white transition-colors">
-            Templates
+            UI Components
           </h1>
-          <p className="text-sm text-[#6B7280] dark:text-[#8E8F99] max-w-xl leading-relaxed font-normal transition-colors">
-            Browse polished templates from the community to find the perfect starting point for your next website.
+          <p className="text-sm text-[#6B7280] dark:text-[#8E8F99] max-w-2xl leading-relaxed font-normal transition-colors">
+            Production-ready React components built with TypeScript, Tailwind CSS, and Motion.
+            Inspect properties, copy source code, or install directly using the VAC CLI.
           </p>
         </div>
 
         {/* ============================================================== */}
-        {/* 10-COLUMN CATEGORY DIRECTORY                                   */}
+        {/* ACTUAL COMPONENT CATEGORIES MATRIX                             */}
         {/* ============================================================== */}
-        <div className="grid grid-cols-2 sm:grid-cols-5 lg:grid-cols-10 gap-x-6 gap-y-7 pt-2 pb-6 border-b border-[#E8EAEF] dark:border-white/[0.08] transition-colors">
-          {CATEGORY_COLUMNS.map((col) => (
-            <div key={col.name} className="space-y-3">
-              <h3 className="text-xs font-semibold text-[#161722] dark:text-white tracking-tight transition-colors">
-                {col.name}
-              </h3>
-              <ul className="space-y-2 text-xs">
-                {col.items.map((item) => {
-                  const isSelected = selectedSubcategory === item;
-                  return (
-                    <li key={item}>
-                      <button
-                        onClick={() =>
-                          setSelectedSubcategory(isSelected ? null : item)
-                        }
-                        className={`text-left transition-colors duration-150 ${
-                          isSelected
-                            ? 'text-[#5B4FF5] dark:text-white font-medium underline underline-offset-4 decoration-[#5B4FF5]'
-                            : 'text-[#6B7280] dark:text-[#8E8F99] hover:text-[#161722] dark:hover:text-white'
-                        }`}
-                      >
-                        {item}
-                      </button>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-          ))}
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-x-6 gap-y-7 pt-2 pb-6 border-b border-[#E8EAEF] dark:border-white/[0.08] transition-colors">
+          {COMPONENT_CATEGORIES.map((cat) => {
+            const Icon = cat.icon;
+            const isCategoryActive = selectedCategory === cat.name;
+            return (
+              <div key={cat.name} className="space-y-3">
+                <button
+                  onClick={() => {
+                    if (selectedCategory === cat.name) {
+                      setSelectedCategory(null);
+                      setSelectedSlug(null);
+                    } else {
+                      setSelectedCategory(cat.name);
+                      setSelectedSlug(null);
+                    }
+                  }}
+                  className={`flex items-center gap-1.5 text-xs font-semibold tracking-tight transition-colors text-left group ${
+                    isCategoryActive
+                      ? 'text-[#5B4FF5] dark:text-purple-400 font-bold'
+                      : 'text-[#161722] dark:text-white hover:text-[#5B4FF5]'
+                  }`}
+                >
+                  <Icon className="w-3.5 h-3.5 text-[#5B4FF5]" />
+                  <span>{cat.name}</span>
+                </button>
+                <ul className="space-y-2 text-xs">
+                  {cat.components.map((item) => {
+                    const isSelected = selectedSlug === item.slug;
+                    return (
+                      <li key={item.slug}>
+                        <button
+                          onClick={() => {
+                            if (isSelected) {
+                              setSelectedSlug(null);
+                              setSelectedCategory(null);
+                            } else {
+                              setSelectedSlug(item.slug);
+                              setSelectedCategory(cat.name);
+                            }
+                          }}
+                          className={`text-left transition-colors duration-150 block truncate max-w-full ${
+                            isSelected
+                              ? 'text-[#5B4FF5] dark:text-white font-medium underline underline-offset-4 decoration-[#5B4FF5]'
+                              : 'text-[#6B7280] dark:text-[#8E8F99] hover:text-[#161722] dark:hover:text-white'
+                          }`}
+                          title={item.title}
+                        >
+                          {item.title}
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            );
+          })}
         </div>
 
         {/* ============================================================== */}
@@ -596,12 +501,15 @@ export const ComponentsCatalogPage: React.FC = () => {
 
           {/* Right filters & View Mode Toggle */}
           <div className="flex items-center gap-2.5">
-            {selectedSubcategory && (
+            {(selectedCategory || selectedSlug) && (
               <button
-                onClick={() => setSelectedSubcategory(null)}
+                onClick={() => {
+                  setSelectedCategory(null);
+                  setSelectedSlug(null);
+                }}
                 className="text-xs text-[#5B4FF5] hover:underline font-medium mr-2"
               >
-                Clear subcategory ({selectedSubcategory}) ✕
+                Clear filter ({selectedSlug ? AVAILABLE_COMPONENTS.find(c => c.slug === selectedSlug)?.title : selectedCategory}) ✕
               </button>
             )}
 
@@ -673,11 +581,12 @@ export const ComponentsCatalogPage: React.FC = () => {
               No components match your search filters
             </h3>
             <p className="text-xs text-gray-500 dark:text-gray-400 max-w-sm mx-auto">
-              Try adjusting your query, clearing subcategory selections, or resetting style filters.
+              Try adjusting your query, clearing category selections, or resetting style filters.
             </p>
             <button
               onClick={() => {
-                setSelectedSubcategory(null);
+                setSelectedCategory(null);
+                setSelectedSlug(null);
                 setSearchQuery('');
                 setPriceFilter('All');
                 setStyleFilter('All');
@@ -695,7 +604,11 @@ export const ComponentsCatalogPage: React.FC = () => {
                 Showing <strong className="text-[#161722] dark:text-white">{filteredComponents.length}</strong> available components in catalog
               </span>
               <span className="text-[11px] font-mono">
-                {selectedSubcategory ? `Category: ${selectedSubcategory}` : 'All Categories'} · Click 'Inspect' for props & code
+                {selectedSlug
+                  ? `Component: ${AVAILABLE_COMPONENTS.find(c => c.slug === selectedSlug)?.title}`
+                  : selectedCategory
+                  ? `Category: ${selectedCategory}`
+                  : 'All Categories'} · Click 'Inspect' for props & code
               </span>
             </div>
 
@@ -743,9 +656,12 @@ export const ComponentsCatalogPage: React.FC = () => {
                     {/* Category & Subcategory */}
                     <div className="hidden md:block md:col-span-2">
                       <button
-                        onClick={() => setSelectedSubcategory(item.subcategory)}
+                        onClick={() => {
+                          setSelectedCategory(item.category);
+                          setSelectedSlug(null);
+                        }}
                         className="text-[11px] font-mono px-2.5 py-1 rounded-full bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-300 hover:bg-purple-50 hover:text-[#5B4FF5] dark:hover:bg-purple-500/10 dark:hover:text-purple-300 transition-colors border border-gray-200/60 dark:border-white/5"
-                        title={`Filter by ${item.subcategory}`}
+                        title={`Filter by ${item.category}`}
                       >
                         {item.category} · {item.subcategory}
                       </button>
