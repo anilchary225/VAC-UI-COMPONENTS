@@ -491,7 +491,7 @@ export const ComponentsCatalogPage: React.FC = () => {
 
                 {/* Card Content: ONLY Heading and Copy Button (downloads count, description, and price removed) */}
                 <div className="p-4 flex items-center justify-between gap-3">
-                  <h4 className="text-sm sm:text-base font-bold text-[#161722] dark:text-white group-hover:text-[#5B4FF5] transition-colors truncate">
+                  <h4 className="text-xs font-semibold text-[#161722] dark:text-white group-hover:text-[#5B4FF5] transition-colors truncate">
                     {item.title}
                   </h4>
                   <button
