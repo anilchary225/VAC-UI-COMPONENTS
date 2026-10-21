@@ -45,61 +45,16 @@ export interface CatalogComponentItem {
 export interface ComponentCategoryGroup {
   name: string;
   icon: React.ComponentType<{ className?: string }>;
-  components: Array<{ title: string; slug: string; subcategory: string }>;
 }
 
 const COMPONENT_CATEGORIES: ComponentCategoryGroup[] = [
-  {
-    name: 'Forms & Auth',
-    icon: Lock,
-    components: [
-      { title: 'Animated Login Form', slug: 'animated-login-form', subcategory: 'Authentication' },
-      { title: 'Drag & Drop File Upload', slug: 'file-upload', subcategory: 'File Inputs' },
-    ],
-  },
-  {
-    name: 'Navigation',
-    icon: Compass,
-    components: [
-      { title: 'Glassmorphism Navbar', slug: 'glassmorphism-navbar', subcategory: 'Headers' },
-    ],
-  },
-  {
-    name: 'Marketing & Pricing',
-    icon: CreditCard,
-    components: [
-      { title: 'Interactive Pricing Tier', slug: 'interactive-pricing', subcategory: 'Pricing' },
-    ],
-  },
-  {
-    name: 'Data & Dashboards',
-    icon: BarChart2,
-    components: [
-      { title: 'Analytics Metrics Matrix', slug: 'analytics-dashboard', subcategory: 'Metrics' },
-    ],
-  },
-  {
-    name: 'Feedback & Overlays',
-    icon: Bell,
-    components: [
-      { title: 'Notification Center Feed', slug: 'notification-center', subcategory: 'Alerts' },
-    ],
-  },
-  {
-    name: 'Buttons & Controls',
-    icon: Sliders,
-    components: [
-      { title: 'Glass Pill Button', slug: 'glass-button', subcategory: 'Pills' },
-      { title: 'Animated Toggle Switch', slug: 'toggle-switch', subcategory: 'Switches' },
-    ],
-  },
-  {
-    name: 'Cards & Surfaces',
-    icon: Layers,
-    components: [
-      { title: 'Spotlight Ambient Card', slug: 'dark-glass-card', subcategory: 'Containers' },
-    ],
-  },
+  { name: 'Forms & Auth', icon: Lock },
+  { name: 'Navigation', icon: Compass },
+  { name: 'Marketing & Pricing', icon: CreditCard },
+  { name: 'Data & Dashboards', icon: BarChart2 },
+  { name: 'Feedback & Overlays', icon: Bell },
+  { name: 'Buttons & Controls', icon: Sliders },
+  { name: 'Cards & Surfaces', icon: Layers },
 ];
 
 const AVAILABLE_COMPONENTS: CatalogComponentItem[] = [
@@ -393,15 +348,59 @@ export const ComponentsCatalogPage: React.FC = () => {
         </div>
 
         {/* ============================================================== */}
-        {/* ACTUAL COMPONENT CATEGORIES MATRIX                             */}
+        {/* COMPONENT CATEGORIES (Show only headings, click to filter)     */}
         {/* ============================================================== */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-x-6 gap-y-7 pt-2 pb-6 border-b border-[#E8EAEF] dark:border-white/[0.08] transition-colors">
-          {COMPONENT_CATEGORIES.map((cat) => {
-            const Icon = cat.icon;
-            const isCategoryActive = selectedCategory === cat.name;
-            return (
-              <div key={cat.name} className="space-y-3">
+        <div className="pt-1 pb-6 border-b border-[#E8EAEF] dark:border-white/[0.08] transition-colors space-y-3">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold uppercase tracking-wider text-[#6B7280] dark:text-[#8E8F99]">
+              Categories {selectedCategory && <span className="text-[#5B4FF5] font-bold">· Filtered by {selectedCategory}</span>}
+            </span>
+            {selectedCategory && (
+              <button
+                onClick={() => {
+                  setSelectedCategory(null);
+                  setSelectedSlug(null);
+                }}
+                className="text-xs text-[#5B4FF5] hover:underline font-medium"
+              >
+                Reset to All ({AVAILABLE_COMPONENTS.length})
+              </button>
+            )}
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2 sm:gap-2.5">
+            {/* All Components heading button */}
+            <button
+              onClick={() => {
+                setSelectedCategory(null);
+                setSelectedSlug(null);
+              }}
+              className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold tracking-tight transition-all duration-150 border cursor-pointer select-none ${
+                selectedCategory === null
+                  ? 'bg-[#5B4FF5] text-white border-[#5B4FF5] shadow-sm shadow-[#5B4FF5]/25'
+                  : 'bg-white dark:bg-white/[0.04] text-[#161722] dark:text-[#E4E4E7] border-[#E8EAEF] dark:border-white/[0.08] hover:border-[#5B4FF5]/40 hover:bg-[#5B4FF5]/5 dark:hover:bg-white/[0.08]'
+              }`}
+            >
+              <Sparkles className={`w-3.5 h-3.5 ${selectedCategory === null ? 'text-white' : 'text-[#5B4FF5]'}`} />
+              <span>All Components</span>
+              <span
+                className={`text-[10px] font-mono px-1.5 py-0.5 rounded-full ${
+                  selectedCategory === null
+                    ? 'bg-white/20 text-white'
+                    : 'bg-gray-100 dark:bg-white/[0.08] text-gray-500 dark:text-gray-400'
+                }`}
+              >
+                {AVAILABLE_COMPONENTS.length}
+              </span>
+            </button>
+
+            {COMPONENT_CATEGORIES.map((cat) => {
+              const Icon = cat.icon;
+              const isCategoryActive = selectedCategory === cat.name;
+              const count = AVAILABLE_COMPONENTS.filter((c) => c.category === cat.name).length;
+              return (
                 <button
+                  key={cat.name}
                   onClick={() => {
                     if (selectedCategory === cat.name) {
                       setSelectedCategory(null);
@@ -411,46 +410,27 @@ export const ComponentsCatalogPage: React.FC = () => {
                       setSelectedSlug(null);
                     }
                   }}
-                  className={`flex items-center gap-1.5 text-xs font-semibold tracking-tight transition-colors text-left group ${
+                  className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold tracking-tight transition-all duration-150 border cursor-pointer select-none ${
                     isCategoryActive
-                      ? 'text-[#5B4FF5] dark:text-purple-400 font-bold'
-                      : 'text-[#161722] dark:text-white hover:text-[#5B4FF5]'
+                      ? 'bg-[#5B4FF5] text-white border-[#5B4FF5] shadow-sm shadow-[#5B4FF5]/25'
+                      : 'bg-white dark:bg-white/[0.04] text-[#161722] dark:text-[#E4E4E7] border-[#E8EAEF] dark:border-white/[0.08] hover:border-[#5B4FF5]/40 hover:text-[#5B4FF5] dark:hover:text-white hover:bg-[#5B4FF5]/5 dark:hover:bg-white/[0.08]'
                   }`}
                 >
-                  <Icon className="w-3.5 h-3.5 text-[#5B4FF5]" />
+                  <Icon className={`w-3.5 h-3.5 ${isCategoryActive ? 'text-white' : 'text-[#5B4FF5]'}`} />
                   <span>{cat.name}</span>
+                  <span
+                    className={`text-[10px] font-mono px-1.5 py-0.5 rounded-full ${
+                      isCategoryActive
+                        ? 'bg-white/20 text-white'
+                        : 'bg-gray-100 dark:bg-white/[0.08] text-gray-500 dark:text-gray-400'
+                    }`}
+                  >
+                    {count}
+                  </span>
                 </button>
-                <ul className="space-y-2 text-xs">
-                  {cat.components.map((item) => {
-                    const isSelected = selectedSlug === item.slug;
-                    return (
-                      <li key={item.slug}>
-                        <button
-                          onClick={() => {
-                            if (isSelected) {
-                              setSelectedSlug(null);
-                              setSelectedCategory(null);
-                            } else {
-                              setSelectedSlug(item.slug);
-                              setSelectedCategory(cat.name);
-                            }
-                          }}
-                          className={`text-left transition-colors duration-150 block truncate max-w-full ${
-                            isSelected
-                              ? 'text-[#5B4FF5] dark:text-white font-medium underline underline-offset-4 decoration-[#5B4FF5]'
-                              : 'text-[#6B7280] dark:text-[#8E8F99] hover:text-[#161722] dark:hover:text-white'
-                          }`}
-                          title={item.title}
-                        >
-                          {item.title}
-                        </button>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
 
         {/* ============================================================== */}
