@@ -14,10 +14,148 @@ import {
 import { api } from '../lib/api';
 import { ComponentSummary } from '@vac/shared';
 
+const FALLBACK_COMPONENTS: ComponentSummary[] = [
+  {
+    id: 'comp_animated_login',
+    slug: 'animated-login-form',
+    name: 'Animated Login Form',
+    description: 'Smooth interactive login card with spring animations, floating labels, validation states, and theme toggling.',
+    category: 'Forms & Auth',
+    tags: ['Auth', 'Form', 'Animation', 'Tailwind', 'Motion'],
+    status: 'published',
+    currentVersion: '1.0.0',
+    isOfficial: true,
+    downloadsCount: 1420,
+    favoritesCount: 382,
+    createdAt: '2026-01-15T10:00:00.000Z',
+    updatedAt: '2026-02-01T12:00:00.000Z',
+  },
+  {
+    id: 'comp_file_upload',
+    slug: 'file-upload',
+    name: 'Drag & Drop File Upload',
+    description: 'Interactive file dropzone with progress tracking, file type validation, and remove actions.',
+    category: 'Forms & Auth',
+    tags: ['Upload', 'Files', 'DragAndDrop'],
+    status: 'published',
+    currentVersion: '1.0.0',
+    isOfficial: true,
+    downloadsCount: 1150,
+    favoritesCount: 290,
+    createdAt: '2026-01-28T10:00:00.000Z',
+    updatedAt: '2026-02-06T12:00:00.000Z',
+  },
+  {
+    id: 'comp_glassmorphism_navbar',
+    slug: 'glassmorphism-navbar',
+    name: 'Glassmorphism Navbar',
+    description: 'Translucent floating header with frosted glass refraction, responsive menu, and quick action buttons.',
+    category: 'Navigation',
+    tags: ['Navigation', 'Glassmorphism', 'Header'],
+    status: 'published',
+    currentVersion: '1.0.0',
+    isOfficial: true,
+    downloadsCount: 980,
+    favoritesCount: 245,
+    createdAt: '2026-01-18T10:00:00.000Z',
+    updatedAt: '2026-02-02T12:00:00.000Z',
+  },
+  {
+    id: 'comp_interactive_pricing',
+    slug: 'interactive-pricing',
+    name: 'Interactive Pricing Tier',
+    description: 'Tiered subscription pricing grid with monthly/annual billing switch, highlight badges, and feature comparison list.',
+    category: 'Marketing & Pricing',
+    tags: ['Pricing', 'Billing', 'Interactive'],
+    status: 'published',
+    currentVersion: '1.0.0',
+    isOfficial: true,
+    downloadsCount: 870,
+    favoritesCount: 195,
+    createdAt: '2026-01-20T10:00:00.000Z',
+    updatedAt: '2026-02-03T12:00:00.000Z',
+  },
+  {
+    id: 'comp_analytics_dashboard',
+    slug: 'analytics-dashboard',
+    name: 'Analytics Dashboard',
+    description: 'Metric summary panels with sparkline indicators, trend percentages, and time-range filtering.',
+    category: 'Data & Dashboards',
+    tags: ['Dashboard', 'Analytics', 'Metrics'],
+    status: 'published',
+    currentVersion: '1.0.0',
+    isOfficial: true,
+    downloadsCount: 1210,
+    favoritesCount: 312,
+    createdAt: '2026-01-22T10:00:00.000Z',
+    updatedAt: '2026-02-04T12:00:00.000Z',
+  },
+  {
+    id: 'comp_notification_center',
+    slug: 'notification-center',
+    name: 'Notification Center Feed',
+    description: 'Actionable alert feed with read/unread markers, category tabs, and mark-all-read shortcuts.',
+    category: 'Feedback & Overlays',
+    tags: ['Notifications', 'Flyout', 'Alerts'],
+    status: 'published',
+    currentVersion: '1.0.0',
+    isOfficial: true,
+    downloadsCount: 760,
+    favoritesCount: 180,
+    createdAt: '2026-01-25T10:00:00.000Z',
+    updatedAt: '2026-02-05T12:00:00.000Z',
+  },
+  {
+    id: 'comp_glass_button',
+    slug: 'glass-button',
+    name: 'Glass Pill Button',
+    description: 'High-contrast backdrop blurred action button with ambient glow and tactile click physics.',
+    category: 'Buttons & Controls',
+    tags: ['Button', 'Glass', 'Controls'],
+    status: 'published',
+    currentVersion: '1.0.0',
+    isOfficial: true,
+    downloadsCount: 940,
+    favoritesCount: 210,
+    createdAt: '2026-02-01T10:00:00.000Z',
+    updatedAt: '2026-02-07T12:00:00.000Z',
+  },
+  {
+    id: 'comp_toggle_switch',
+    slug: 'toggle-switch',
+    name: 'Animated Toggle Switch',
+    description: 'Tactile boolean toggle switch with spring physics and keyboard focus indicators.',
+    category: 'Buttons & Controls',
+    tags: ['Toggle', 'Switch', 'Motion'],
+    status: 'published',
+    currentVersion: '1.0.0',
+    isOfficial: true,
+    downloadsCount: 890,
+    favoritesCount: 175,
+    createdAt: '2026-02-02T10:00:00.000Z',
+    updatedAt: '2026-02-08T12:00:00.000Z',
+  },
+  {
+    id: 'comp_dark_glass_card',
+    slug: 'dark-glass-card',
+    name: 'Spotlight Ambient Card',
+    description: 'Deep translucent component card with mouse-tracking radial ambient illumination.',
+    category: 'Cards & Surfaces',
+    tags: ['Card', 'Spotlight', 'Dark'],
+    status: 'published',
+    currentVersion: '1.0.0',
+    isOfficial: true,
+    downloadsCount: 810,
+    favoritesCount: 190,
+    createdAt: '2026-02-03T10:00:00.000Z',
+    updatedAt: '2026-02-09T12:00:00.000Z',
+  },
+];
+
 export const OverviewPage: React.FC = () => {
   const [copiedCmd, setCopiedCmd] = useState(false);
-  const [components, setComponents] = useState<ComponentSummary[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [components, setComponents] = useState<ComponentSummary[]>(FALLBACK_COMPONENTS);
+  const [isLoading, setIsLoading] = useState(false);
 
   const installCommand = 'npx vac-ui-components add animated-login-form';
 
@@ -30,10 +168,16 @@ export const OverviewPage: React.FC = () => {
   useEffect(() => {
     api
       .getComponents()
-      .then((data) => setComponents(data))
+      .then((data) => {
+        if (data && data.length > 0) {
+          setComponents(data);
+        }
+      })
       .catch((err) => console.warn('Failed to fetch components overview:', err))
       .finally(() => setIsLoading(false));
   }, []);
+
+  const displayComponents = components.length > 0 ? components : FALLBACK_COMPONENTS;
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-7">
@@ -54,7 +198,7 @@ export const OverviewPage: React.FC = () => {
 
           <div className="flex flex-wrap items-center gap-3">
             <Link to="/components">
-              <button className="px-5 py-2.5 rounded-full bg-[#5B4FF5] hover:bg-[#4F46E5] text-white text-xs font-semibold shadow-md shadow-indigo-900/40 transition-all flex items-center gap-2">
+              <button className="px-5 py-2.5 rounded-full bg-[#5B4FF5] hover:bg-[#4F46E5] text-white text-xs font-semibold shadow-md shadow-indigo-900/40 transition-all flex items-center gap-2 cursor-pointer">
                 <Layers className="w-4 h-4" />
                 Browse Catalog
               </button>
@@ -67,7 +211,7 @@ export const OverviewPage: React.FC = () => {
               <button
                 onClick={copyToClipboard}
                 title="Copy installation command"
-                className="ml-2 text-gray-400 hover:text-white transition-colors"
+                className="ml-2 text-gray-400 hover:text-white transition-colors cursor-pointer"
               >
                 {copiedCmd ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
               </button>
@@ -78,22 +222,25 @@ export const OverviewPage: React.FC = () => {
 
       {/* Metrics Row */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-        <div className="p-5 rounded-2xl border border-[#E8EAEF] dark:border-white/10 bg-white dark:bg-[#11131A] shadow-xs flex flex-col justify-between">
+        <Link
+          to="/components"
+          className="p-5 rounded-2xl border border-[#E8EAEF] dark:border-white/10 bg-white dark:bg-[#11131A] shadow-xs flex flex-col justify-between hover:border-[#5B4FF5]/50 transition-all group"
+        >
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold uppercase tracking-wider text-[#7C7299]">Official Catalog</span>
-            <div className="w-8 h-8 rounded-xl bg-purple-50 dark:bg-white/5 flex items-center justify-center text-[#5B4FF5]">
+            <div className="w-8 h-8 rounded-xl bg-purple-50 dark:bg-white/5 flex items-center justify-center text-[#5B4FF5] group-hover:scale-110 transition-transform">
               <Layers className="w-4 h-4" />
             </div>
           </div>
           <div>
             <p className="text-3xl font-bold text-[#161722] dark:text-white mt-3">
-              {components.length || 6}
+              {displayComponents.length}
             </p>
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-              Curated components ready for production
+              Curated components ready for production · Click to browse →
             </p>
           </div>
-        </div>
+        </Link>
 
         <div className="p-5 rounded-2xl border border-[#E8EAEF] dark:border-white/10 bg-white dark:bg-[#11131A] shadow-xs flex flex-col justify-between">
           <div className="flex items-center justify-between">
@@ -135,10 +282,10 @@ export const OverviewPage: React.FC = () => {
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-lg font-bold text-[#161722] dark:text-white">
-              Official Components
+              Official Components ({displayComponents.length})
             </h2>
             <p className="text-xs text-gray-500 dark:text-gray-400">
-              Tested for accessibility, performance, and dark/light modes.
+              Click any component to inspect its code, props, and install instructions in the catalog.
             </p>
           </div>
           <Link
@@ -151,7 +298,7 @@ export const OverviewPage: React.FC = () => {
 
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {[1, 2, 3].map((i) => (
+            {[1, 2, 3, 4, 5, 6].map((i) => (
               <div
                 key={i}
                 className="h-44 rounded-2xl bg-gray-100 dark:bg-[#11131A] animate-pulse border border-gray-200 dark:border-white/5"
@@ -160,10 +307,11 @@ export const OverviewPage: React.FC = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {components.slice(0, 6).map((comp) => (
-              <div
+            {displayComponents.map((comp) => (
+              <Link
                 key={comp.slug}
-                className="group p-5 rounded-2xl border border-[#E8EAEF] dark:border-white/10 bg-white dark:bg-[#11131A] hover:border-[#5B4FF5]/50 hover:shadow-lg dark:hover:shadow-purple-500/5 transition-all flex flex-col justify-between"
+                to={`/components/${comp.slug}`}
+                className="group p-5 rounded-2xl border border-[#E8EAEF] dark:border-white/10 bg-white dark:bg-[#11131A] hover:border-[#5B4FF5] hover:shadow-xl dark:hover:shadow-purple-500/10 transition-all flex flex-col justify-between cursor-pointer"
               >
                 <div>
                   <div className="flex items-center justify-between mb-3">
@@ -193,14 +341,11 @@ export const OverviewPage: React.FC = () => {
                       </span>
                     ))}
                   </div>
-                  <Link
-                    to={`/components/${comp.slug}`}
-                    className="text-xs font-semibold text-[#181A25] dark:text-white group-hover:text-[#5B4FF5] group-hover:translate-x-0.5 transition-all inline-flex items-center gap-1"
-                  >
-                    Details <ArrowRight className="w-3.5 h-3.5" />
-                  </Link>
+                  <span className="text-xs font-semibold text-[#181A25] dark:text-white group-hover:text-[#5B4FF5] group-hover:translate-x-1 transition-all inline-flex items-center gap-1">
+                    Inspect <ArrowRight className="w-3.5 h-3.5" />
+                  </span>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         )}

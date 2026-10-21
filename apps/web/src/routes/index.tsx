@@ -28,6 +28,10 @@ export const router = createBrowserRouter([
         element: <ComponentsCatalogPage />,
       },
       {
+        path: 'components/:slug',
+        element: <ComponentsCatalogPage />,
+      },
+      {
         path: 'favorites',
         element: <FavoritesPage />,
       },

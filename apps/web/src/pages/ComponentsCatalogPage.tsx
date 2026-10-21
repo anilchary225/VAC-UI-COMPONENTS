@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import {
   ChevronDown,
   Terminal,
@@ -283,6 +284,14 @@ export function AnimatedLoginForm({ onSubmit }) {
 ];
 
 export const ComponentsCatalogPage: React.FC = () => {
+  const { slug: routeSlug } = useParams<{ slug?: string }>();
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+
+  const querySlug = searchParams.get('slug') || searchParams.get('component');
+  const targetSlug = routeSlug || querySlug;
+  const categoryParam = searchParams.get('category');
+
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
   const [activeSort, setActiveSort] = useState<'Trending' | 'Best' | 'Recent'>('Trending');
@@ -292,6 +301,39 @@ export const ComponentsCatalogPage: React.FC = () => {
   const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
   const [copiedSlug, setCopiedSlug] = useState<string | null>(null);
   const [inspectingComponent, setInspectingComponent] = useState<CatalogComponentItem | null>(null);
+
+  const normalizeCategory = (cat: string) => {
+    if (cat.includes('Form') || cat.includes('Auth')) return 'Forms & Auth';
+    if (cat.includes('Nav')) return 'Navigation';
+    if (cat.includes('Pricing') || cat.includes('Market')) return 'Marketing & Pricing';
+    if (cat.includes('Data') || cat.includes('Dash')) return 'Data & Dashboards';
+    if (cat.includes('Feed') || cat.includes('Alert') || cat.includes('Overlay')) return 'Feedback & Overlays';
+    if (cat.includes('Button') || cat.includes('Control')) return 'Buttons & Controls';
+    if (cat.includes('Card') || cat.includes('Surface')) return 'Cards & Surfaces';
+    return cat;
+  };
+
+  useEffect(() => {
+    if (targetSlug) {
+      const match = AVAILABLE_COMPONENTS.find(
+        (c) => c.slug.toLowerCase() === targetSlug.toLowerCase()
+      );
+      if (match) {
+        setSelectedCategory(match.category);
+        setSelectedSlug(match.slug);
+        setInspectingComponent(match);
+      }
+    } else if (categoryParam) {
+      setSelectedCategory(normalizeCategory(categoryParam));
+    }
+  }, [targetSlug, categoryParam]);
+
+  const handleCloseInspector = () => {
+    setInspectingComponent(null);
+    if (routeSlug) {
+      navigate('/components', { replace: true });
+    }
+  };
 
   const copyCli = (command: string, slug: string) => {
     navigator.clipboard.writeText(command);
@@ -821,8 +863,14 @@ export const ComponentsCatalogPage: React.FC = () => {
       {/* COMPONENT INSPECT MODAL / DRAWER                               */}
       {/* ============================================================== */}
       {inspectingComponent && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in">
-          <div className="w-full max-w-2xl bg-white dark:bg-[#11131A] rounded-3xl p-6 shadow-2xl border border-[#E8EAEF] dark:border-white/10 space-y-5 max-h-[90vh] overflow-y-auto">
+        <div
+          onClick={handleCloseInspector}
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-2xl bg-white dark:bg-[#11131A] rounded-3xl p-6 shadow-2xl border border-[#E8EAEF] dark:border-white/10 space-y-5 max-h-[90vh] overflow-y-auto"
+          >
             <div className="flex items-start justify-between pb-3 border-b border-[#E8EAEF] dark:border-white/10">
               <div>
                 <span className="text-[10px] font-mono uppercase tracking-wider text-[#5B4FF5] bg-[#5B4FF5]/10 px-2.5 py-0.5 rounded-full font-medium">
@@ -836,7 +884,7 @@ export const ComponentsCatalogPage: React.FC = () => {
                 </p>
               </div>
               <button
-                onClick={() => setInspectingComponent(null)}
+                onClick={handleCloseInspector}
                 className="p-1 rounded-full text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
               >
                 <X className="w-5 h-5" />
