@@ -67,13 +67,17 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggleCollapse 
         <NavLink
           to="/"
           className={cn(
-            'flex items-center gap-2.5 transition-all',
+            'flex items-center transition-all',
             isCollapsed
-              ? 'justify-center py-2'
-              : 'bg-white/[0.07] hover:bg-white/[0.1] border border-white/10 rounded-2xl p-3 shadow-sm'
+              ? 'justify-center py-2.5 px-1'
+              : 'bg-white/[0.06] hover:bg-white/[0.1] border border-white/10 rounded-2xl px-3.5 py-3 shadow-xs'
           )}
         >
-          <VacLogo size={isCollapsed ? 'sm' : 'md'} showSubtitle={!isCollapsed} />
+          <VacLogo
+            size={isCollapsed ? 'xs' : 'sm'}
+            showSubtitle={!isCollapsed}
+            variant="light"
+          />
         </NavLink>
       </div>
 

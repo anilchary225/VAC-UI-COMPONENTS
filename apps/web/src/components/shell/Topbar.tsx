@@ -30,39 +30,47 @@ export const Topbar: React.FC<TopbarProps> = ({ onOpenCommandPalette }) => {
 
   // Generate breadcrumb items
   const pathParts = location.pathname.split('/').filter(Boolean);
-  const breadcrumbs = [
-    { label: 'VAC UI', path: '/' },
-    ...pathParts.map((part, index) => ({
-      label: part.charAt(0).toUpperCase() + part.slice(1).replace(/-/g, ' '),
-      path: '/' + pathParts.slice(0, index + 1).join('/'),
-    })),
-  ];
 
   return (
     <header className="h-14 border-b border-[#E8EAEF] dark:border-white/10 bg-white dark:bg-[#11131A] px-5 flex items-center justify-between shrink-0 z-20">
       {/* Breadcrumbs */}
       <nav className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400 overflow-hidden max-w-xs md:max-w-md">
-        <VacLogo size="sm" showSubtitle={false} className="shrink-0 mr-1" />
-        {breadcrumbs.map((crumb, idx) => {
-          const isLast = idx === breadcrumbs.length - 1;
-          return (
-            <React.Fragment key={crumb.path}>
-              {idx > 0 && <ChevronRight className="w-3.5 h-3.5 shrink-0 text-gray-300 dark:text-gray-600" />}
-              {isLast ? (
-                <span className="font-semibold text-[#161722] dark:text-[#F4F5F8] truncate">
-                  {crumb.label}
-                </span>
-              ) : (
-                <Link
-                  to={crumb.path}
-                  className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors truncate"
-                >
-                  {crumb.label}
-                </Link>
-              )}
-            </React.Fragment>
-          );
-        })}
+        <Link
+          to="/"
+          className="flex items-center hover:opacity-80 transition-opacity shrink-0 mr-0.5"
+          title="VAC UI Home"
+        >
+          <VacLogo size="xs" showSubtitle={false} />
+        </Link>
+        <ChevronRight className="w-3.5 h-3.5 shrink-0 text-gray-300 dark:text-gray-600" />
+        {pathParts.length === 0 ? (
+          <span className="font-semibold text-[#161722] dark:text-[#F4F5F8] truncate">
+            Workspace
+          </span>
+        ) : (
+          pathParts.map((part, index) => {
+            const isLast = index === pathParts.length - 1;
+            const label = part.charAt(0).toUpperCase() + part.slice(1).replace(/-/g, ' ');
+            const path = '/' + pathParts.slice(0, index + 1).join('/');
+            return (
+              <React.Fragment key={path}>
+                {index > 0 && <ChevronRight className="w-3.5 h-3.5 shrink-0 text-gray-300 dark:text-gray-600" />}
+                {isLast ? (
+                  <span className="font-semibold text-[#161722] dark:text-[#F4F5F8] truncate">
+                    {label}
+                  </span>
+                ) : (
+                  <Link
+                    to={path}
+                    className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors truncate"
+                  >
+                    {label}
+                  </Link>
+                )}
+              </React.Fragment>
+            );
+          })
+        )}
       </nav>
 
       {/* Center/Right Actions */}
