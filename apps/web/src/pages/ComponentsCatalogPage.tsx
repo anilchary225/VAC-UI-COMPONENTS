@@ -1,28 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import {
-  ChevronDown,
   Terminal,
   Check,
   Copy,
-  ExternalLink,
   Sparkles,
-  ArrowRight,
   Eye,
-  Code2,
-  LayoutGrid,
-  List,
   Layers,
   X,
-  Lock,
-  Compass,
-  FileCode,
-  ShieldCheck,
-  Search,
-  CreditCard,
-  BarChart2,
-  Bell,
-  Sliders,
 } from 'lucide-react';
 
 export interface CatalogComponentItem {
@@ -298,11 +283,6 @@ export const ComponentsCatalogPage: React.FC = () => {
 
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
-  const [activeSort, setActiveSort] = useState<'Trending' | 'Best' | 'Recent'>('Trending');
-  const [priceFilter, setPriceFilter] = useState<'All' | 'Free' | 'Pro'>('All');
-  const [styleFilter, setStyleFilter] = useState<'All' | 'Minimal' | 'Dark' | 'Glass' | 'Editorial'>('All');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
   const [copiedSlug, setCopiedSlug] = useState<string | null>(null);
   const [inspectingComponent, setInspectingComponent] = useState<CatalogComponentItem | null>(null);
 
@@ -364,23 +344,6 @@ export const ComponentsCatalogPage: React.FC = () => {
       if (!matchCategory) {
         return false;
       }
-    }
-    if (priceFilter !== 'All' && comp.price !== priceFilter) {
-      return false;
-    }
-    if (styleFilter !== 'All' && comp.style !== styleFilter) {
-      return false;
-    }
-    if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase();
-      const match =
-        comp.title.toLowerCase().includes(q) ||
-        comp.description.toLowerCase().includes(q) ||
-        comp.category.toLowerCase().includes(q) ||
-        comp.subcategory.toLowerCase().includes(q) ||
-        comp.cliCommand.toLowerCase().includes(q) ||
-        comp.dependencies.some((d) => d.toLowerCase().includes(q));
-      if (!match) return false;
     }
     return true;
   });
@@ -453,299 +416,38 @@ export const ComponentsCatalogPage: React.FC = () => {
         </div>
 
         {/* ============================================================== */}
-        {/* CONTROLS BAR: Sort pills + Search + Dropdowns + Grid/List View */}
-        {/* ============================================================== */}
-        <div className="flex flex-wrap items-center justify-between gap-4 pt-1">
-          {/* Left sort pills & search */}
-          <div className="flex flex-wrap items-center gap-3">
-            <div className="inline-flex items-center gap-1 p-1 rounded-full bg-white dark:bg-white/[0.04] border border-[#E8EAEF] dark:border-white/[0.06] shadow-xs transition-colors">
-              {(['Trending', 'Best', 'Recent'] as const).map((tab) => {
-                const isActive = activeSort === tab;
-                return (
-                  <button
-                    key={tab}
-                    onClick={() => setActiveSort(tab)}
-                    className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all ${
-                      isActive
-                        ? 'bg-[#181A25] text-white dark:bg-white/[0.12] dark:text-white shadow-xs'
-                        : 'text-[#6B7280] dark:text-[#8E8F99] hover:text-[#161722] dark:hover:text-white'
-                    }`}
-                  >
-                    {tab}
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Quick search input */}
-            <div className="relative">
-              <Search className="w-3.5 h-3.5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search available components..."
-                className="bg-white dark:bg-white/[0.04] hover:bg-gray-50 dark:hover:bg-white/[0.07] border border-[#E8EAEF] dark:border-white/[0.08] text-[#161722] dark:text-white text-xs rounded-full pl-8 pr-7 py-1.5 focus:outline-none focus:border-[#5B4FF5] w-52 sm:w-64 placeholder-gray-400 font-normal transition-colors"
-              />
-              {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery('')}
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
-                >
-                  <X className="w-3 h-3" />
-                </button>
-              )}
-            </div>
-          </div>
-
-          {/* Right filters & View Mode Toggle */}
-          <div className="flex items-center gap-2.5">
-            {(selectedCategory || selectedSlug) && (
-              <button
-                onClick={() => {
-                  setSelectedCategory(null);
-                  setSelectedSlug(null);
-                }}
-                className="text-xs text-[#5B4FF5] hover:underline font-medium mr-2"
-              >
-                Clear filter ({selectedSlug ? AVAILABLE_COMPONENTS.find(c => c.slug === selectedSlug)?.title : selectedCategory}) ✕
-              </button>
-            )}
-
-            {/* Price Dropdown */}
-            <div className="relative">
-              <select
-                value={priceFilter}
-                onChange={(e) => setPriceFilter(e.target.value as any)}
-                className="appearance-none bg-white dark:bg-[#181A20] hover:bg-gray-50 dark:hover:bg-white/[0.07] border border-[#E8EAEF] dark:border-white/[0.08] text-[#161722] dark:text-white text-xs rounded-full pl-4 pr-8 py-1.5 focus:outline-none focus:border-[#5B4FF5] cursor-pointer font-medium shadow-xs transition-colors"
-              >
-                <option value="All" className="bg-white dark:bg-[#181A20] text-[#161722] dark:text-white">Price: All</option>
-                <option value="Free" className="bg-white dark:bg-[#181A20] text-[#161722] dark:text-white">Free</option>
-                <option value="Pro" className="bg-white dark:bg-[#181A20] text-[#161722] dark:text-white">Pro</option>
-              </select>
-              <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-            </div>
-
-            {/* Style Dropdown */}
-            <div className="relative">
-              <select
-                value={styleFilter}
-                onChange={(e) => setStyleFilter(e.target.value as any)}
-                className="appearance-none bg-white dark:bg-[#181A20] hover:bg-gray-50 dark:hover:bg-white/[0.07] border border-[#E8EAEF] dark:border-white/[0.08] text-[#161722] dark:text-white text-xs rounded-full pl-4 pr-8 py-1.5 focus:outline-none focus:border-[#5B4FF5] cursor-pointer font-medium shadow-xs transition-colors"
-              >
-                <option value="All" className="bg-white dark:bg-[#181A20] text-[#161722] dark:text-white">Style: All</option>
-                <option value="Dark" className="bg-white dark:bg-[#181A20] text-[#161722] dark:text-white">Dark</option>
-                <option value="Minimal" className="bg-white dark:bg-[#181A20] text-[#161722] dark:text-white">Minimal</option>
-                <option value="Glass" className="bg-white dark:bg-[#181A20] text-[#161722] dark:text-white">Glass</option>
-                <option value="Editorial" className="bg-white dark:bg-[#181A20] text-[#161722] dark:text-white">Editorial</option>
-              </select>
-              <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-            </div>
-
-            {/* Grid vs List View Switcher */}
-            <div className="flex items-center rounded-full p-1 bg-white dark:bg-white/[0.04] border border-[#E8EAEF] dark:border-white/[0.08] shadow-xs">
-              <button
-                onClick={() => setViewMode('list')}
-                title="Available Components List View"
-                className={`p-1.5 rounded-full transition-all ${
-                  viewMode === 'list'
-                    ? 'bg-[#181A25] text-white dark:bg-white/[0.15] dark:text-white'
-                    : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-200'
-                }`}
-              >
-                <List className="w-3.5 h-3.5" />
-              </button>
-              <button
-                onClick={() => setViewMode('grid')}
-                title="Card Grid View"
-                className={`p-1.5 rounded-full transition-all ${
-                  viewMode === 'grid'
-                    ? 'bg-[#181A25] text-white dark:bg-white/[0.15] dark:text-white'
-                    : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-200'
-                }`}
-              >
-                <LayoutGrid className="w-3.5 h-3.5" />
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* ============================================================== */}
-        {/* COMPONENT PRESENTATION: Grid View or List View                 */}
+        {/* COMPONENT CARDS GRID (Cards view only, heading & copy button)  */}
         {/* ============================================================== */}
         {filteredComponents.length === 0 ? (
           <div className="rounded-2xl bg-white dark:bg-white/[0.03] border border-dashed border-[#E8EAEF] dark:border-white/10 p-12 text-center space-y-3">
             <Layers className="w-8 h-8 text-gray-400 mx-auto" />
             <h3 className="text-base font-semibold text-[#161722] dark:text-white">
-              No components match your search filters
+              {selectedCategory
+                ? `No components in "${selectedCategory}" yet`
+                : 'No components available'}
             </h3>
             <p className="text-xs text-gray-500 dark:text-gray-400 max-w-sm mx-auto">
-              Try adjusting your query, clearing category selections, or resetting style filters.
+              {selectedCategory
+                ? `The "${selectedCategory}" collection is scheduled for our upcoming release. Explore other categories or view all components.`
+                : 'Explore other categories or click below to view all components.'}
             </p>
             <button
               onClick={() => {
                 setSelectedCategory(null);
                 setSelectedSlug(null);
-                setSearchQuery('');
-                setPriceFilter('All');
-                setStyleFilter('All');
               }}
-              className="px-4 py-2 rounded-full bg-[#181A25] dark:bg-white/[0.1] text-white text-xs font-medium hover:bg-black transition-all"
+              className="px-4 py-2 rounded-full bg-[#181A25] dark:bg-white/[0.1] text-white text-xs font-medium hover:bg-black transition-all cursor-pointer"
             >
-              Reset All Filters
+              View All Components
             </button>
           </div>
-        ) : viewMode === 'list' ? (
-          /* List View (Available Components Detailed List) */
-          <div className="space-y-3">
-            <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 px-1">
-              <span className="font-medium">
-                Showing <strong className="text-[#161722] dark:text-white">{filteredComponents.length}</strong> available components in catalog
-              </span>
-              <span className="text-[11px] font-mono">
-                {selectedSlug
-                  ? `Component: ${AVAILABLE_COMPONENTS.find(c => c.slug === selectedSlug)?.title}`
-                  : selectedCategory
-                  ? `Category: ${selectedCategory}`
-                  : 'All Categories'} · Click 'Inspect' for props & code
-              </span>
-            </div>
-
-            <div className="rounded-2xl bg-white dark:bg-white/[0.03] border border-[#E8EAEF] dark:border-white/[0.07] overflow-hidden shadow-xs transition-colors">
-              <div className="grid grid-cols-12 gap-3 px-5 py-3.5 bg-gray-50/70 dark:bg-white/[0.02] border-b border-[#E8EAEF] dark:border-white/10 text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                <div className="col-span-12 md:col-span-4">Component & Details</div>
-                <div className="hidden md:block md:col-span-2">Category</div>
-                <div className="hidden md:block md:col-span-1">Style</div>
-                <div className="hidden md:block md:col-span-2">Dependencies</div>
-                <div className="hidden md:block md:col-span-2">Quick Install CLI</div>
-                <div className="col-span-12 md:col-span-1 text-right">Actions</div>
-              </div>
-
-              <div className="divide-y divide-[#E8EAEF] dark:divide-white/[0.05]">
-                {filteredComponents.map((item) => (
-                  <div
-                    key={item.id}
-                    className="grid grid-cols-12 gap-3 px-5 py-4 items-center text-xs hover:bg-gray-50/80 dark:hover:bg-white/[0.025] transition-colors group"
-                  >
-                    {/* Component Title, Description & Badge */}
-                    <div className="col-span-12 md:col-span-4 flex items-start gap-3">
-                      <div className="w-9 h-9 rounded-xl bg-purple-50 dark:bg-purple-500/10 text-[#5B4FF5] flex items-center justify-center shrink-0 border border-purple-200/50 dark:border-purple-500/20 mt-0.5 group-hover:scale-105 transition-transform">
-                        <Layers className="w-4 h-4" />
-                      </div>
-                      <div className="min-w-0">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <h4 className="font-bold text-[#161722] dark:text-white text-sm group-hover:text-[#5B4FF5] transition-colors truncate">
-                            {item.title}
-                          </h4>
-                          <span className="text-[10px] font-mono px-2 py-0.2 rounded-full bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-400">
-                            v{item.version}
-                          </span>
-                          {item.badge && (
-                            <span className="text-[10px] font-medium px-2 py-0.2 rounded-full bg-purple-100 dark:bg-purple-500/20 text-[#5B4FF5] dark:text-purple-300">
-                              {item.badge}
-                            </span>
-                          )}
-                        </div>
-                        <p className="text-[11px] text-[#6B7280] dark:text-[#8E8F99] line-clamp-1 mt-0.5 leading-relaxed">
-                          {item.description}
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Category & Subcategory */}
-                    <div className="hidden md:block md:col-span-2">
-                      <button
-                        onClick={() => {
-                          setSelectedCategory(item.category);
-                          setSelectedSlug(null);
-                        }}
-                        className="text-[11px] font-mono px-2.5 py-1 rounded-full bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-300 hover:bg-purple-50 hover:text-[#5B4FF5] dark:hover:bg-purple-500/10 dark:hover:text-purple-300 transition-colors border border-gray-200/60 dark:border-white/5"
-                        title={`Filter by ${item.category}`}
-                      >
-                        {item.category} · {item.subcategory}
-                      </button>
-                    </div>
-
-                    {/* Style */}
-                    <div className="hidden md:block md:col-span-1">
-                      <span className="inline-flex items-center gap-1.5 text-xs text-[#161722] dark:text-gray-200 font-medium">
-                        <span className={`w-1.5 h-1.5 rounded-full ${
-                          item.style === 'Dark'
-                            ? 'bg-purple-400'
-                            : item.style === 'Glass'
-                            ? 'bg-cyan-400'
-                            : item.style === 'Editorial'
-                            ? 'bg-amber-400'
-                            : 'bg-emerald-400'
-                        }`} />
-                        {item.style}
-                      </span>
-                    </div>
-
-                    {/* Dependencies */}
-                    <div className="hidden md:block md:col-span-2">
-                      <div className="flex items-center gap-1 flex-wrap">
-                        {item.dependencies.map((dep) => (
-                          <span
-                            key={dep}
-                            className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-400 border border-gray-200/50 dark:border-white/5"
-                          >
-                            {dep}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* CLI Command */}
-                    <div className="hidden md:block md:col-span-2">
-                      <button
-                        onClick={() => copyCli(item.cliCommand, item.slug)}
-                        className="w-full font-mono text-[11px] bg-gray-100 dark:bg-black/40 hover:bg-gray-200 dark:hover:bg-black/60 px-2.5 py-1.5 rounded-xl text-gray-700 dark:text-gray-300 flex items-center justify-between transition-colors border border-gray-200/60 dark:border-white/10 group/btn"
-                        title="Click to copy CLI command"
-                      >
-                        <div className="flex items-center gap-1.5 truncate">
-                          <Terminal className="w-3 h-3 text-[#5B4FF5] shrink-0" />
-                          <span className="truncate">{item.cliCommand}</span>
-                        </div>
-                        {copiedSlug === item.slug ? (
-                          <Check className="w-3.5 h-3.5 text-emerald-500 shrink-0 ml-1.5" />
-                        ) : (
-                          <Copy className="w-3.5 h-3.5 text-gray-400 group-hover/btn:text-gray-600 dark:group-hover/btn:text-white shrink-0 ml-1.5" />
-                        )}
-                      </button>
-                    </div>
-
-                    {/* Actions */}
-                    <div className="col-span-12 md:col-span-1 text-right flex md:block items-center justify-between">
-                      <div className="md:hidden flex items-center gap-2">
-                        <button
-                          onClick={() => copyCli(item.cliCommand, item.slug)}
-                          className="px-2.5 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-xs text-gray-700 dark:text-gray-300 flex items-center gap-1"
-                        >
-                          <Terminal className="w-3 h-3 text-[#5B4FF5]" />
-                          <span>Copy CLI</span>
-                        </button>
-                      </div>
-                      <button
-                        onClick={() => setInspectingComponent(item)}
-                        className="px-3 py-1.5 rounded-xl bg-purple-50 hover:bg-[#5B4FF5] text-[#5B4FF5] hover:text-white dark:bg-white/5 dark:hover:bg-[#5B4FF5] dark:text-purple-300 dark:hover:text-white font-semibold text-xs inline-flex items-center gap-1 transition-all"
-                      >
-                        <Eye className="w-3.5 h-3.5" />
-                        <span>Inspect</span>
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
         ) : (
-          /* Grid View */
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pt-2">
             {filteredComponents.map((item) => (
               <div
                 key={item.id}
-                className="group rounded-2xl bg-white dark:bg-white/[0.03] border border-[#E8EAEF] dark:border-white/[0.07] hover:border-[#5B4FF5]/50 dark:hover:border-white/[0.2] transition-all overflow-hidden flex flex-col justify-between shadow-xs hover:shadow-md"
+                onClick={() => setInspectingComponent(item)}
+                className="group rounded-2xl bg-white dark:bg-white/[0.03] border border-[#E8EAEF] dark:border-white/[0.07] hover:border-[#5B4FF5]/50 dark:hover:border-white/[0.2] transition-all overflow-hidden flex flex-col justify-between shadow-xs hover:shadow-md cursor-pointer"
               >
                 {/* Preview Thumbnail Container */}
                 <div className="relative aspect-[16/10] bg-[#F5F6FA] dark:bg-black/50 overflow-hidden border-b border-[#E8EAEF] dark:border-white/[0.05]">
@@ -777,57 +479,41 @@ export const ComponentsCatalogPage: React.FC = () => {
                       </div>
                     </div>
 
-                    {/* Hover Actions */}
-                    <div className="opacity-0 group-hover:opacity-100 transition-opacity absolute inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center gap-2.5 p-4">
-                      <button
-                        onClick={() => copyCli(item.cliCommand, item.slug)}
-                        className="px-3.5 py-1.5 rounded-full bg-white/15 hover:bg-white/25 text-white text-xs font-medium border border-white/20 flex items-center gap-1.5 transition-all"
-                      >
-                        {copiedSlug === item.slug ? (
-                          <>
-                            <Check className="w-3.5 h-3.5 text-emerald-400" />
-                            <span>Copied</span>
-                          </>
-                        ) : (
-                          <>
-                            <Terminal className="w-3.5 h-3.5 text-purple-300" />
-                            <span>Copy CLI</span>
-                          </>
-                        )}
-                      </button>
-                      <button
-                        onClick={() => setInspectingComponent(item)}
-                        className="px-4 py-1.5 rounded-full bg-white text-black hover:bg-gray-100 text-xs font-semibold flex items-center gap-1 transition-all shadow-sm"
-                      >
+                    {/* Hover Inspect Action */}
+                    <div className="opacity-0 group-hover:opacity-100 transition-opacity absolute inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+                      <span className="px-4 py-1.5 rounded-full bg-white text-black text-xs font-semibold flex items-center gap-1.5 transition-all shadow-sm">
                         <Eye className="w-3.5 h-3.5" />
-                        <span>Inspect</span>
-                      </button>
+                        <span>Inspect Details</span>
+                      </span>
                     </div>
                   </div>
                 </div>
 
-                {/* Card Meta Footer */}
-                <div className="p-4 space-y-1.5">
-                  <div className="flex items-center justify-between">
-                    <h4 className="text-sm font-bold text-[#161722] dark:text-white group-hover:text-[#5B4FF5] transition-colors">
-                      {item.title}
-                    </h4>
-                    <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">
-                      {item.price}
-                    </span>
-                  </div>
-                  <p className="text-xs text-[#6B7280] dark:text-[#8E8F99] line-clamp-2 leading-relaxed">
-                    {item.description}
-                  </p>
-                  <div className="pt-2 flex items-center justify-between text-[11px] text-gray-400 font-mono">
-                    <span>{item.downloads} downloads</span>
-                    <button
-                      onClick={() => setInspectingComponent(item)}
-                      className="text-[#5B4FF5] hover:underline flex items-center gap-0.5"
-                    >
-                      Props & Code <ArrowRight className="w-3 h-3" />
-                    </button>
-                  </div>
+                {/* Card Content: ONLY Heading and Copy Button (downloads count, description, and price removed) */}
+                <div className="p-4 flex items-center justify-between gap-3">
+                  <h4 className="text-sm sm:text-base font-bold text-[#161722] dark:text-white group-hover:text-[#5B4FF5] transition-colors truncate">
+                    {item.title}
+                  </h4>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      copyCli(item.cliCommand, item.slug);
+                    }}
+                    className="shrink-0 px-3.5 py-1.5 rounded-full bg-[#181A25] hover:bg-black dark:bg-white/[0.1] dark:hover:bg-white/[0.2] text-white text-xs font-medium flex items-center gap-1.5 transition-all cursor-pointer shadow-xs"
+                    title={`Copy "${item.cliCommand}"`}
+                  >
+                    {copiedSlug === item.slug ? (
+                      <>
+                        <Check className="w-3.5 h-3.5 text-emerald-400" />
+                        <span className="text-emerald-400 font-semibold">Copied</span>
+                      </>
+                    ) : (
+                      <>
+                        <Terminal className="w-3.5 h-3.5 text-purple-300" />
+                        <span>Copy CLI</span>
+                      </>
+                    )}
+                  </button>
                 </div>
               </div>
             ))}
