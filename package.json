@@ -1,0 +1,22 @@
+{
+  "name": "vac-ui-components-monorepo",
+  "version": "0.1.0",
+  "private": true,
+  "description": "VAC-UI-COMPONENTS — Component Library Platform & Developer Tooling",
+  "scripts": {
+    "dev": "concurrently -k -p \"[{name}]\" -n \"backend,web\" -c \"cyan,magenta\" \"pnpm --filter @vac/backend dev\" \"pnpm --filter @vac/web dev\"",
+    "dev:backend": "pnpm --filter @vac/backend dev",
+    "dev:web": "pnpm --filter @vac/web dev",
+    "build": "pnpm --filter @vac/shared build && pnpm -r --filter !@vac/shared build",
+    "test": "pnpm -r test",
+    "test:backend": "pnpm --filter @vac/backend test",
+    "test:web": "pnpm --filter @vac/web test",
+    "typecheck": "pnpm -r typecheck",
+    "lint": "eslint . --ext .ts,.tsx,.js"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2",
+    "typescript": "^5.7.3"
+  },
+  "packageManager": "pnpm@10.28.0"
+}

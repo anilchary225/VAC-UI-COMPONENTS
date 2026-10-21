@@ -1,0 +1,24 @@
+{
+  "name": "vac-ui-components",
+  "version": "0.1.0",
+  "description": "CLI tool to add and configure VAC UI components in React projects",
+  "bin": {
+    "vac-ui": "./bin/vac.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@vac/shared": "workspace:*",
+    "commander": "^13.1.0",
+    "picocolors": "^1.1.1",
+    "prompts": "^2.4.2",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@types/prompts": "^2.4.9",
+    "typescript": "^5.7.3",
+    "vitest": "^3.0.5"
+  }
+}

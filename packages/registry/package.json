@@ -1,0 +1,16 @@
+{
+  "name": "@vac/registry",
+  "version": "0.1.0",
+  "private": true,
+  "description": "VAC-UI-COMPONENTS Registry and Static Release Manifest Store",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@vac/shared": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3"
+  }
+}
