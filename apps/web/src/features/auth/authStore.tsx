@@ -23,23 +23,46 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [authModalMode, setAuthModalMode] = useState<'login' | 'register'>('login');
 
   useEffect(() => {
-    // Check for OAuth callback token or error in URL query
+    // Check for OAuth callback token or error in URL fragment (#token=...) or query
     if (typeof window !== 'undefined') {
-      const urlParams = new URLSearchParams(window.location.search);
-      const tokenFromUrl = urlParams.get('token');
-      const oauthError = urlParams.get('oauth_error');
+      let token: string | null = null;
+      let oauthError: string | null = null;
 
-      if (tokenFromUrl) {
-        api.setToken(tokenFromUrl);
-        urlParams.delete('token');
-        const newSearch = urlParams.toString();
-        const newUrl = window.location.pathname + (newSearch ? `?${newSearch}` : '') + window.location.hash;
-        window.history.replaceState({}, document.title, newUrl);
-      } else if (oauthError) {
-        urlParams.delete('oauth_error');
-        const newSearch = urlParams.toString();
-        const newUrl = window.location.pathname + (newSearch ? `?${newSearch}` : '') + window.location.hash;
-        window.history.replaceState({}, document.title, newUrl);
+      // 1. Primary secure extraction from URL fragment
+      if (window.location.hash) {
+        const hashRaw = window.location.hash.startsWith('#')
+          ? window.location.hash.slice(1)
+          : window.location.hash;
+        const hashParams = new URLSearchParams(hashRaw);
+        token = hashParams.get('token');
+        oauthError = hashParams.get('oauth_error');
+      }
+
+      // 2. Fallback check for query parameters (for backwards compatibility)
+      const searchParams = new URLSearchParams(window.location.search);
+      if (!token) {
+        token = searchParams.get('token');
+      }
+      if (!oauthError) {
+        oauthError = searchParams.get('oauth_error');
+      }
+
+      if (token) {
+        api.setToken(token);
+      }
+
+      // 3. Immediately sanitize address bar by stripping token and error from both hash and query
+      const hadTokenInHash = window.location.hash.includes('token=');
+      const hadErrorInHash = window.location.hash.includes('oauth_error=');
+      const hadTokenInQuery = searchParams.has('token');
+      const hadErrorInQuery = searchParams.has('oauth_error');
+
+      if (hadTokenInHash || hadErrorInHash || hadTokenInQuery || hadErrorInQuery) {
+        searchParams.delete('token');
+        searchParams.delete('oauth_error');
+        const cleanSearch = searchParams.toString();
+        const cleanUrl = window.location.pathname + (cleanSearch ? `?${cleanSearch}` : '');
+        window.history.replaceState({}, document.title, cleanUrl);
       }
     }
 

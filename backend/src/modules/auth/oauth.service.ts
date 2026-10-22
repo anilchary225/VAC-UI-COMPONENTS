@@ -46,12 +46,14 @@ export class OAuthService {
 
   /**
    * Safe redirect target validation preventing open redirect vulnerabilities.
+   * Places JWT token in the URL fragment (#token=...) instead of the query string
+   * to ensure tokens are never sent in HTTP request headers or logged by CDN/edge servers.
    */
   static getSafeRedirectUrl(token?: string, errorMessage?: string): string {
     const base = env.FRONTEND_URL.replace(/\/+$/, '');
     const url = new URL(base);
     if (token) {
-      url.searchParams.set('token', token);
+      url.hash = `token=${token}`;
     }
     if (errorMessage) {
       url.searchParams.set('oauth_error', errorMessage);

@@ -44,15 +44,18 @@ describe('OAuth Service and Router Tests', () => {
     });
   });
 
-  describe('Open Redirect Prevention', () => {
-    it('always redirects strictly to FRONTEND_URL and appends token as query parameter', () => {
+  describe('Open Redirect Prevention & Secure Token Handoff', () => {
+    it('always redirects strictly to FRONTEND_URL and places token in URL fragment (#token=...), never in query params', () => {
       const token = 'jwt_test_token_123';
       const url = OAuthService.getSafeRedirectUrl(token);
 
       const parsed = new URL(url);
       const frontendParsed = new URL(env.FRONTEND_URL);
       expect(parsed.origin).toBe(frontendParsed.origin);
-      expect(parsed.searchParams.get('token')).toBe(token);
+      // Secure handoff: Token must reside in hash fragment, NEVER in query params
+      expect(parsed.hash).toBe(`#token=${token}`);
+      expect(parsed.searchParams.get('token')).toBeNull();
+      expect(url).not.toContain('?token=');
     });
 
     it('appends oauth_error safely without altering origin', () => {
@@ -63,6 +66,14 @@ describe('OAuth Service and Router Tests', () => {
       const frontendParsed = new URL(env.FRONTEND_URL);
       expect(parsed.origin).toBe(frontendParsed.origin);
       expect(parsed.searchParams.get('oauth_error')).toBe(errorMsg);
+      expect(parsed.hash).toBe('');
+    });
+
+    it('both GitHub and Google callback redirect flows use URL fragment for token handoff', () => {
+      const mockToken = 'mock_jwt_token_for_both_providers';
+      const redirectUrl = OAuthService.getSafeRedirectUrl(mockToken);
+      expect(redirectUrl).toContain('#token=mock_jwt_token_for_both_providers');
+      expect(redirectUrl).not.toContain('?token=');
     });
   });
 
