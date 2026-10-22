@@ -1,0 +1,58 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "Glassmorphism Navbar",
+  "slug": "glassmorphism-navbar",
+  "version": "1.0.0",
+  "description": "Translucent floating header with frosted glass refraction, responsive collapsible menu, and quick action buttons.",
+  "category": "Navigation",
+  "entryPoint": "src/components/GlassmorphismNavbar.tsx",
+  "dependencies": {
+    "lucide-react": "^1.0.0"
+  },
+  "devDependencies": {},
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
+  },
+  "files": [
+    {
+      "path": "src/components/GlassmorphismNavbar.tsx",
+      "name": "GlassmorphismNavbar.tsx",
+      "content": "import React, { useState } from 'react';\nimport { Menu, X, ArrowRight } from 'lucide-react';\n\nexport interface GlassmorphismNavbarProps {\n  brandName?: string;\n  links?: Array<{ label: string; href: string }>;\n  onAction?: () => void;\n  actionLabel?: string;\n}\n\nexport const GlassmorphismNavbar: React.FC<GlassmorphismNavbarProps> = ({\n  brandName = 'VAC UI',\n  links = [\n    { label: 'Overview', href: '#overview' },\n    { label: 'Components', href: '#components' },\n    { label: 'Documentation', href: '#docs' },\n    { label: 'Changelog', href: '#changelog' },\n  ],\n  onAction,\n  actionLabel = 'Get Started',\n}) => {\n  const [mobileOpen, setMobileOpen] = useState(false);\n  const [activeTab, setActiveTab] = useState(links[0]?.label || 'Overview');\n\n  return (\n    <header className=\"w-full max-w-5xl mx-auto px-4 py-3 sticky top-4 z-50\">\n      <div className=\"h-14 rounded-2xl bg-[#11131A]/80 backdrop-blur-xl border border-white/10 shadow-2xl flex items-center justify-between px-5\">\n        <div className=\"flex items-center gap-3\">\n          <div className=\"w-7 h-7 rounded-lg bg-indigo-600 text-white flex items-center justify-center text-xs font-bold shadow-md shadow-indigo-600/30\">\n            V\n          </div>\n          <span className=\"text-sm font-bold tracking-tight text-white\">{brandName}</span>\n        </div>\n\n        <nav className=\"hidden md:flex items-center gap-1\">\n          {links.map((link) => (\n            <a\n              key={link.label}\n              href={link.href}\n              onClick={() => setActiveTab(link.label)}\n              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${\n                activeTab === link.label\n                  ? 'bg-white/10 text-white font-semibold'\n                  : 'text-gray-400 hover:text-white hover:bg-white/5'\n              }`}\n            >\n              {link.label}\n            </a>\n          ))}\n        </nav>\n\n        <div className=\"hidden md:flex items-center gap-3\">\n          <button\n            onClick={onAction}\n            className=\"px-4 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 active:scale-95 text-white text-xs font-medium transition-all flex items-center gap-1.5 shadow-md shadow-indigo-600/25\"\n          >\n            <span>{actionLabel}</span>\n            <ArrowRight className=\"w-3.5 h-3.5\" />\n          </button>\n        </div>\n\n        <button\n          onClick={() => setMobileOpen(!mobileOpen)}\n          className=\"md:hidden text-gray-400 hover:text-white p-1\"\n          aria-label=\"Toggle menu\"\n        >\n          {mobileOpen ? <X className=\"w-5 h-5\" /> : <Menu className=\"w-5 h-5\" />}\n        </button>\n      </div>\n\n      {mobileOpen && (\n        <div className=\"md:hidden mt-2 p-4 rounded-xl bg-[#11131A]/95 border border-white/10 backdrop-blur-2xl space-y-2 shadow-2xl\">\n          {links.map((link) => (\n            <a\n              key={link.label}\n              href={link.href}\n              onClick={() => {\n                setActiveTab(link.label);\n                setMobileOpen(false);\n              }}\n              className=\"block px-3 py-2 rounded-lg text-xs font-medium text-gray-300 hover:text-white hover:bg-white/5\"\n            >\n              {link.label}\n            </a>\n          ))}\n          <button\n            onClick={() => {\n              onAction?.();\n              setMobileOpen(false);\n            }}\n            className=\"w-full mt-2 py-2 rounded-lg bg-indigo-600 text-white text-xs font-medium flex items-center justify-center gap-1\"\n          >\n            {actionLabel}\n          </button>\n        </div>\n      )}\n    </header>\n  );\n};\nexport default GlassmorphismNavbar;",
+      "language": "typescript",
+      "isEntry": true,
+      "integrity": "sha256-0b2ac8866124b92167ae2406aeec1be978a433812460b8c9cffae5a32790853c"
+    }
+  ],
+  "props": [
+    {
+      "name": "brandName",
+      "type": "string",
+      "required": false,
+      "defaultValue": "\"VAC UI\"",
+      "description": "Brand or application logo label"
+    },
+    {
+      "name": "links",
+      "type": "Array<{ label: string; href: string }>",
+      "required": false,
+      "description": "Navigation items to display"
+    },
+    {
+      "name": "actionLabel",
+      "type": "string",
+      "required": false,
+      "defaultValue": "\"Get Started\"",
+      "description": "Call to action button text"
+    }
+  ],
+  "styling": {
+    "framework": "tailwind"
+  },
+  "license": "MIT",
+  "author": "VAC Team",
+  "integrity": "sha256-2f77ef41dea89954059af2e9881db76b285b38c35ecd19f8fe103b746947d12f",
+  "changelog": "Initial version with responsive hamburger and blur backdrop.",
+  "publishedAt": "2026-01-18T10:00:00.000Z",
+  "deprecated": false
+}

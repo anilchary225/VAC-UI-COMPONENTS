@@ -118,6 +118,11 @@ export class AuthService {
       throw new AppError('Invalid admin bootstrap secret.', 403, 'FORBIDDEN');
     }
 
+    const dbStatus = getDatabaseStatus();
+    if (dbStatus.status !== 'connected') {
+      throw new AppError('Database connection unavailable for admin bootstrap.', 503, 'SERVICE_UNAVAILABLE');
+    }
+
     const existingAdmin = await UserModel.findOne({ role: 'admin' });
     if (existingAdmin) {
       throw new AppError('Admin account already exists. Bootstrap is closed.', 409, 'ADMIN_EXISTS');

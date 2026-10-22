@@ -52,6 +52,10 @@ export const router = createBrowserRouter([
         element: <AdminDashboardPage />,
       },
       {
+        path: 'admin/:tab',
+        element: <AdminDashboardPage />,
+      },
+      {
         path: '*',
         element: <NotFoundPage />,
       },

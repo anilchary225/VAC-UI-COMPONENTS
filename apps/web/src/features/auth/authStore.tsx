@@ -23,6 +23,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [authModalMode, setAuthModalMode] = useState<'login' | 'register'>('login');
 
   useEffect(() => {
+    // Check for OAuth callback token or error in URL query
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const tokenFromUrl = urlParams.get('token');
+      const oauthError = urlParams.get('oauth_error');
+
+      if (tokenFromUrl) {
+        api.setToken(tokenFromUrl);
+        urlParams.delete('token');
+        const newSearch = urlParams.toString();
+        const newUrl = window.location.pathname + (newSearch ? `?${newSearch}` : '') + window.location.hash;
+        window.history.replaceState({}, document.title, newUrl);
+      } else if (oauthError) {
+        urlParams.delete('oauth_error');
+        const newSearch = urlParams.toString();
+        const newUrl = window.location.pathname + (newSearch ? `?${newSearch}` : '') + window.location.hash;
+        window.history.replaceState({}, document.title, newUrl);
+      }
+    }
+
     const token = api.getToken();
     if (!token) {
       setIsLoading(false);

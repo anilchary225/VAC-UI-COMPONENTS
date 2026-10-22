@@ -6,6 +6,10 @@ import { AuditLogModel } from '../../models/AuditLog';
 import { CategoryModel } from '../../models/Category';
 import { INITIAL_OFFICIAL_COMPONENTS } from '../components/components.seed';
 import { ComponentFile, ComponentProp } from '@vac/shared';
+import { createReleaseManifest } from '@vac/registry';
+import { fileRegistryStore, s3RegistryStore } from '../registry/registry.service';
+import { UserModel } from '../../models/User';
+import { env } from '../../config/env';
 
 export interface AdminComponentData {
   id: string;
@@ -47,6 +51,8 @@ export interface AdminVersionData {
   props: ComponentProp[];
   publishedAt: string;
   publishedBy?: string;
+  deprecated?: boolean;
+  deprecationReason?: string;
 }
 
 export interface AuditLogData {
@@ -575,9 +581,46 @@ export const AdminStore = {
             },
           }
         );
-      } catch (err) {
+      } catch (err: any) {
+        if (err.code === 11000 || (err.name === 'MongoServerError' && err.code === 11000)) {
+          const immErr = new Error(`Version ${version} for "${comp.slug}" has already been published and is immutable.`);
+          (immErr as any).statusCode = 409;
+          (immErr as any).code = 'VERSION_IMMUTABLE';
+          throw immErr;
+        }
         console.warn('DB publishRelease failed, using memory:', err);
       }
+    }
+
+    // Persist immutable release manifest to registry storage
+    try {
+      const releaseManifest = createReleaseManifest({
+        name: comp.name,
+        slug: comp.slug,
+        version,
+        description: comp.description,
+        category: comp.category,
+        files: comp.draftFiles || [],
+        dependencies: comp.draftDependencies || {},
+        peerDependencies: comp.draftPeerDependencies || {},
+        props: comp.draftProps || [],
+        license: comp.license,
+        author: comp.author,
+        changelog: versionRecord.changelog,
+        publishedAt: versionRecord.publishedAt,
+      });
+      if (s3RegistryStore) {
+        await s3RegistryStore.publishRelease(releaseManifest);
+      }
+      await fileRegistryStore.publishRelease(releaseManifest);
+    } catch (regErr: any) {
+      if (regErr.code === 'VERSION_ALREADY_EXISTS') {
+        const err = new Error(`Release ${comp.slug}@${version} already exists in registry storage and is immutable.`);
+        (err as any).statusCode = 409;
+        (err as any).code = 'VERSION_IMMUTABLE';
+        throw err;
+      }
+      console.warn('File registry store write error (continuing):', regErr);
     }
 
     // Always update memory store too so fallback catalog is in sync
@@ -615,6 +658,8 @@ export const AdminStore = {
             files: v.files,
             props: v.props,
             publishedAt: v.publishedAt instanceof Date ? v.publishedAt.toISOString() : String(v.publishedAt),
+            deprecated: Boolean((v as any).deprecated),
+            deprecationReason: (v as any).deprecationReason,
           }));
         }
       } catch (err) {
@@ -623,7 +668,49 @@ export const AdminStore = {
     }
 
     ensureMemoryInitialized();
-    return memoryVersions.filter((v) => v.componentSlug === slug);
+    return memoryVersions
+      .filter((v) => v.componentSlug === slug)
+      .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
+  },
+
+  async deprecateVersion(slug: string, version: string, reason?: string): Promise<AdminVersionData | null> {
+    const comp = await this.findBySlugOrId(slug);
+    if (!comp) {
+      throw new Error(`Component "${slug}" not found.`);
+    }
+
+    // 1. Update database if connected
+    const db = getDatabaseStatus();
+    if (db.status === 'connected') {
+      try {
+        await ComponentVersionModel.updateOne(
+          { componentSlug: comp.slug, version },
+          { $set: { deprecated: true, deprecationReason: reason } }
+        );
+      } catch (err) {
+        console.warn('DB deprecateVersion failed:', err);
+      }
+    }
+
+    // 2. Update immutable static storage
+    try {
+      if (s3RegistryStore?.deprecateRelease) {
+        await s3RegistryStore.deprecateRelease(comp.slug, version, reason);
+      }
+      await fileRegistryStore.deprecateRelease?.(comp.slug, version, reason);
+    } catch (err) {
+      console.warn('Registry storage deprecateRelease error:', err);
+    }
+
+    // 3. Update memory store
+    ensureMemoryInitialized();
+    const ver = memoryVersions.find((v) => v.componentSlug === comp.slug && v.version === version);
+    if (ver) {
+      ver.deprecated = true;
+      ver.deprecationReason = reason;
+    }
+
+    return ver || null;
   },
 
   async recordAudit(data: {
@@ -752,6 +839,124 @@ export const AdminStore = {
       statusDistribution,
       totalReleases: memoryVersions.length,
       recentReleases: memoryVersions.slice(-10).reverse(),
+    };
+  },
+
+  async getAllVersions(): Promise<AdminVersionData[]> {
+    const db = getDatabaseStatus();
+    if (db.status === 'connected') {
+      try {
+        const records = await ComponentVersionModel.find()
+          .sort({ publishedAt: -1 })
+          .limit(100)
+          .lean();
+        if (records && records.length > 0) {
+          return records.map((v) => ({
+            componentSlug: v.componentSlug,
+            version: v.version,
+            changelog: v.changelog,
+            dependencies: v.dependencies instanceof Map ? Object.fromEntries(v.dependencies) : (v.dependencies as any) || {},
+            peerDependencies: v.peerDependencies instanceof Map ? Object.fromEntries(v.peerDependencies) : (v.peerDependencies as any) || {},
+            files: v.files,
+            props: v.props,
+            publishedAt: v.publishedAt instanceof Date ? v.publishedAt.toISOString() : String(v.publishedAt),
+            deprecated: Boolean((v as any).deprecated),
+            deprecationReason: (v as any).deprecationReason,
+          }));
+        }
+      } catch (err) {
+        console.warn('DB getAllVersions failed, using memory:', err);
+      }
+    }
+    ensureMemoryInitialized();
+    return [...memoryVersions].sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
+  },
+
+  async getUsers() {
+    const db = getDatabaseStatus();
+    if (db.status === 'connected') {
+      try {
+        const users = await UserModel.find()
+          .select('name email role avatarUrl codePreference themePreference createdAt updatedAt githubId googleId')
+          .sort({ createdAt: -1 })
+          .limit(50)
+          .lean();
+        return users.map((u) => ({
+          id: (u as any)._id.toString(),
+          name: u.name,
+          email: u.email,
+          role: u.role,
+          avatarUrl: u.avatarUrl,
+          codePreference: u.codePreference,
+          themePreference: u.themePreference,
+          hasGithub: Boolean(u.githubId),
+          hasGoogle: Boolean(u.googleId),
+          createdAt: u.createdAt instanceof Date ? u.createdAt.toISOString() : String(u.createdAt),
+          updatedAt: u.updatedAt instanceof Date ? u.updatedAt.toISOString() : String(u.updatedAt),
+        }));
+      } catch (err) {
+        console.warn('DB getUsers failed:', err);
+      }
+    }
+    return [
+      {
+        id: 'usr_admin_default',
+        name: 'Administrator',
+        email: 'admin@vac.dev',
+        role: 'admin',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      },
+    ];
+  },
+
+  async getConfig() {
+    const db = getDatabaseStatus();
+    let adminCount = 0;
+    let totalUsers = 0;
+    if (db.status === 'connected') {
+      try {
+        [adminCount, totalUsers] = await Promise.all([
+          UserModel.countDocuments({ role: 'admin' }),
+          UserModel.countDocuments(),
+        ]);
+      } catch {
+        // Fall through
+      }
+    }
+
+    const overview = await this.getOverview();
+
+    return {
+      version: '1.0.0',
+      nodeEnv: env.NODE_ENV,
+      port: env.PORT,
+      frontendUrl: env.FRONTEND_URL,
+      database: {
+        status: db.status,
+        type: 'MongoDB Atlas',
+        activePool: db.status === 'connected',
+      },
+      registryStorage: {
+        driver: env.REGISTRY_STORAGE_DRIVER,
+        s3Configured: Boolean(env.S3_BUCKET),
+        s3Bucket: env.S3_BUCKET || null,
+        s3Region: env.S3_REGION || 'us-east-1',
+      },
+      oauth: {
+        github: Boolean(env.GITHUB_CLIENT_ID && env.GITHUB_CLIENT_SECRET),
+        google: Boolean(env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET),
+      },
+      security: {
+        jwtExpiresIn: env.JWT_EXPIRES_IN,
+        bootstrapOpen: adminCount === 0,
+      },
+      stats: {
+        adminCount,
+        totalUsers,
+        totalComponents: overview.totalComponents,
+        publishedCount: overview.publishedCount,
+      },
     };
   },
 };

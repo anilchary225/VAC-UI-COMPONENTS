@@ -1,0 +1,57 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "Spotlight Ambient Card",
+  "slug": "dark-glass-card",
+  "version": "1.0.0",
+  "description": "Deep translucent component card with mouse-tracking radial ambient illumination.",
+  "category": "Cards & Surfaces",
+  "entryPoint": "src/components/DarkGlassCard.tsx",
+  "dependencies": {},
+  "devDependencies": {},
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
+  },
+  "files": [
+    {
+      "path": "src/components/DarkGlassCard.tsx",
+      "name": "DarkGlassCard.tsx",
+      "content": "import React, { useState } from 'react';\n\nexport interface DarkGlassCardProps {\n  title?: string;\n  subtitle?: string;\n  badge?: string;\n  children?: React.ReactNode;\n}\n\nexport const DarkGlassCard: React.FC<DarkGlassCardProps> = ({\n  title = 'Spotlight Ambient Card',\n  subtitle = 'Hover to observe dynamic radial ambient spotlight illumination.',\n  badge = 'SURFACE PRIMITIVE',\n  children,\n}) => {\n  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });\n\n  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {\n    const rect = e.currentTarget.getBoundingClientRect();\n    setMousePos({\n      x: e.clientX - rect.left,\n      y: e.clientY - rect.top,\n    });\n  };\n\n  return (\n    <div\n      onMouseMove={handleMouseMove}\n      className=\"relative w-full max-w-sm rounded-2xl border border-white/10 bg-[#11131A] backdrop-blur-xl p-6 text-white shadow-2xl overflow-hidden group transition-all\"\n    >\n      <div\n        className=\"pointer-events-none absolute -inset-px transition-opacity duration-300 opacity-60 group-hover:opacity-100\"\n        style={{\n          background: `radial-gradient(400px circle at ${mousePos.x}px ${mousePos.y}px, rgba(99, 102, 241, 0.2), transparent 60%)`,\n        }}\n      />\n      <div className=\"relative space-y-3\">\n        {badge && (\n          <span className=\"text-[10px] font-mono text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 px-2 py-0.5 rounded-full inline-block\">\n            {badge}\n          </span>\n        )}\n        <h4 className=\"text-base font-bold text-white tracking-tight\">{title}</h4>\n        <p className=\"text-xs text-gray-400 leading-relaxed\">{subtitle}</p>\n        {children && <div className=\"pt-2\">{children}</div>}\n      </div>\n    </div>\n  );\n};\nexport default DarkGlassCard;",
+      "language": "typescript",
+      "isEntry": true,
+      "integrity": "sha256-face5ef6897bac2b81bed7be4c8cbb0e8fecfcc5cc20307f37fd298cf79dc74f"
+    }
+  ],
+  "props": [
+    {
+      "name": "title",
+      "type": "string",
+      "required": false,
+      "defaultValue": "\"Spotlight Ambient Card\"",
+      "description": "Card headline"
+    },
+    {
+      "name": "subtitle",
+      "type": "string",
+      "required": false,
+      "defaultValue": "\"Hover to observe dynamic radial ambient spotlight illumination.\"",
+      "description": "Supporting descriptive text"
+    },
+    {
+      "name": "badge",
+      "type": "string",
+      "required": false,
+      "defaultValue": "\"SURFACE PRIMITIVE\"",
+      "description": "Monospace chip label"
+    }
+  ],
+  "styling": {
+    "framework": "tailwind"
+  },
+  "license": "MIT",
+  "author": "VAC Team",
+  "integrity": "sha256-3f427901f754bc7f1e2ed115e54016648f54909e3605ec4aee3471fdbcf2ae5f",
+  "changelog": "Initial release with radial gradient mouse tracking.",
+  "publishedAt": "2026-02-03T10:00:00.000Z",
+  "deprecated": false
+}

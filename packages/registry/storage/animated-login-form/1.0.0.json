@@ -1,0 +1,59 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "Animated Login Form",
+  "slug": "animated-login-form",
+  "version": "1.0.0",
+  "description": "Smooth interactive login card with spring animations, floating labels, validation states, and theme toggling.",
+  "category": "Forms & Authentication",
+  "entryPoint": "src/components/AnimatedLoginForm.tsx",
+  "dependencies": {
+    "motion/react": "^12.0.0",
+    "lucide-react": "^1.0.0"
+  },
+  "devDependencies": {},
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
+  },
+  "files": [
+    {
+      "path": "src/components/AnimatedLoginForm.tsx",
+      "name": "AnimatedLoginForm.tsx",
+      "content": "import React, { useState } from 'react';\nimport { motion, AnimatePresence } from 'motion/react';\nimport { Lock, Mail, ArrowRight, Eye, EyeOff, ShieldCheck } from 'lucide-react';\n\nexport interface AnimatedLoginFormProps {\n  onSubmit?: (data: { email: string; pass: string }) => Promise<void> | void;\n  title?: string;\n  subtitle?: string;\n}\n\nexport const AnimatedLoginForm: React.FC<AnimatedLoginFormProps> = ({\n  onSubmit,\n  title = \"Welcome Back\",\n  subtitle = \"Sign in to access your developer console\"\n}) => {\n  const [email, setEmail] = useState('');\n  const [password, setPassword] = useState('');\n  const [showPassword, setShowPassword] = useState(false);\n  const [isLoading, setIsLoading] = useState(false);\n  const [isSuccess, setIsSuccess] = useState(false);\n\n  const handleSubmit = async (e: React.FormEvent) => {\n    e.preventDefault();\n    if (!email || !password) return;\n    setIsLoading(true);\n    try {\n      await onSubmit?.({ email, pass: password });\n      setIsSuccess(true);\n    } finally {\n      setIsLoading(false);\n    }\n  };\n\n  return (\n    <motion.div \n      initial={{ opacity: 0, y: 12 }}\n      animate={{ opacity: 1, y: 0 }}\n      className=\"w-full max-w-md mx-auto p-8 rounded-2xl bg-[#11131A] border border-white/10 shadow-2xl backdrop-blur-xl\"\n    >\n      <div className=\"mb-6 text-center\">\n        <h2 className=\"text-2xl font-semibold tracking-tight text-white\">{title}</h2>\n        <p className=\"text-sm text-gray-400 mt-1\">{subtitle}</p>\n      </div>\n\n      <form onSubmit={handleSubmit} className=\"space-y-4\">\n        <div>\n          <label className=\"block text-xs font-medium text-gray-300 mb-1.5\">Email Address</label>\n          <div className=\"relative\">\n            <Mail className=\"absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400\" />\n            <input\n              type=\"email\"\n              value={email}\n              onChange={(e) => setEmail(e.target.value)}\n              placeholder=\"you@domain.com\"\n              required\n              className=\"w-full bg-[#171A23] border border-white/10 rounded-lg pl-10 pr-4 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500 transition-colors\"\n            />\n          </div>\n        </div>\n\n        <div>\n          <label className=\"block text-xs font-medium text-gray-300 mb-1.5\">Password</label>\n          <div className=\"relative\">\n            <Lock className=\"absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400\" />\n            <input\n              type={showPassword ? 'text' : 'password'}\n              value={password}\n              onChange={(e) => setPassword(e.target.value)}\n              placeholder=\"••••••••\"\n              required\n              className=\"w-full bg-[#171A23] border border-white/10 rounded-lg pl-10 pr-10 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500 transition-colors\"\n            />\n            <button\n              type=\"button\"\n              onClick={() => setShowPassword(!showPassword)}\n              className=\"absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white\"\n            >\n              {showPassword ? <EyeOff className=\"w-4 h-4\" /> : <Eye className=\"w-4 h-4\" />}\n            </button>\n          </div>\n        </div>\n\n        <button\n          type=\"submit\"\n          disabled={isLoading}\n          className=\"w-full mt-2 py-2.5 px-4 rounded-lg bg-indigo-600 hover:bg-indigo-500 active:scale-[0.99] text-white text-sm font-medium transition-all flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/20\"\n        >\n          {isLoading ? (\n            <span className=\"w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin\" />\n          ) : isSuccess ? (\n            <ShieldCheck className=\"w-4 h-4 text-green-300\" />\n          ) : (\n            <>\n              Continue <ArrowRight className=\"w-4 h-4\" />\n            </>\n          )}\n        </button>\n      </form>\n    </motion.div>\n  );\n};",
+      "language": "typescript",
+      "isEntry": true,
+      "integrity": "sha256-1cede2feb20fc0a000d40d5619ce55a4084b023ad8430c4452b2831dfd63f4d5"
+    }
+  ],
+  "props": [
+    {
+      "name": "title",
+      "type": "string",
+      "required": false,
+      "defaultValue": "\"Welcome Back\"",
+      "description": "Headline text shown at top of the login container"
+    },
+    {
+      "name": "subtitle",
+      "type": "string",
+      "required": false,
+      "defaultValue": "\"Sign in to access your developer console\"",
+      "description": "Supporting description under the title"
+    },
+    {
+      "name": "onSubmit",
+      "type": "(data: { email: string; pass: string }) => Promise<void> | void",
+      "required": false,
+      "description": "Async callback triggered on submission"
+    }
+  ],
+  "styling": {
+    "framework": "tailwind"
+  },
+  "license": "MIT",
+  "author": "VAC Team",
+  "integrity": "sha256-6897f9301f419f857efa3051b26c04a012c6f61a2b2bf651ba2115ee68d0eb81",
+  "changelog": "Initial production release with Motion for React and Tailwind CSS.",
+  "publishedAt": "2026-01-15T10:00:00.000Z",
+  "deprecated": false
+}

@@ -1,0 +1,58 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "Animated Toggle Switch",
+  "slug": "toggle-switch",
+  "version": "1.0.0",
+  "description": "Tactile boolean toggle switch with spring physics and keyboard focus indicators.",
+  "category": "Buttons & Controls",
+  "entryPoint": "src/components/ToggleSwitch.tsx",
+  "dependencies": {
+    "motion/react": "^12.0.0"
+  },
+  "devDependencies": {},
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
+  },
+  "files": [
+    {
+      "path": "src/components/ToggleSwitch.tsx",
+      "name": "ToggleSwitch.tsx",
+      "content": "import React, { useState } from 'react';\nimport { motion } from 'motion/react';\n\nexport interface ToggleSwitchProps {\n  checked?: boolean;\n  onChange?: (checked: boolean) => void;\n  label?: string;\n  disabled?: boolean;\n}\n\nexport const ToggleSwitch: React.FC<ToggleSwitchProps> = ({\n  checked = false,\n  onChange,\n  label = 'Enable Feature',\n  disabled = false,\n}) => {\n  const [internalChecked, setInternalChecked] = useState(checked);\n\n  const isChecked = onChange ? checked : internalChecked;\n\n  const toggle = () => {\n    if (disabled) return;\n    const next = !isChecked;\n    setInternalChecked(next);\n    onChange?.(next);\n  };\n\n  return (\n    <label className={`inline-flex items-center gap-3 cursor-pointer select-none ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}>\n      <button\n        type=\"button\"\n        role=\"switch\"\n        aria-checked={isChecked}\n        disabled={disabled}\n        onClick={toggle}\n        className={`w-11 h-6 rounded-full p-1 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500/50 ${\n          isChecked ? 'bg-indigo-600' : 'bg-gray-700'\n        }`}\n      >\n        <motion.div\n          animate={{ x: isChecked ? 20 : 0 }}\n          transition={{ type: 'spring', stiffness: 500, damping: 30 }}\n          className=\"w-4 h-4 rounded-full bg-white shadow-md\"\n        />\n      </button>\n      {label && <span className=\"text-xs font-medium text-gray-200\">{label}</span>}\n    </label>\n  );\n};\nexport default ToggleSwitch;",
+      "language": "typescript",
+      "isEntry": true,
+      "integrity": "sha256-8df7ee8e5d89d8fa67810cba6fdca7c8dcdd141e7b3e26fe42ac0b91bfcb61c6"
+    }
+  ],
+  "props": [
+    {
+      "name": "checked",
+      "type": "boolean",
+      "required": false,
+      "defaultValue": "false",
+      "description": "Current toggle state"
+    },
+    {
+      "name": "onChange",
+      "type": "(checked: boolean) => void",
+      "required": false,
+      "description": "Callback when toggle is changed"
+    },
+    {
+      "name": "label",
+      "type": "string",
+      "required": false,
+      "defaultValue": "\"Enable Feature\"",
+      "description": "Accompanying label text"
+    }
+  ],
+  "styling": {
+    "framework": "tailwind"
+  },
+  "license": "MIT",
+  "author": "VAC Team",
+  "integrity": "sha256-634af6c8a99df6a91da06c86774a295ea8979e797ace73c28181154427aca21b",
+  "changelog": "Initial version with Motion spring layout animation.",
+  "publishedAt": "2026-02-02T10:00:00.000Z",
+  "deprecated": false
+}

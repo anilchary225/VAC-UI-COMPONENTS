@@ -19,7 +19,8 @@ const getApiBase = () => {
   return 'http://localhost:4000/api';
 };
 
-const API_BASE = getApiBase();
+export const API_BASE = getApiBase();
+export const getOAuthUrl = (provider: 'github' | 'google') => `${API_BASE}/auth/oauth/${provider}`;
 
 class ApiClient {
   private token: string | null = null;
@@ -303,8 +304,39 @@ class ApiClient {
     });
   }
 
+  async deprecateAdminRelease(idOrSlug: string, version: string, reason?: string): Promise<any> {
+    return this.request(`/admin/components/${idOrSlug}/versions/${version}/deprecate`, {
+      method: 'POST',
+      body: JSON.stringify({ reason }),
+    });
+  }
+
   async getAdminVersions(idOrSlug: string): Promise<any[]> {
     return this.request(`/admin/components/${idOrSlug}/versions`);
+  }
+
+  // Public Registry
+  async getRegistryVersions(slug: string): Promise<{
+    slug: string;
+    versions: string[];
+    latest: string;
+    details?: Array<{
+      version: string;
+      publishedAt: string;
+      changelog?: string;
+      deprecated?: boolean;
+      deprecationReason?: string;
+    }>;
+  }> {
+    return this.request(`/registry/components/${slug}/versions`);
+  }
+
+  async getRegistryManifest(slug: string, version: string): Promise<any> {
+    return this.request(`/registry/components/${slug}/${version}`);
+  }
+
+  async compareRegistryVersions(slug: string, fromVersion: string, toVersion: string): Promise<any> {
+    return this.request(`/registry/components/${slug}/compare?from=${fromVersion}&to=${toVersion}`);
   }
 
   async getAdminCategories(): Promise<any[]> {
@@ -332,6 +364,18 @@ class ApiClient {
 
   async getAdminAnalytics(): Promise<any> {
     return this.request('/admin/analytics');
+  }
+
+  async getAdminConfig(): Promise<any> {
+    return this.request('/admin/config');
+  }
+
+  async getAdminUsers(): Promise<any[]> {
+    return this.request('/admin/users');
+  }
+
+  async getAdminRegistry(): Promise<any[]> {
+    return this.request('/admin/registry');
   }
 }
 

@@ -13,6 +13,7 @@ import {
   PackageCheck,
   Users,
   BarChart2,
+  History,
   ChevronLeft,
   ChevronRight,
   Sparkles,
@@ -50,7 +51,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggleCollapse 
     { label: 'Manage Components', href: '/admin/components', icon: Layers },
     { label: 'Categories', href: '/admin/categories', icon: Tag },
     { label: 'Releases & Registry', href: '/admin/registry', icon: PackageCheck },
+    { label: 'Configure Platform', href: '/admin/configure', icon: Settings },
     { label: 'User Directory', href: '/admin/users', icon: Users },
+    { label: 'Audit Logs', href: '/admin/audit', icon: History },
     { label: 'Analytics', href: '/admin/analytics', icon: BarChart2 },
   ];
 
@@ -138,7 +141,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggleCollapse 
             <nav className="space-y-0.5">
               {adminNav.map((item) => {
                 const Icon = item.icon;
-                const isActive = location.pathname.startsWith(item.href);
+                const isActive =
+                  item.href === '/admin'
+                    ? location.pathname === '/admin'
+                    : location.pathname.startsWith(item.href);
 
                 return (
                   <NavLink

@@ -418,6 +418,50 @@ adminRouter.get('/components/:id/versions', async (req: Request, res: Response, 
   }
 });
 
+// POST /api/admin/components/:id/versions/:version/deprecate - Deprecate a specific release version
+adminRouter.post('/components/:id/versions/:version/deprecate', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const idParam = req.params.id as string;
+    const versionParam = req.params.version as string;
+    const component = await AdminStore.findBySlugOrId(idParam);
+
+    if (!component) {
+      throw new AppError(`Component "${idParam}" not found.`, 404, 'NOT_FOUND');
+    }
+
+    const versions = await AdminStore.getVersions(component.slug);
+    const existing = versions.find((v) => v.version === versionParam);
+    if (!existing) {
+      throw new AppError(`Version "${versionParam}" not found for component "${component.slug}".`, 404, 'VERSION_NOT_FOUND');
+    }
+
+    const reason = (req.body?.reason || '').trim() || 'Administrative deprecation';
+    const updated = await AdminStore.deprecateVersion(component.slug, versionParam, reason);
+
+    await AdminStore.recordAudit({
+      actorEmail: req.user!.email,
+      actorName: req.user!.name,
+      action: 'release.deprecate',
+      resourceType: 'version',
+      resourceId: `${component.slug}@${versionParam}`,
+      details: {
+        componentSlug: component.slug,
+        version: versionParam,
+        reason,
+      },
+      ipAddress: req.ip,
+    });
+
+    res.json({
+      success: true,
+      message: `Release ${component.slug}@${versionParam} deprecated successfully.`,
+      data: updated,
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
 // -------------------------------------------------------------
 // 3. Category Administration
 // -------------------------------------------------------------
@@ -498,6 +542,45 @@ adminRouter.get('/audit-logs', async (req: Request, res: Response, next: NextFun
 adminRouter.get('/analytics', async (_req: Request, res: Response, next: NextFunction) => {
   try {
     const data = await AdminStore.getAnalytics();
+    res.json({
+      success: true,
+      data,
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// -------------------------------------------------------------
+// 5. System Configuration, Users & Registry Releases
+// -------------------------------------------------------------
+adminRouter.get('/config', async (_req: Request, res: Response, next: NextFunction) => {
+  try {
+    const data = await AdminStore.getConfig();
+    res.json({
+      success: true,
+      data,
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+adminRouter.get('/users', async (_req: Request, res: Response, next: NextFunction) => {
+  try {
+    const data = await AdminStore.getUsers();
+    res.json({
+      success: true,
+      data,
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+adminRouter.get('/registry', async (_req: Request, res: Response, next: NextFunction) => {
+  try {
+    const data = await AdminStore.getAllVersions();
     res.json({
       success: true,
       data,

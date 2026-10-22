@@ -1,0 +1,51 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "Analytics Dashboard",
+  "slug": "analytics-dashboard",
+  "version": "1.0.0",
+  "description": "Metric summary panels with sparkline indicators, trend percentages, and time-range filtering.",
+  "category": "Data & Dashboards",
+  "entryPoint": "src/components/AnalyticsDashboard.tsx",
+  "dependencies": {
+    "lucide-react": "^1.0.0"
+  },
+  "devDependencies": {},
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
+  },
+  "files": [
+    {
+      "path": "src/components/AnalyticsDashboard.tsx",
+      "name": "AnalyticsDashboard.tsx",
+      "content": "import React, { useState } from 'react';\nimport { Activity, TrendingUp, Users, Download, ShieldCheck } from 'lucide-react';\n\nexport interface AnalyticsDashboardProps {\n  timeRange?: '7d' | '30d';\n  onRangeChange?: (range: '7d' | '30d') => void;\n}\n\nexport const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({\n  timeRange = '7d',\n  onRangeChange,\n}) => {\n  const [range, setRange] = useState<'7d' | '30d'>(timeRange);\n\n  const handleRange = (newRange: '7d' | '30d') => {\n    setRange(newRange);\n    onRangeChange?.(newRange);\n  };\n\n  const stats = [\n    {\n      label: 'CLI Component Installs',\n      value: range === '7d' ? '3,842' : '15,920',\n      change: '+14.2%',\n      positive: true,\n      icon: Download,\n    },\n    {\n      label: 'Active Developer Nodes',\n      value: range === '7d' ? '1,280' : '5,420',\n      change: '+8.6%',\n      positive: true,\n      icon: Users,\n    },\n    {\n      label: 'Security Verification Pass',\n      value: '100%',\n      change: 'Zero CVEs',\n      positive: true,\n      icon: ShieldCheck,\n    },\n    {\n      label: 'Registry Uptime (p99)',\n      value: '99.98%',\n      change: '< 24ms latency',\n      positive: true,\n      icon: Activity,\n    },\n  ];\n\n  return (\n    <div className=\"w-full max-w-4xl mx-auto p-6 space-y-6 bg-[#11131A] border border-white/10 rounded-2xl shadow-xl\">\n      <div className=\"flex items-center justify-between pb-4 border-b border-white/10\">\n        <div>\n          <h3 className=\"text-base font-bold text-white flex items-center gap-2\">\n            <Activity className=\"w-4 h-4 text-indigo-400\" />\n            Registry Analytics & Telemetry\n          </h3>\n          <p className=\"text-xs text-gray-400 mt-0.5\">Real-time installation metrics and integrity pipeline health.</p>\n        </div>\n\n        <div className=\"flex items-center bg-[#171A23] border border-white/10 rounded-lg p-0.5 text-xs\">\n          <button\n            type=\"button\"\n            onClick={() => handleRange('7d')}\n            className={`px-3 py-1 rounded-md transition-all ${\n              range === '7d' ? 'bg-indigo-600 text-white font-semibold' : 'text-gray-400 hover:text-white'\n            }`}\n          >\n            7D\n          </button>\n          <button\n            type=\"button\"\n            onClick={() => handleRange('30d')}\n            className={`px-3 py-1 rounded-md transition-all ${\n              range === '30d' ? 'bg-indigo-600 text-white font-semibold' : 'text-gray-400 hover:text-white'\n            }`}\n          >\n            30D\n          </button>\n        </div>\n      </div>\n\n      <div className=\"grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4\">\n        {stats.map((s) => {\n          const Icon = s.icon;\n          return (\n            <div key={s.label} className=\"p-4 rounded-xl bg-[#171A23] border border-white/5 space-y-2\">\n              <div className=\"flex items-center justify-between text-gray-400\">\n                <span className=\"text-xs font-medium\">{s.label}</span>\n                <Icon className=\"w-4 h-4 text-indigo-400\" />\n              </div>\n              <div className=\"text-2xl font-bold font-mono text-white\">{s.value}</div>\n              <div className=\"flex items-center gap-1 text-[11px] font-medium text-emerald-400\">\n                <TrendingUp className=\"w-3 h-3\" />\n                <span>{s.change}</span>\n              </div>\n            </div>\n          );\n        })}\n      </div>\n    </div>\n  );\n};\nexport default AnalyticsDashboard;",
+      "language": "typescript",
+      "isEntry": true,
+      "integrity": "sha256-058007daa282a22b623ec0217b9c68e08378def4d932527deb9f932e26f5517a"
+    }
+  ],
+  "props": [
+    {
+      "name": "timeRange",
+      "type": "\"7d\" | \"30d\"",
+      "required": false,
+      "defaultValue": "\"7d\"",
+      "description": "Telemetry time aggregation window"
+    },
+    {
+      "name": "onRangeChange",
+      "type": "(range: \"7d\" | \"30d\") => void",
+      "required": false,
+      "description": "Callback when range toggle changes"
+    }
+  ],
+  "styling": {
+    "framework": "tailwind"
+  },
+  "license": "MIT",
+  "author": "VAC Team",
+  "integrity": "sha256-eca2eaa757455f315ea781b8380c3f49e3831b6f05a1a7ee36db1b962e81e31f",
+  "changelog": "Initial metrics layout with trend chips.",
+  "publishedAt": "2026-01-22T10:00:00.000Z",
+  "deprecated": false
+}

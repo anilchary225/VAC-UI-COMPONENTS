@@ -12,6 +12,8 @@ export interface IComponentVersion extends Document {
   integrityHash?: string;
   publishedAt: Date;
   publishedBy?: mongoose.Types.ObjectId;
+  deprecated?: boolean;
+  deprecationReason?: string;
 }
 
 const ComponentVersionSchema = new Schema<IComponentVersion>(
@@ -42,6 +44,8 @@ const ComponentVersionSchema = new Schema<IComponentVersion>(
     integrityHash: { type: String },
     publishedAt: { type: Date, default: Date.now },
     publishedBy: { type: Schema.Types.ObjectId, ref: 'User' },
+    deprecated: { type: Boolean, default: false },
+    deprecationReason: { type: String },
   },
   {
     timestamps: true,

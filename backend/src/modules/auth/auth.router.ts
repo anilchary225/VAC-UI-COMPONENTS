@@ -4,8 +4,12 @@ import { RegisterRequestSchema, LoginRequestSchema, UpdateProfileRequestSchema }
 import { validateBody } from '../../middleware/validate';
 import { authenticateUser } from '../../middleware/auth';
 import { AuthService } from './auth.service';
+import { oauthRouter } from './oauth.router';
 
 export const authRouter = Router();
+
+// OAuth Social Providers
+authRouter.use('/oauth', oauthRouter);
 
 // Register
 authRouter.post(

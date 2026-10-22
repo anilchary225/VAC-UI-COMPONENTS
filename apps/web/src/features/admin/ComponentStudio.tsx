@@ -265,6 +265,32 @@ export const ComponentStudio: React.FC<ComponentStudioProps> = ({
     }
   };
 
+  // Deprecate Release State & Handlers
+  const [deprecatingTarget, setDeprecatingTarget] = useState<{ version: string } | null>(null);
+  const [deprecationReasonInput, setDeprecationReasonInput] = useState('');
+  const [isDeprecating, setIsDeprecating] = useState(false);
+
+  const handleConfirmDeprecateRelease = async () => {
+    if (!deprecatingTarget) return;
+    setIsDeprecating(true);
+    setStatusMessage(null);
+    try {
+      await api.deprecateAdminRelease(slug, deprecatingTarget.version, deprecationReasonInput);
+      setStatusMessage({
+        text: `Release v${deprecatingTarget.version} has been marked as deprecated.`,
+        type: 'success',
+      });
+      const vers = await api.getAdminVersions(slug);
+      setVersionsList(vers);
+      setDeprecatingTarget(null);
+      setDeprecationReasonInput('');
+    } catch (err: any) {
+      setStatusMessage({ text: err.message || 'Deprecation failed.', type: 'error' });
+    } finally {
+      setIsDeprecating(false);
+    }
+  };
+
   // Add tag
   const handleAddTag = () => {
     if (newTagInput.trim() && !tags.includes(newTagInput.trim())) {
@@ -977,13 +1003,23 @@ export const ComponentStudio: React.FC<ComponentStudioProps> = ({
               </div>
             </div>
 
-            <div className="p-3.5 rounded-xl bg-purple-500/10 border border-purple-500/20 text-xs text-purple-300">
-              <span className="font-semibold">Immutability Notice:</span> Once published, release {publishVersion} cannot be overwritten. Any future modifications will be saved to draft and must be released under an incremented version number.
-            </div>
+            {/* Immutability Notice & Duplicate Safeguard */}
+            {versionsList.some((v) => v.version === publishVersion) ? (
+              <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-300 flex items-center gap-2">
+                <AlertTriangle className="w-4 h-4 shrink-0 text-amber-400" />
+                <span>
+                  Version <strong>{publishVersion}</strong> has already been published and is immutable. Please increment the version number before publishing a new release.
+                </span>
+              </div>
+            ) : (
+              <div className="p-3.5 rounded-xl bg-purple-500/10 border border-purple-500/20 text-xs text-purple-300">
+                <span className="font-semibold">Immutability Notice:</span> Once published, release {publishVersion} cannot be overwritten. Any future modifications will be saved to draft and must be released under an incremented version number.
+              </div>
+            )}
 
             <button
               onClick={handlePublishRelease}
-              disabled={isPublishing}
+              disabled={isPublishing || versionsList.some((v) => v.version === publishVersion)}
               className="px-6 py-2.5 rounded-2xl bg-[#5B4FF5] hover:bg-[#4F46E5] text-white text-xs font-semibold flex items-center gap-2 shadow-lg transition-colors disabled:opacity-50"
             >
               <Send className="w-3.5 h-3.5" />
@@ -996,10 +1032,15 @@ export const ComponentStudio: React.FC<ComponentStudioProps> = ({
       {/* TAB 6: RELEASES & HISTORY */}
       {activeTab === 'history' && (
         <div className="p-6 rounded-3xl bg-white dark:bg-[#11131A] border border-[#E8EAEF] dark:border-white/10 space-y-4">
-          <h3 className="text-base font-bold text-[#161722] dark:text-white flex items-center gap-2">
-            <History className="w-4 h-4 text-[#5B4FF5]" />
-            Immutable Version Releases
-          </h3>
+          <div className="flex items-center justify-between">
+            <h3 className="text-base font-bold text-[#161722] dark:text-white flex items-center gap-2">
+              <History className="w-4 h-4 text-[#5B4FF5]" />
+              Immutable Version Releases
+            </h3>
+            <span className="text-xs text-gray-400 font-mono">
+              {versionsList.length} {versionsList.length === 1 ? 'release' : 'releases'} published
+            </span>
+          </div>
 
           {versionsList.length === 0 ? (
             <div className="p-12 text-center text-xs text-gray-400 space-y-2">
@@ -1018,17 +1059,41 @@ export const ComponentStudio: React.FC<ComponentStudioProps> = ({
                       <span className="font-mono text-sm font-bold text-[#5B4FF5]">
                         v{ver.version}
                       </span>
-                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                        Published
-                      </span>
+                      {ver.deprecated ? (
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-medium">
+                          Deprecated
+                        </span>
+                      ) : (
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-medium">
+                          Published
+                        </span>
+                      )}
                     </div>
-                    <span className="text-xs text-gray-400">
-                      {ver.publishedAt ? new Date(ver.publishedAt).toLocaleDateString() : 'Active'}
-                    </span>
+                    <div className="flex items-center gap-3">
+                      <span className="text-xs text-gray-400">
+                        {ver.publishedAt ? new Date(ver.publishedAt).toLocaleDateString() : 'Active'}
+                      </span>
+                      {!ver.deprecated && (
+                        <button
+                          onClick={() => setDeprecatingTarget({ version: ver.version })}
+                          className="px-2.5 py-1 rounded-full text-[10px] border border-amber-500/30 text-amber-400 hover:bg-amber-500/10 transition-colors flex items-center gap-1 font-medium"
+                          title="Deprecate this release"
+                        >
+                          <AlertTriangle className="w-3 h-3" />
+                          <span>Deprecate</span>
+                        </button>
+                      )}
+                    </div>
                   </div>
                   <p className="text-xs text-gray-300">
                     {ver.changelog || 'Production component release.'}
                   </p>
+                  {ver.deprecated && (
+                    <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-[11px] text-amber-300 flex items-center gap-1.5">
+                      <AlertTriangle className="w-3.5 h-3.5 shrink-0 text-amber-400" />
+                      <span>Notice: {ver.deprecationReason || 'Marked as deprecated by catalog admin.'}</span>
+                    </div>
+                  )}
                   <div className="text-[11px] font-mono text-gray-500 flex items-center gap-4">
                     <span>{ver.files?.length || 0} files</span>
                     <span>
@@ -1037,6 +1102,60 @@ export const ComponentStudio: React.FC<ComponentStudioProps> = ({
                   </div>
                 </div>
               ))}
+            </div>
+          )}
+
+          {/* Deprecation Confirmation Modal */}
+          {deprecatingTarget && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
+              <div className="w-full max-w-md bg-white dark:bg-[#161722] rounded-3xl p-6 border border-[#E8EAEF] dark:border-white/10 shadow-2xl space-y-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2.5 rounded-2xl bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                    <AlertTriangle className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h4 className="text-base font-bold text-[#161722] dark:text-white">
+                      Deprecate Release v{deprecatingTarget.version}?
+                    </h4>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      Irreversible administrative action
+                    </p>
+                  </div>
+                </div>
+                <p className="text-xs text-gray-400 leading-relaxed">
+                  This will mark release <strong className="text-white">v{deprecatingTarget.version}</strong> as deprecated in the public registry and warn developers installing or inspecting this version. The immutable source code and manifest snapshot will be preserved in permanent storage and will NOT be deleted.
+                </p>
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-gray-300">
+                    Deprecation Reason or Migration Guidance (Optional)
+                  </label>
+                  <input
+                    type="text"
+                    value={deprecationReasonInput}
+                    onChange={(e) => setDeprecationReasonInput(e.target.value)}
+                    placeholder="e.g. Superceded by v1.1.0 with updated React 19 types"
+                    className="w-full text-xs p-3 rounded-2xl bg-gray-50 dark:bg-black/30 border border-[#E8EAEF] dark:border-white/10 text-white focus:outline-none"
+                  />
+                </div>
+                <div className="flex items-center justify-end gap-3 pt-2">
+                  <button
+                    onClick={() => {
+                      setDeprecatingTarget(null);
+                      setDeprecationReasonInput('');
+                    }}
+                    className="px-4 py-2 rounded-full text-xs font-semibold text-gray-400 hover:text-white transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleConfirmDeprecateRelease}
+                    disabled={isDeprecating}
+                    className="px-5 py-2 rounded-full bg-amber-500 hover:bg-amber-600 text-black text-xs font-semibold shadow-md transition-colors disabled:opacity-50"
+                  >
+                    {isDeprecating ? 'Deprecating...' : 'Confirm Deprecation'}
+                  </button>
+                </div>
+              </div>
             </div>
           )}
         </div>

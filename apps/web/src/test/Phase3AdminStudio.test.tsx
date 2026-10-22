@@ -80,4 +80,88 @@ describe('Phase 3 Admin Dashboard and Component Studio Frontend Tests', () => {
     expect(screen.getByRole('button', { name: /Reset State/i })).toBeInTheDocument();
     expect(screen.getByText('Test Preview Component')).toBeInTheDocument();
   });
+
+  it('renders AdminConfigure component with system diagnostics', async () => {
+    vi.spyOn(api, 'getAdminConfig').mockResolvedValueOnce({
+      version: '1.0.0',
+      nodeEnv: 'development',
+      port: 4000,
+      frontendUrl: 'http://localhost:5173',
+      database: { status: 'connected', type: 'MongoDB Atlas', activePool: true },
+      registryStorage: { driver: 'local', s3Configured: false, s3Bucket: null, s3Region: 'us-east-1' },
+      oauth: { github: true, google: true },
+      security: { jwtExpiresIn: '7d', bootstrapOpen: false },
+      stats: { adminCount: 1, totalUsers: 3, totalComponents: 9, publishedCount: 9 },
+    });
+
+    const { AdminConfigure } = await import('../features/admin/AdminConfigure');
+    render(<AdminConfigure />);
+
+    await waitFor(() => {
+      expect(screen.getByText('System & Platform Configuration')).toBeInTheDocument();
+      expect(screen.getByText('Database Cluster')).toBeInTheDocument();
+      expect(screen.getByText('Registry Storage')).toBeInTheDocument();
+      expect(screen.getByText('OAuth 2.0 Social Login Providers')).toBeInTheDocument();
+    });
+  });
+
+  it('renders AdminRegistryReleases component with release list and empty state', async () => {
+    vi.spyOn(api, 'getAdminRegistry').mockResolvedValueOnce([
+      {
+        componentSlug: 'interactive-counter',
+        version: '1.0.0',
+        publishedAt: new Date().toISOString(),
+        manifestHash: 'a1b2c3d4e5f6',
+        deprecated: false,
+      },
+    ]);
+
+    const { AdminRegistryReleases } = await import('../features/admin/AdminRegistryReleases');
+    const { unmount } = render(<AdminRegistryReleases />);
+
+    await waitFor(() => {
+      expect(screen.getByText('interactive-counter')).toBeInTheDocument();
+      expect(screen.getByText('v1.0.0')).toBeInTheDocument();
+    });
+
+    unmount();
+
+    // Test empty state
+    vi.spyOn(api, 'getAdminRegistry').mockResolvedValueOnce([]);
+    render(<AdminRegistryReleases />);
+    await waitFor(() => {
+      expect(screen.getByText(/No releases published to the registry yet/i)).toBeInTheDocument();
+    });
+  });
+
+  it('renders AdminUsers component with user directory and empty state', async () => {
+    vi.spyOn(api, 'getAdminUsers').mockResolvedValueOnce([
+      {
+        id: 'usr-1',
+        name: 'Lead Developer',
+        email: 'lead@vac.dev',
+        role: 'admin',
+        hasGithub: true,
+        hasGoogle: false,
+        createdAt: new Date().toISOString(),
+      },
+    ]);
+
+    const { AdminUsers } = await import('../features/admin/AdminUsers');
+    const { unmount } = render(<AdminUsers />);
+
+    await waitFor(() => {
+      expect(screen.getByText('Lead Developer')).toBeInTheDocument();
+      expect(screen.getByText('lead@vac.dev')).toBeInTheDocument();
+    });
+
+    unmount();
+
+    // Test empty state
+    vi.spyOn(api, 'getAdminUsers').mockResolvedValueOnce([]);
+    render(<AdminUsers />);
+    await waitFor(() => {
+      expect(screen.getByText(/No registered users found/i)).toBeInTheDocument();
+    });
+  });
 });

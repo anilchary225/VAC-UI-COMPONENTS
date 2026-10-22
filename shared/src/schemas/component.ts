@@ -18,6 +18,7 @@ export const ComponentFileSchema = z.object({
   content: z.string(),
   language: z.enum(['typescript', 'javascript', 'css', 'json']),
   isEntry: z.boolean().default(false),
+  integrity: z.string().optional(),
 });
 export type ComponentFile = z.infer<typeof ComponentFileSchema>;
 

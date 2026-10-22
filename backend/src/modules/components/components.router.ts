@@ -123,17 +123,31 @@ componentsRouter.get('/:slug', async (req: Request, res: Response, next: NextFun
 
     if (db.status === 'connected') {
       try {
-        const comp = await ComponentModel.findOne({ slug }).lean();
+        const comp = await ComponentModel.findOne({
+          slug,
+          status: { $in: ['published', 'deprecated'] },
+        }).lean();
         if (comp) {
           const versions = await ComponentVersionModel.find({ componentSlug: slug })
             .sort({ publishedAt: -1 })
             .lean();
           const latestRelease = versions[0];
 
+          // Strip draft and administrative-only fields from public response
+          const {
+            draftFiles,
+            draftDependencies,
+            draftPeerDependencies,
+            draftProps,
+            draftChangelog,
+            lastValidationResult,
+            ...publicData
+          } = comp as any;
+
           return res.json({
             success: true,
             data: {
-              ...comp,
+              ...publicData,
               id: (comp as any)._id.toString(),
               latestRelease,
               versions,
@@ -146,12 +160,22 @@ componentsRouter.get('/:slug', async (req: Request, res: Response, next: NextFun
     }
 
     const memComp = await AdminStore.findBySlugOrId(slug);
-    if (memComp && memComp.status === 'published') {
+    if (memComp && (memComp.status === 'published' || memComp.status === 'deprecated')) {
       const versions = await AdminStore.getVersions(slug);
+      const {
+        draftFiles,
+        draftDependencies,
+        draftPeerDependencies,
+        draftProps,
+        draftChangelog,
+        lastValidationResult,
+        ...publicMemData
+      } = memComp as any;
+
       return res.json({
         success: true,
         data: {
-          ...memComp,
+          ...publicMemData,
           versions,
           latestRelease: versions[0],
         },

@@ -4,13 +4,18 @@
   "private": true,
   "description": "VAC-UI-COMPONENTS Registry and Static Release Manifest Store",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "test": "vitest run"
   },
   "dependencies": {
     "@vac/shared": "workspace:*"
   },
   "devDependencies": {
-    "typescript": "^5.7.3"
+    "@types/node": "^22.20.5",
+    "typescript": "^5.7.3",
+    "vitest": "^3.0.5"
   }
 }

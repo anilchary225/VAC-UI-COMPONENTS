@@ -19,6 +19,8 @@ describe('Admin Dashboard and Component Studio Integration Tests', () => {
     { expiresIn: '1h' }
   );
 
+  const testSlug = 'studio-test-' + Math.random().toString(36).substring(2, 8);
+
   describe('1. Admin Access & Security Authorization', () => {
     it('rejects unauthenticated requests to /api/admin/overview with 401', async () => {
       const res = await request(app).get('/api/admin/overview');
@@ -57,7 +59,6 @@ describe('Admin Dashboard and Component Studio Integration Tests', () => {
   });
 
   describe('2. Component Draft Creation & Slug Validation', () => {
-    const testSlug = 'studio-test-badge';
 
     it('successfully creates a draft component with starter files', async () => {
       const res = await request(app)
@@ -96,7 +97,7 @@ describe('Admin Dashboard and Component Studio Integration Tests', () => {
     });
 
     it('draft does NOT appear in public catalog GET /api/components', async () => {
-      const res = await request(app).get('/api/components?search=studio-test-badge');
+      const res = await request(app).get(`/api/components?search=${testSlug}`);
       expect(res.status).toBe(200);
       const found = res.body.data.find((c: any) => c.slug === testSlug);
       expect(found).toBeUndefined();
@@ -104,7 +105,6 @@ describe('Admin Dashboard and Component Studio Integration Tests', () => {
   });
 
   describe('3. Validation Pipeline & Safety Checks', () => {
-    const testSlug = 'studio-test-badge';
 
     it('detects unsafe path traversal in draft files', async () => {
       // Inject unsafe file path
@@ -174,7 +174,6 @@ describe('Admin Dashboard and Component Studio Integration Tests', () => {
   });
 
   describe('4. Component Publishing, Immutability & Public Integration', () => {
-    const testSlug = 'studio-test-badge';
 
     it('publishes valid component, creates immutable version, and transitions status', async () => {
       // Fix draft to be valid
@@ -237,7 +236,7 @@ export default StudioTestBadge;
     });
 
     it('published component now appears in public catalog', async () => {
-      const res = await request(app).get('/api/components?search=studio-test-badge');
+      const res = await request(app).get(`/api/components?search=${testSlug}`);
       expect(res.status).toBe(200);
       const found = res.body.data.find((c: any) => c.slug === testSlug);
       expect(found).toBeDefined();
@@ -285,6 +284,49 @@ export default StudioTestBadge;
       expect(res.body.data).toHaveProperty('categoryDistribution');
       expect(res.body.data).toHaveProperty('statusDistribution');
       expect(res.body.data).toHaveProperty('totalReleases');
+    });
+  });
+
+  describe('6. System Configuration, Users & Registry Releases', () => {
+    it('rejects unauthorized requests to /api/admin/config', async () => {
+      const res = await request(app).get('/api/admin/config');
+      expect(res.status).toBe(401);
+    });
+
+    it('returns system configuration without exposing secrets to authenticated admin', async () => {
+      const res = await request(app)
+        .get('/api/admin/config')
+        .set('Authorization', `Bearer ${adminToken}`);
+
+      expect(res.status).toBe(200);
+      expect(res.body.success).toBe(true);
+      expect(res.body.data).toHaveProperty('database');
+      expect(res.body.data).toHaveProperty('registryStorage');
+      expect(res.body.data).toHaveProperty('oauth');
+      expect(res.body.data.oauth).toHaveProperty('github');
+      expect(res.body.data.oauth).toHaveProperty('google');
+      expect(res.body.data).not.toHaveProperty('JWT_SECRET');
+      expect(res.body.data).not.toHaveProperty('passwordHash');
+    });
+
+    it('returns user directory accounts to authenticated admin', async () => {
+      const res = await request(app)
+        .get('/api/admin/users')
+        .set('Authorization', `Bearer ${adminToken}`);
+
+      expect(res.status).toBe(200);
+      expect(res.body.success).toBe(true);
+      expect(Array.isArray(res.body.data)).toBe(true);
+    });
+
+    it('returns registry release versions to authenticated admin', async () => {
+      const res = await request(app)
+        .get('/api/admin/registry')
+        .set('Authorization', `Bearer ${adminToken}`);
+
+      expect(res.status).toBe(200);
+      expect(res.body.success).toBe(true);
+      expect(Array.isArray(res.body.data)).toBe(true);
     });
   });
 });

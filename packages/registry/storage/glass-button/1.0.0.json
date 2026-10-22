@@ -1,0 +1,52 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "Glass Pill Button",
+  "slug": "glass-button",
+  "version": "1.0.0",
+  "description": "High-contrast backdrop blurred action button with ambient glow and tactile click physics.",
+  "category": "Buttons & Controls",
+  "entryPoint": "src/components/GlassButton.tsx",
+  "dependencies": {
+    "lucide-react": "^1.0.0"
+  },
+  "devDependencies": {},
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
+  },
+  "files": [
+    {
+      "path": "src/components/GlassButton.tsx",
+      "name": "GlassButton.tsx",
+      "content": "import React from 'react';\nimport { Sparkles } from 'lucide-react';\n\nexport interface GlassButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {\n  variant?: 'primary' | 'secondary';\n  glow?: boolean;\n}\n\nexport const GlassButton: React.FC<GlassButtonProps> = ({\n  children = 'Glass Pill Button',\n  variant = 'primary',\n  glow = true,\n  className = '',\n  ...props\n}) => {\n  return (\n    <button\n      {...props}\n      className={`px-5 py-2.5 rounded-full text-xs font-semibold backdrop-blur-xl border transition-all cursor-pointer flex items-center justify-center gap-2 active:scale-95 disabled:opacity-50 ${\n        variant === 'primary'\n          ? 'bg-white/10 hover:bg-white/20 text-white border-white/20 shadow-lg shadow-indigo-500/10'\n          : 'bg-black/30 hover:bg-black/40 text-gray-200 border-white/10'\n      } ${glow ? 'hover:shadow-indigo-500/25 hover:border-indigo-500/40' : ''} ${className}`}\n    >\n      <Sparkles className=\"w-3.5 h-3.5 text-indigo-300\" />\n      <span>{children}</span>\n    </button>\n  );\n};\nexport default GlassButton;",
+      "language": "typescript",
+      "isEntry": true,
+      "integrity": "sha256-195cbf3aa8127d65538131ba5909ff4a3ee8517a879057d2b46a1ce2ce8ee1c4"
+    }
+  ],
+  "props": [
+    {
+      "name": "variant",
+      "type": "\"primary\" | \"secondary\"",
+      "required": false,
+      "defaultValue": "\"primary\"",
+      "description": "Visual treatment variant"
+    },
+    {
+      "name": "glow",
+      "type": "boolean",
+      "required": false,
+      "defaultValue": "true",
+      "description": "Whether to show ambient glow on hover"
+    }
+  ],
+  "styling": {
+    "framework": "tailwind"
+  },
+  "license": "MIT",
+  "author": "VAC Team",
+  "integrity": "sha256-b5f053dc1f5a9f2f35626d3d0fdd9810710f4d074ae300e1bac034361b840b43",
+  "changelog": "Initial version with backdrop blur and hover glow.",
+  "publishedAt": "2026-02-01T10:00:00.000Z",
+  "deprecated": false
+}

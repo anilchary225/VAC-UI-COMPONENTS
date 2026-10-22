@@ -1,0 +1,51 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "Notification Center",
+  "slug": "notification-center",
+  "version": "1.0.0",
+  "description": "Actionable alert feed with read/unread markers, category tabs, and mark-all-read shortcuts.",
+  "category": "Feedback & Overlays",
+  "entryPoint": "src/components/NotificationCenter.tsx",
+  "dependencies": {
+    "lucide-react": "^1.0.0",
+    "motion/react": "^12.0.0"
+  },
+  "devDependencies": {},
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
+  },
+  "files": [
+    {
+      "path": "src/components/NotificationCenter.tsx",
+      "name": "NotificationCenter.tsx",
+      "content": "import React, { useState } from 'react';\nimport { motion, AnimatePresence } from 'motion/react';\nimport { Bell, X, ShieldAlert, Info, Sparkles } from 'lucide-react';\n\nexport interface NotificationItem {\n  id: string | number;\n  title: string;\n  time: string;\n  unread: boolean;\n  type?: 'info' | 'alert' | 'release';\n}\n\nexport interface NotificationCenterProps {\n  initialNotifications?: NotificationItem[];\n  onMarkAllRead?: () => void;\n}\n\nexport const NotificationCenter: React.FC<NotificationCenterProps> = ({\n  initialNotifications = [\n    { id: 1, title: 'CLI v0.1.0 published with zero-trust integrity verification', time: '10m ago', unread: true, type: 'release' },\n    { id: 2, title: 'Animated Login Form upgraded to Motion React 12', time: '2h ago', unread: true, type: 'info' },\n    { id: 3, title: 'Component security audit completed with 0 errors', time: '1d ago', unread: false, type: 'alert' },\n  ],\n  onMarkAllRead,\n}) => {\n  const [notifications, setNotifications] = useState<NotificationItem[]>(initialNotifications);\n\n  const markAllRead = () => {\n    setNotifications((prev) => prev.map((n) => ({ ...n, unread: false })));\n    onMarkAllRead?.();\n  };\n\n  const removeNotification = (id: string | number) => {\n    setNotifications((prev) => prev.filter((n) => n.id !== id));\n  };\n\n  const unreadCount = notifications.filter((n) => n.unread).length;\n\n  return (\n    <div className=\"w-full max-w-md mx-auto p-5 rounded-2xl bg-[#11131A] border border-white/10 shadow-2xl space-y-4\">\n      <div className=\"flex items-center justify-between pb-3 border-b border-white/10\">\n        <div className=\"flex items-center gap-2 text-sm font-bold text-white\">\n          <Bell className=\"w-4 h-4 text-indigo-400\" />\n          <span>Notifications</span>\n          {unreadCount > 0 && (\n            <span className=\"w-5 h-5 rounded-full bg-indigo-600 text-white text-[10px] flex items-center justify-center font-bold\">\n              {unreadCount}\n            </span>\n          )}\n        </div>\n        {unreadCount > 0 && (\n          <button\n            type=\"button\"\n            onClick={markAllRead}\n            className=\"text-xs text-indigo-400 hover:text-indigo-300 font-medium transition-colors\"\n          >\n            Mark all read\n          </button>\n        )}\n      </div>\n\n      <div className=\"space-y-2\">\n        <AnimatePresence>\n          {notifications.map((item) => (\n            <motion.div\n              key={item.id}\n              initial={{ opacity: 0, y: 6 }}\n              animate={{ opacity: 1, y: 0 }}\n              exit={{ opacity: 0, height: 0, overflow: 'hidden' }}\n              className={`p-3 rounded-xl border text-xs flex items-start justify-between gap-3 transition-colors ${\n                item.unread\n                  ? 'bg-indigo-500/10 border-indigo-500/25 text-white'\n                  : 'bg-[#171A23] border-white/5 text-gray-400'\n              }`}\n            >\n              <div className=\"flex items-start gap-2.5\">\n                {item.type === 'release' ? (\n                  <Sparkles className=\"w-4 h-4 text-indigo-400 shrink-0 mt-0.5\" />\n                ) : item.type === 'alert' ? (\n                  <ShieldAlert className=\"w-4 h-4 text-amber-400 shrink-0 mt-0.5\" />\n                ) : (\n                  <Info className=\"w-4 h-4 text-cyan-400 shrink-0 mt-0.5\" />\n                )}\n                <div>\n                  <p className=\"font-medium text-xs text-white leading-snug\">{item.title}</p>\n                  <span className=\"text-[10px] text-gray-500 mt-1 block\">{item.time}</span>\n                </div>\n              </div>\n              <button\n                type=\"button\"\n                onClick={() => removeNotification(item.id)}\n                className=\"text-gray-500 hover:text-gray-300 p-0.5\"\n                aria-label=\"Dismiss notification\"\n              >\n                <X className=\"w-3.5 h-3.5\" />\n              </button>\n            </motion.div>\n          ))}\n        </AnimatePresence>\n        {notifications.length === 0 && (\n          <div className=\"py-6 text-center text-xs text-gray-500\">\n            All notifications caught up!\n          </div>\n        )}\n      </div>\n    </div>\n  );\n};\nexport default NotificationCenter;",
+      "language": "typescript",
+      "isEntry": true,
+      "integrity": "sha256-a1afa8f6c32fd0f0e713ed676324f18cea0a9ebe7813e3f06b5b9e7bb2bb0271"
+    }
+  ],
+  "props": [
+    {
+      "name": "initialNotifications",
+      "type": "NotificationItem[]",
+      "required": false,
+      "description": "Seed array of notification objects"
+    },
+    {
+      "name": "onMarkAllRead",
+      "type": "() => void",
+      "required": false,
+      "description": "Callback when mark-all-read is clicked"
+    }
+  ],
+  "styling": {
+    "framework": "tailwind"
+  },
+  "license": "MIT",
+  "author": "VAC Team",
+  "integrity": "sha256-fcf3726537f4125ee6778bcf79c8161ed76c997d7d394bb74ea962b708cb8aa4",
+  "changelog": "Initial version with animated dismissals.",
+  "publishedAt": "2026-01-25T10:00:00.000Z",
+  "deprecated": false
+}
