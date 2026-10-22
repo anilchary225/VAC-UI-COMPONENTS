@@ -72,7 +72,7 @@ export const AdminComponentsTable: React.FC<AdminComponentsTableProps> = ({
                 setPage(1);
               }}
               placeholder="Filter by name, slug, or tag..."
-              className="bg-white dark:bg-[#11131A] border border-[#E8EAEF] dark:border-white/10 text-xs rounded-2xl pl-8 pr-4 py-2 focus:outline-none focus:border-[#5B4FF5] text-[#161722] dark:text-white w-64 placeholder-gray-400"
+              className="bg-white dark:bg-[#11131A] border border-[#E8EAEF] dark:border-white/10 text-xs rounded-2xl pl-8 pr-4 py-2 focus:outline-none focus:border-[#5B4FF5] text-[#161722] dark:text-white w-full sm:w-64 placeholder-gray-400"
             />
           </div>
 
@@ -112,7 +112,7 @@ export const AdminComponentsTable: React.FC<AdminComponentsTableProps> = ({
 
         <button
           onClick={onCreateNew}
-          className="px-4 py-2 rounded-2xl bg-[#5B4FF5] hover:bg-[#4F46E5] text-white text-xs font-semibold flex items-center gap-1.5 shadow-md transition-colors"
+          className="self-start sm:self-auto px-4 py-2 rounded-2xl bg-[#5B4FF5] hover:bg-[#4F46E5] text-white text-xs font-semibold flex items-center gap-1.5 shadow-md transition-colors shrink-0"
         >
           <Plus className="w-3.5 h-3.5" />
           <span>Create Component</span>
@@ -120,14 +120,15 @@ export const AdminComponentsTable: React.FC<AdminComponentsTableProps> = ({
       </div>
 
       {/* Components Table */}
-      <div className="rounded-3xl border border-[#E8EAEF] dark:border-white/10 bg-white dark:bg-[#11131A] overflow-hidden shadow-xs">
-        <div className="grid grid-cols-12 gap-3 px-6 py-3.5 bg-gray-50/70 dark:bg-white/[0.02] border-b border-[#E8EAEF] dark:border-white/10 text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-          <div className="col-span-5">Component</div>
-          <div className="col-span-2">Category</div>
-          <div className="col-span-2">Version / Status</div>
-          <div className="col-span-2">Last Updated</div>
-          <div className="col-span-1 text-right">Action</div>
-        </div>
+      <div className="rounded-3xl border border-[#E8EAEF] dark:border-white/10 bg-white dark:bg-[#11131A] overflow-x-auto shadow-xs">
+        <div className="min-w-[700px]">
+          <div className="grid grid-cols-12 gap-3 px-6 py-3.5 bg-gray-50/70 dark:bg-white/[0.02] border-b border-[#E8EAEF] dark:border-white/10 text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+            <div className="col-span-5">Component</div>
+            <div className="col-span-2">Category</div>
+            <div className="col-span-2">Version / Status</div>
+            <div className="col-span-2">Last Updated</div>
+            <div className="col-span-1 text-right">Action</div>
+          </div>
 
         <div className="divide-y divide-[#E8EAEF] dark:divide-white/[0.05]">
           {isLoading ? (
@@ -207,6 +208,7 @@ export const AdminComponentsTable: React.FC<AdminComponentsTableProps> = ({
             ))
           )}
         </div>
+      </div>
 
         {/* Pagination Bar */}
         {totalPages > 1 && (

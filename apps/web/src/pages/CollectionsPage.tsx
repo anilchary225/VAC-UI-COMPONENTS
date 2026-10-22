@@ -248,7 +248,7 @@ export const CollectionsPage: React.FC = () => {
       ) : (
         /* Overview of All Collections */
         <div className="space-y-6">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
               <h1 className="text-2xl font-bold tracking-tight text-[#161722] dark:text-white">
                 Custom Collections
@@ -259,7 +259,7 @@ export const CollectionsPage: React.FC = () => {
             </div>
             <button
               onClick={() => setCreateModalOpen(true)}
-              className="px-4 py-2 rounded-full bg-[#181A25] hover:bg-black text-white text-xs font-medium flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
+              className="self-start sm:self-auto px-4 py-2 rounded-full bg-[#181A25] hover:bg-black text-white text-xs font-medium flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
             >
               <Plus className="w-4 h-4" />
               New Collection
@@ -346,8 +346,14 @@ export const CollectionsPage: React.FC = () => {
 
       {/* Create Collection Modal */}
       {createModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-          <div className="w-full max-w-md bg-white dark:bg-[#11131A] rounded-2xl p-6 border border-[#E8EAEF] dark:border-white/10 space-y-4 shadow-2xl">
+        <div
+          onClick={() => setCreateModalOpen(false)}
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-xs animate-fade-in"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-md bg-white dark:bg-[#11131A] rounded-2xl p-5 sm:p-6 border border-[#E8EAEF] dark:border-white/10 space-y-4 shadow-2xl max-h-[92vh] overflow-y-auto"
+          >
             <div className="flex items-center justify-between">
               <h3 className="text-base font-bold text-[#161722] dark:text-white">Create New Collection</h3>
               <button onClick={() => setCreateModalOpen(false)} className="text-gray-400 hover:text-gray-600">
@@ -405,8 +411,14 @@ export const CollectionsPage: React.FC = () => {
 
       {/* Edit Collection Modal */}
       {editModalCol && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-          <div className="w-full max-w-md bg-white dark:bg-[#11131A] rounded-2xl p-6 border border-[#E8EAEF] dark:border-white/10 space-y-4 shadow-2xl">
+        <div
+          onClick={() => setEditModalCol(null)}
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-xs animate-fade-in"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-md bg-white dark:bg-[#11131A] rounded-2xl p-5 sm:p-6 border border-[#E8EAEF] dark:border-white/10 space-y-4 shadow-2xl max-h-[92vh] overflow-y-auto"
+          >
             <div className="flex items-center justify-between">
               <h3 className="text-base font-bold text-[#161722] dark:text-white">Rename Collection</h3>
               <button onClick={() => setEditModalCol(null)} className="text-gray-400 hover:text-gray-600">

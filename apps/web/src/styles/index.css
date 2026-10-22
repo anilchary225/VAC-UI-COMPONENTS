@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  --twilight-bg: #F5F6FA;
+  --twilight-bg: #F8F9FC;
   --twilight-card: #FFFFFF;
   --twilight-card-border: #E8EAEF;
   --twilight-text: #161722;

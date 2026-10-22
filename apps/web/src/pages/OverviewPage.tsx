@@ -191,15 +191,15 @@ export const OverviewPage: React.FC = () => {
   const displayComponents = components.length > 0 ? components : FALLBACK_COMPONENTS;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-7">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-7">
       {/* Welcome Banner with Twilight Gradient */}
-      <div className="relative rounded-3xl overflow-hidden border border-purple-500/20 bg-gradient-to-r from-[#291A57] via-[#211545] to-[#170E33] p-8 text-white shadow-xl">
+      <div className="relative rounded-3xl overflow-hidden border border-purple-500/20 bg-gradient-to-r from-[#291A57] via-[#211545] to-[#170E33] p-5 sm:p-8 text-white shadow-xl">
         <div className="relative z-10 max-w-2xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/20 border border-purple-400/30 text-purple-200 text-xs font-mono mb-4">
-            <Sparkles className="w-3.5 h-3.5 text-purple-300" />
-            <span>VAC-UI-COMPONENTS · Developer Platform v1.0.0</span>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/20 border border-purple-400/30 text-purple-200 text-xs font-mono mb-4 max-w-full truncate">
+            <Sparkles className="w-3.5 h-3.5 text-purple-300 shrink-0" />
+            <span className="truncate">VAC-UI-COMPONENTS · Developer Platform v1.0.0</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-white mb-3">
+          <h1 className="text-2xl sm:text-4xl font-bold tracking-tight text-white mb-3">
             Minimal, production-ready React components.
           </h1>
           <p className="text-xs sm:text-sm text-purple-100/80 leading-relaxed mb-6 font-normal">
@@ -216,13 +216,13 @@ export const OverviewPage: React.FC = () => {
             </Link>
 
             {/* Quick Install snippet */}
-            <div className="flex items-center gap-2 bg-black/40 border border-white/10 rounded-full px-4 py-2 font-mono text-xs text-gray-300">
+            <div className="flex items-center gap-2 bg-black/40 border border-white/10 rounded-full px-3 sm:px-4 py-2 font-mono text-xs text-gray-300 max-w-full overflow-hidden">
               <Terminal className="w-3.5 h-3.5 text-purple-300 shrink-0" />
-              <span>{installCommand}</span>
+              <span className="truncate">{installCommand}</span>
               <button
                 onClick={copyToClipboard}
                 title="Copy installation command"
-                className="ml-2 text-gray-400 hover:text-white transition-colors cursor-pointer"
+                className="ml-auto sm:ml-2 text-gray-400 hover:text-white transition-colors cursor-pointer shrink-0"
               >
                 {copiedCmd ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
               </button>
@@ -334,12 +334,12 @@ export const OverviewPage: React.FC = () => {
 
       {/* Recently Viewed Resume Bar (when user has recent activity) */}
       {history.length > 0 && (
-        <div className="p-4 rounded-2xl bg-white dark:bg-[#11131A] border border-[#E8EAEF] dark:border-white/10 flex items-center justify-between gap-4">
+        <div className="p-3.5 sm:p-4 rounded-2xl bg-white dark:bg-[#11131A] border border-[#E8EAEF] dark:border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
           <div className="flex items-center gap-2 text-xs font-semibold text-[#161722] dark:text-white shrink-0">
             <Clock className="w-4 h-4 text-[#5B4FF5]" />
             <span>Recently Viewed:</span>
           </div>
-          <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5">
+          <div className="flex items-center gap-2 overflow-x-auto py-0.5 min-w-0">
             {history.slice(0, 5).map((it) => (
               <Link
                 key={it.slug}
@@ -352,7 +352,7 @@ export const OverviewPage: React.FC = () => {
           </div>
           <Link
             to="/history"
-            className="text-xs text-[#5B4FF5] hover:underline shrink-0 font-medium"
+            className="text-xs text-[#5B4FF5] hover:underline shrink-0 font-medium self-end sm:self-auto"
           >
             All history →
           </Link>

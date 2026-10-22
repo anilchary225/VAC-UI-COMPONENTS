@@ -369,7 +369,7 @@ export const ComponentsCatalogPage: React.FC = () => {
   });
 
   return (
-    <div className="min-h-full bg-[#F8F9FC] dark:bg-[#0A0B10] text-[#161722] dark:text-[#E4E4E7] px-6 sm:px-10 lg:px-14 py-10 transition-colors duration-200 selection:bg-purple-500/30">
+    <div className="min-h-full bg-transparent text-[#161722] dark:text-[#E4E4E7] px-4 sm:px-8 lg:px-12 py-6 sm:py-10 selection:bg-purple-500/30">
       <div className="max-w-[1560px] mx-auto space-y-8">
         
         {/* ============================================================== */}
@@ -377,25 +377,25 @@ export const ComponentsCatalogPage: React.FC = () => {
         {/* ============================================================== */}
         <div className="space-y-3">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-[#5B4FF5] text-xs font-mono">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>VAC-UI-COMPONENTS · Official Library</span>
+            <Sparkles className="w-3.5 h-3.5 shrink-0" />
+            <span className="truncate">VAC-UI-COMPONENTS · Official Library</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#161722] dark:text-white transition-colors">
+          <h1 className="text-2xl sm:text-4xl font-bold tracking-tight text-[#161722] dark:text-white transition-colors">
             UI Components
           </h1>
-          <p className="text-sm text-[#6B7280] dark:text-[#8E8F99] max-w-2xl leading-relaxed font-normal transition-colors">
+          <p className="text-xs sm:text-sm text-[#6B7280] dark:text-[#8E8F99] max-w-2xl leading-relaxed font-normal transition-colors">
             Production-ready React components built with TypeScript, Tailwind CSS, and Motion.
             Inspect properties, copy source code, or install directly using the VAC CLI.
           </p>
         </div>
 
         {/* ============================================================== */}
-        {/* CATEGORIES GRID (6-column layout with unique VAC vocabulary)  */}
+        {/* CATEGORIES GRID (Scrollable on small mobile, 6-col on desktop) */}
         {/* ============================================================== */}
-        <div className="pt-2 pb-8 border-b border-[#E8EAEF] dark:border-white/[0.08] transition-colors">
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-x-8 gap-y-4">
+        <div className="pt-2 pb-6 border-b border-[#E8EAEF] dark:border-white/[0.08] transition-colors overflow-x-auto scrollbar-none">
+          <div className="min-w-[560px] sm:min-w-0 grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-6 gap-x-6 sm:gap-x-8 gap-y-3 sm:gap-y-4">
             {CATEGORY_COLUMNS.map((column, colIdx) => (
-              <div key={colIdx} className="space-y-2.5">
+              <div key={colIdx} className="space-y-2 sm:space-y-2.5">
                 {column.map((cat) => {
                   const isActive = (isAllCategory(selectedCategory) && isAllCategory(cat)) || selectedCategory === cat;
                   return (

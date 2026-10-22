@@ -98,8 +98,8 @@ export const FavoritesPage: React.FC = () => {
     });
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-[#161722] dark:text-white">
             My Favorites
@@ -108,8 +108,8 @@ export const FavoritesPage: React.FC = () => {
             Your bookmarked components for fast reference and implementation ({favorites.length} saved).
           </p>
         </div>
-        <Link to="/components">
-          <button className="px-4 py-2 rounded-full border border-gray-200 dark:border-white/10 text-xs font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 inline-flex items-center gap-1.5 transition-all">
+        <Link to="/components" className="self-start sm:self-auto">
+          <button className="px-4 py-2 rounded-full border border-gray-200 dark:border-white/10 text-xs font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 inline-flex items-center gap-1.5 transition-all cursor-pointer">
             Browse Catalog <ArrowRight className="w-3.5 h-3.5" />
           </button>
         </Link>

@@ -2,6 +2,7 @@ import React, { useState, Component, ErrorInfo, ReactNode } from 'react';
 import { Monitor, Tablet, Smartphone, Sun, Moon, RotateCcw, AlertTriangle, CheckCircle2 } from 'lucide-react';
 import { ComponentLivePreview } from '../../components/previews/ComponentLivePreview';
 import { ComponentFile, ComponentProp } from '@vac/shared';
+import { useTheme } from '../theme/themeStore';
 
 interface ErrorBoundaryProps {
   children: ReactNode;
@@ -70,9 +71,12 @@ export const StudioDraftPreview: React.FC<StudioDraftPreviewProps> = ({
   files,
   syntaxError,
 }) => {
+  const { theme: globalTheme } = useTheme();
   const [viewport, setViewport] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
-  const [previewTheme, setPreviewTheme] = useState<'dark' | 'light'>('dark');
+  const [localTheme, setLocalTheme] = useState<'dark' | 'light' | null>(null);
   const [resetKey, setResetKey] = useState(0);
+
+  const activeTheme = localTheme ?? globalTheme;
 
   const officialSlugs = [
     'animated-login-form',
@@ -103,9 +107,9 @@ export const StudioDraftPreview: React.FC<StudioDraftPreviewProps> = ({
     <div className="space-y-4">
       {/* Top Preview Controls */}
       <div className="flex flex-wrap items-center justify-between gap-3 p-3 rounded-2xl bg-white dark:bg-[#11131A] border border-[#E8EAEF] dark:border-white/10 text-xs">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <span className="font-semibold text-gray-500 dark:text-gray-400">Viewport:</span>
-          <div className="flex items-center bg-gray-100 dark:bg-white/5 rounded-xl p-1">
+          <div className="flex items-center bg-gray-100 dark:bg-white/5 rounded-xl p-1 flex-wrap gap-0.5">
             <button
               onClick={() => setViewport('desktop')}
               className={`px-2.5 py-1 rounded-lg flex items-center gap-1.5 transition-colors ${
@@ -126,7 +130,7 @@ export const StudioDraftPreview: React.FC<StudioDraftPreviewProps> = ({
               }`}
             >
               <Tablet className="w-3.5 h-3.5" />
-              <span>Tablet (580px)</span>
+              <span>Tablet</span>
             </button>
             <button
               onClick={() => setViewport('mobile')}
@@ -137,23 +141,28 @@ export const StudioDraftPreview: React.FC<StudioDraftPreviewProps> = ({
               }`}
             >
               <Smartphone className="w-3.5 h-3.5" />
-              <span>Mobile (340px)</span>
+              <span>Mobile</span>
             </button>
           </div>
         </div>
 
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2.5 flex-wrap">
           <button
-            onClick={() => setPreviewTheme(previewTheme === 'dark' ? 'light' : 'dark')}
-            className="px-3 py-1.5 rounded-xl border border-[#E8EAEF] dark:border-white/10 bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 text-gray-700 dark:text-gray-300 flex items-center gap-1.5 transition-colors"
+            onClick={() => setLocalTheme(activeTheme === 'dark' ? 'light' : 'dark')}
+            className="px-3 py-1.5 rounded-xl border border-[#E8EAEF] dark:border-white/10 bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 text-gray-700 dark:text-gray-300 flex items-center gap-1.5 transition-colors cursor-pointer"
+            title={`Toggle canvas theme (currently ${activeTheme})`}
           >
-            {previewTheme === 'dark' ? <Moon className="w-3.5 h-3.5 text-purple-400" /> : <Sun className="w-3.5 h-3.5 text-amber-500" />}
-            <span className="capitalize">{previewTheme} Canvas</span>
+            {activeTheme === 'dark' ? <Sun className="w-3.5 h-3.5 text-amber-500" /> : <Moon className="w-3.5 h-3.5 text-purple-400" />}
+            <span className="capitalize">{activeTheme} Canvas</span>
           </button>
 
           <button
-            onClick={() => setResetKey((k) => k + 1)}
-            className="px-3 py-1.5 rounded-xl border border-[#E8EAEF] dark:border-white/10 bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 text-gray-700 dark:text-gray-300 flex items-center gap-1.5 transition-colors"
+            onClick={() => {
+              setResetKey((k) => k + 1);
+              setLocalTheme(null);
+            }}
+            className="px-3 py-1.5 rounded-xl border border-[#E8EAEF] dark:border-white/10 bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 text-gray-700 dark:text-gray-300 flex items-center gap-1.5 transition-colors cursor-pointer"
+            title="Reset component state and canvas theme"
           >
             <RotateCcw className="w-3 h-3 text-[#5B4FF5]" />
             <span>Reset State</span>
@@ -171,8 +180,8 @@ export const StudioDraftPreview: React.FC<StudioDraftPreviewProps> = ({
 
       {/* Isolated Viewport Frame */}
       <div
-        className={`w-full ${getViewportMaxWidth()} mx-auto transition-all duration-300 rounded-3xl border border-[#E8EAEF] dark:border-white/10 p-8 min-h-[360px] flex items-center justify-center shadow-xl ${
-          previewTheme === 'dark' ? 'bg-[#0A0B10] text-white' : 'bg-[#F8FAFC] text-gray-900'
+        className={`w-full ${getViewportMaxWidth()} mx-auto transition-all duration-300 rounded-3xl border p-4 sm:p-8 min-h-[360px] flex items-center justify-center shadow-xl overflow-hidden ${
+          activeTheme === 'dark' ? 'dark bg-[#0A0B10] text-white border-white/10' : 'bg-[#F8FAFC] text-gray-900 border-[#E8EAEF]'
         }`}
       >
         <div key={resetKey} className="w-full">

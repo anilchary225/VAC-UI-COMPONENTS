@@ -49,9 +49,12 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center pt-20 px-4 bg-black/60 backdrop-blur-xs animate-fade-in">
+    <div
+      onClick={onClose}
+      className="fixed inset-0 z-50 flex items-start justify-center pt-10 sm:pt-20 px-3 sm:px-4 bg-black/60 backdrop-blur-xs animate-fade-in"
+    >
       <div 
-        className="w-full max-w-xl bg-white dark:bg-[#11131A] border border-gray-200/90 dark:border-white/10 rounded-3xl shadow-2xl overflow-hidden"
+        className="w-full max-w-xl bg-white dark:bg-[#11131A] border border-gray-200/90 dark:border-white/10 rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Search Input Bar */}
@@ -67,14 +70,15 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
           />
           <button 
             onClick={onClose}
-            className="p-1 rounded-full text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+            className="p-1 rounded-full text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 shrink-0"
+            aria-label="Close command palette"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Results List */}
-        <div className="max-h-80 overflow-y-auto p-2.5 space-y-1">
+        <div className="max-h-80 overflow-y-auto p-2 sm:p-2.5 space-y-1">
           {filtered.length === 0 ? (
             <div className="p-8 text-center text-xs text-gray-400">
               No results found for "{query}".
@@ -86,15 +90,15 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
                 <button
                   key={item.href}
                   onClick={() => handleSelect(item.href)}
-                  className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-left text-xs text-gray-800 dark:text-gray-200 hover:bg-[#F5F6FA] dark:hover:bg-white/[0.06] transition-colors group"
+                  className="w-full flex items-center justify-between px-3 sm:px-3.5 py-2.5 rounded-2xl text-left text-xs text-gray-800 dark:text-gray-200 hover:bg-[#F5F6FA] dark:hover:bg-white/[0.06] transition-colors group cursor-pointer"
                 >
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-xl bg-purple-50 dark:bg-white/5 text-gray-600 dark:text-gray-400 group-hover:text-[#5B4FF5] transition-colors">
+                  <div className="flex items-center gap-2.5 sm:gap-3 truncate">
+                    <div className="p-2 rounded-xl bg-purple-50 dark:bg-white/5 text-gray-600 dark:text-gray-400 group-hover:text-[#5B4FF5] transition-colors shrink-0">
                       <Icon className="w-4 h-4" />
                     </div>
-                    <span className="font-medium text-[#161722] dark:text-white">{item.name}</span>
+                    <span className="font-medium text-[#161722] dark:text-white truncate">{item.name}</span>
                   </div>
-                  <span className="text-[10px] font-mono text-[#5B4FF5] bg-[#5B4FF5]/10 px-2 py-0.5 rounded-full">
+                  <span className="text-[10px] font-mono text-[#5B4FF5] bg-[#5B4FF5]/10 px-2 py-0.5 rounded-full shrink-0 ml-2">
                     {item.category}
                   </span>
                 </button>
@@ -104,7 +108,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
         </div>
 
         {/* Footer shortcuts */}
-        <div className="px-4 py-2.5 border-t border-gray-100 dark:border-white/10 bg-[#F5F6FA] dark:bg-[#0E1016] flex items-center justify-between text-[11px] text-gray-400 font-mono">
+        <div className="hidden sm:flex px-4 py-2.5 border-t border-gray-100 dark:border-white/10 bg-[#F5F6FA] dark:bg-[#0E1016] items-center justify-between text-[11px] text-gray-400 font-mono">
           <span>Navigate with <kbd className="px-1.5 py-0.5 rounded-full bg-white dark:bg-white/10 border border-gray-200 dark:border-transparent text-gray-700 dark:text-gray-300">↑</kbd> <kbd className="px-1.5 py-0.5 rounded-full bg-white dark:bg-white/10 border border-gray-200 dark:border-transparent text-gray-700 dark:text-gray-300">↓</kbd></span>
           <span>Select with <kbd className="px-1.5 py-0.5 rounded-full bg-white dark:bg-white/10 border border-gray-200 dark:border-transparent text-gray-700 dark:text-gray-300">↵</kbd></span>
         </div>

@@ -108,7 +108,7 @@ export const AdminOverview: React.FC<AdminOverviewProps> = ({
       </div>
 
       {/* Quick Actions Bar */}
-      <div className="p-5 rounded-3xl bg-gradient-to-r from-purple-500/10 via-[#5B4FF5]/5 to-transparent border border-[#5B4FF5]/20 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="p-4 sm:p-5 rounded-3xl bg-gradient-to-r from-purple-500/10 via-[#5B4FF5]/5 to-transparent border border-[#5B4FF5]/20 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h3 className="text-sm font-bold text-[#161722] dark:text-white">
             Component Studio Quick Launch
@@ -118,7 +118,7 @@ export const AdminOverview: React.FC<AdminOverviewProps> = ({
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2.5 flex-wrap">
           <button
             onClick={onCreateComponent}
             className="px-4 py-2 rounded-xl bg-[#5B4FF5] hover:bg-[#4F46E5] text-white text-xs font-semibold flex items-center gap-1.5 shadow-md transition-colors"
@@ -140,7 +140,7 @@ export const AdminOverview: React.FC<AdminOverviewProps> = ({
       {/* Two Column Section: Recently Updated & Audit Log Preview */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recently Updated Components */}
-        <div className="p-6 rounded-3xl bg-white dark:bg-[#11131A] border border-[#E8EAEF] dark:border-white/10 space-y-4">
+        <div className="p-4 sm:p-6 rounded-2xl sm:rounded-3xl bg-white dark:bg-[#11131A] border border-[#E8EAEF] dark:border-white/10 space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-bold text-[#161722] dark:text-white flex items-center gap-2">
               <Layers className="w-4 h-4 text-[#5B4FF5]" />
@@ -160,17 +160,17 @@ export const AdminOverview: React.FC<AdminOverviewProps> = ({
               <div
                 key={c.slug}
                 onClick={() => onEditComponent(c.slug)}
-                className="py-3 flex items-center justify-between text-xs hover:bg-gray-50/50 dark:hover:bg-white/[0.02] px-2 rounded-xl cursor-pointer transition-colors"
+                className="py-3 flex items-center justify-between gap-2 text-xs hover:bg-gray-50/50 dark:hover:bg-white/[0.02] px-2 rounded-xl cursor-pointer transition-colors"
               >
-                <div>
-                  <h4 className="font-semibold text-[#161722] dark:text-white">
+                <div className="min-w-0 pr-2">
+                  <h4 className="font-semibold text-[#161722] dark:text-white truncate">
                     {c.name}
                   </h4>
-                  <span className="text-[11px] text-gray-400">
+                  <span className="text-[11px] text-gray-400 truncate block">
                     {c.category} · v{c.currentVersion}
                   </span>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 shrink-0">
                   <span
                     className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
                       c.status === 'published'
@@ -190,7 +190,7 @@ export const AdminOverview: React.FC<AdminOverviewProps> = ({
         </div>
 
         {/* Recent Audit Log Preview */}
-        <div className="p-6 rounded-3xl bg-white dark:bg-[#11131A] border border-[#E8EAEF] dark:border-white/10 space-y-4">
+        <div className="p-4 sm:p-6 rounded-2xl sm:rounded-3xl bg-white dark:bg-[#11131A] border border-[#E8EAEF] dark:border-white/10 space-y-4">
           <h3 className="text-sm font-bold text-[#161722] dark:text-white flex items-center gap-2">
             <Shield className="w-4 h-4 text-emerald-500" />
             Recent Administrative Actions
@@ -198,15 +198,15 @@ export const AdminOverview: React.FC<AdminOverviewProps> = ({
 
           <div className="divide-y divide-[#E8EAEF] dark:divide-white/5">
             {overview.recentAuditLogs.map((log) => (
-              <div key={log.id} className="py-3 flex items-center justify-between text-xs">
-                <div className="space-y-0.5">
-                  <div className="flex items-center gap-2">
+              <div key={log.id} className="py-3 flex items-center justify-between gap-2 text-xs">
+                <div className="space-y-0.5 min-w-0 pr-2">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <span className="font-mono text-[11px] text-[#5B4FF5]">{log.action}</span>
-                    <span className="text-gray-400 text-[11px] font-mono">[{log.resourceId}]</span>
+                    <span className="text-gray-400 text-[11px] font-mono truncate max-w-[120px] sm:max-w-none">[{log.resourceId}]</span>
                   </div>
-                  <span className="text-[11px] text-gray-500">By {log.actorName}</span>
+                  <span className="text-[11px] text-gray-500 block truncate">By {log.actorName}</span>
                 </div>
-                <span className="text-[11px] text-gray-400 font-mono">
+                <span className="text-[11px] text-gray-400 font-mono shrink-0">
                   {new Date(log.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                 </span>
               </div>

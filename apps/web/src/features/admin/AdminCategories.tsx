@@ -38,7 +38,7 @@ export const AdminCategories: React.FC = () => {
 
         <button
           onClick={() => setShowAddForm(true)}
-          className="px-4 py-2 rounded-2xl bg-[#5B4FF5] hover:bg-[#4F46E5] text-white text-xs font-semibold flex items-center gap-1.5 shadow-md transition-colors"
+          className="self-start sm:self-auto px-4 py-2 rounded-2xl bg-[#5B4FF5] hover:bg-[#4F46E5] text-white text-xs font-semibold flex items-center gap-1.5 shadow-md transition-colors cursor-pointer"
         >
           <Plus className="w-3.5 h-3.5" />
           <span>New Category</span>
@@ -55,26 +55,28 @@ export const AdminCategories: React.FC = () => {
       {showAddForm && (
         <div className="p-5 rounded-3xl bg-white dark:bg-[#11131A] border border-[#5B4FF5]/30 space-y-3">
           <h4 className="text-xs font-bold text-[#161722] dark:text-white">Add System Category</h4>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
             <input
               type="text"
               value={newCatName}
               onChange={(e) => setNewCatName(e.target.value)}
               placeholder="e.g. Media & Audio Players"
-              className="text-xs p-2.5 rounded-xl bg-gray-50 dark:bg-black/30 border border-[#E8EAEF] dark:border-white/10 text-white flex-1 focus:outline-none"
+              className="text-xs p-2.5 rounded-xl bg-gray-50 dark:bg-black/30 border border-[#E8EAEF] dark:border-white/10 text-[#161722] dark:text-white flex-1 focus:outline-none"
             />
-            <button
-              onClick={handleAddCategory}
-              className="px-4 py-2.5 rounded-xl bg-[#5B4FF5] text-white text-xs font-semibold"
-            >
-              Add Category
-            </button>
-            <button
-              onClick={() => setShowAddForm(false)}
-              className="px-4 py-2.5 rounded-xl bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-gray-300 text-xs"
-            >
-              Cancel
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handleAddCategory}
+                className="px-4 py-2.5 rounded-xl bg-[#5B4FF5] text-white text-xs font-semibold flex-1 sm:flex-none cursor-pointer"
+              >
+                Add Category
+              </button>
+              <button
+                onClick={() => setShowAddForm(false)}
+                className="px-4 py-2.5 rounded-xl bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-gray-300 text-xs flex-1 sm:flex-none cursor-pointer"
+              >
+                Cancel
+              </button>
+            </div>
           </div>
         </div>
       )}

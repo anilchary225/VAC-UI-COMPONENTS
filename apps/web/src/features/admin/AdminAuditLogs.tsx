@@ -48,7 +48,7 @@ export const AdminAuditLogs: React.FC = () => {
         </div>
 
         {/* Filters */}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <select
             value={actionFilter}
             onChange={(e) => {
@@ -83,8 +83,9 @@ export const AdminAuditLogs: React.FC = () => {
       </div>
 
       {/* Logs Table */}
-      <div className="rounded-3xl border border-[#E8EAEF] dark:border-white/10 bg-white dark:bg-[#11131A] overflow-hidden shadow-xs">
-        <div className="grid grid-cols-12 gap-3 px-6 py-3.5 bg-gray-50/70 dark:bg-white/[0.02] border-b border-[#E8EAEF] dark:border-white/10 text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+      <div className="rounded-3xl border border-[#E8EAEF] dark:border-white/10 bg-white dark:bg-[#11131A] overflow-x-auto shadow-xs">
+        <div className="min-w-[650px]">
+          <div className="grid grid-cols-12 gap-3 px-6 py-3.5 bg-gray-50/70 dark:bg-white/[0.02] border-b border-[#E8EAEF] dark:border-white/10 text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
           <div className="col-span-3">Timestamp</div>
           <div className="col-span-3">Actor</div>
           <div className="col-span-3">Action / Resource</div>
@@ -133,6 +134,7 @@ export const AdminAuditLogs: React.FC = () => {
             ))
           )}
         </div>
+      </div>
 
         {totalPages > 1 && (
           <div className="px-6 py-3 border-t border-[#E8EAEF] dark:border-white/10 flex items-center justify-between text-xs text-gray-500">

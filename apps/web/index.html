@@ -1,17 +1,35 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>VAC-UI-COMPONENTS — High Performance React UI Components</title>
     <meta name="description" content="Discover, preview, customize, and install production-ready React UI components for modern web applications." />
+    <!-- Immediate theme restoration before first paint prevents reload flash -->
+    <script>
+      (function() {
+        try {
+          var saved = localStorage.getItem('vac_theme');
+          var isDark = saved ? saved === 'dark' : true;
+          if (isDark) {
+            document.documentElement.classList.add('dark');
+            document.documentElement.classList.remove('light');
+            document.documentElement.style.colorScheme = 'dark';
+          } else {
+            document.documentElement.classList.remove('dark');
+            document.documentElement.classList.add('light');
+            document.documentElement.style.colorScheme = 'light';
+          }
+        } catch (e) {}
+      })();
+    </script>
     <!-- Typography: Inter & JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
   </head>
-  <body class="bg-[#F8F9FC] dark:bg-[#0A0B10] text-[#161722] dark:text-[#F4F5F8] antialiased selection:bg-purple-500/30 selection:text-white transition-colors duration-200">
+  <body class="bg-[#F8F9FC] dark:bg-[#0A0B10] text-[#161722] dark:text-[#F4F5F8] antialiased selection:bg-purple-500/30 selection:text-white">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

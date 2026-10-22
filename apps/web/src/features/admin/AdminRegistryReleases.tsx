@@ -71,7 +71,7 @@ export const AdminRegistryReleases: React.FC = () => {
         </div>
       </div>
 
-      <div className="p-6 rounded-3xl bg-white dark:bg-[#11131A] border border-[#E8EAEF] dark:border-white/10 shadow-xs space-y-4">
+      <div className="p-4 sm:p-6 rounded-3xl bg-white dark:bg-[#11131A] border border-[#E8EAEF] dark:border-white/10 shadow-xs space-y-4">
         {releases.length === 0 ? (
           <div className="p-12 text-center text-xs text-gray-400">No releases published to the registry yet.</div>
         ) : (
@@ -83,7 +83,7 @@ export const AdminRegistryReleases: React.FC = () => {
               return (
                 <div key={idx} className="py-4 flex flex-col md:flex-row md:items-center md:justify-between gap-3 text-xs">
                   <div className="space-y-1">
-                    <div className="flex items-center gap-2.5">
+                    <div className="flex items-center gap-2.5 flex-wrap">
                       <span className="font-mono text-sm font-bold text-[#161722] dark:text-white">
                         {rel.componentSlug}
                       </span>
@@ -104,7 +104,7 @@ export const AdminRegistryReleases: React.FC = () => {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2 shrink-0">
+                  <div className="flex flex-wrap items-center gap-2 shrink-0">
                     <button
                       onClick={() => copyCliCommand(rel.componentSlug, rel.version)}
                       className="px-3 py-1.5 rounded-xl bg-gray-50 dark:bg-black/30 border border-gray-200 dark:border-white/10 hover:border-[#5B4FF5] text-[11px] font-mono text-gray-700 dark:text-gray-300 flex items-center gap-1.5 cursor-pointer transition-colors"

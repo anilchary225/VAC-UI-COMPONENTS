@@ -226,7 +226,7 @@ export const AdminConfigure: React.FC = () => {
       {/* Row 2: OAuth Providers & Runtime Host */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* OAuth Integration Status */}
-        <div className="p-6 rounded-3xl bg-white dark:bg-[#11131A] border border-[#E8EAEF] dark:border-white/10 space-y-4">
+        <div className="p-4 sm:p-6 rounded-2xl sm:rounded-3xl bg-white dark:bg-[#11131A] border border-[#E8EAEF] dark:border-white/10 space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-bold text-[#161722] dark:text-white flex items-center gap-2">
               <Key className="w-4 h-4 text-[#5B4FF5]" />
@@ -237,13 +237,13 @@ export const AdminConfigure: React.FC = () => {
 
           <div className="divide-y divide-[#E8EAEF] dark:divide-white/5 text-xs">
             {/* GitHub */}
-            <div className="py-3 flex items-center justify-between">
-              <div>
+            <div className="py-3 flex items-center justify-between gap-2">
+              <div className="min-w-0 pr-2">
                 <span className="font-semibold text-[#161722] dark:text-white block">GitHub OAuth</span>
-                <span className="text-[11px] text-gray-400 font-mono">/api/auth/oauth/github</span>
+                <span className="text-[11px] text-gray-400 font-mono truncate block">/api/auth/oauth/github</span>
               </div>
               <span
-                className={`text-[10px] font-mono px-2.5 py-1 rounded-full font-semibold ${
+                className={`text-[10px] font-mono px-2.5 py-1 rounded-full font-semibold shrink-0 ${
                   config?.oauth?.github
                     ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
                     : 'bg-gray-100 dark:bg-white/5 text-gray-400'
@@ -254,13 +254,13 @@ export const AdminConfigure: React.FC = () => {
             </div>
 
             {/* Google */}
-            <div className="py-3 flex items-center justify-between">
-              <div>
+            <div className="py-3 flex items-center justify-between gap-2">
+              <div className="min-w-0 pr-2">
                 <span className="font-semibold text-[#161722] dark:text-white block">Google OAuth</span>
-                <span className="text-[11px] text-gray-400 font-mono">/api/auth/oauth/google</span>
+                <span className="text-[11px] text-gray-400 font-mono truncate block">/api/auth/oauth/google</span>
               </div>
               <span
-                className={`text-[10px] font-mono px-2.5 py-1 rounded-full font-semibold ${
+                className={`text-[10px] font-mono px-2.5 py-1 rounded-full font-semibold shrink-0 ${
                   config?.oauth?.google
                     ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
                     : 'bg-gray-100 dark:bg-white/5 text-gray-400'
@@ -273,7 +273,7 @@ export const AdminConfigure: React.FC = () => {
         </div>
 
         {/* Runtime Environment Info */}
-        <div className="p-6 rounded-3xl bg-white dark:bg-[#11131A] border border-[#E8EAEF] dark:border-white/10 space-y-4">
+        <div className="p-4 sm:p-6 rounded-2xl sm:rounded-3xl bg-white dark:bg-[#11131A] border border-[#E8EAEF] dark:border-white/10 space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-bold text-[#161722] dark:text-white flex items-center gap-2">
               <Server className="w-4 h-4 text-emerald-500" />
@@ -285,35 +285,35 @@ export const AdminConfigure: React.FC = () => {
           </div>
 
           <div className="space-y-3 text-xs">
-            <div className="flex items-center justify-between p-2.5 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-100 dark:border-white/5 font-mono">
-              <span className="text-gray-400 text-[11px]">API Host</span>
-              <span className="text-gray-800 dark:text-gray-200 text-[11px] flex items-center gap-2">
-                {`http://localhost:${config?.port || 4000}/api`}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-2.5 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-100 dark:border-white/5 font-mono gap-1 sm:gap-2">
+              <span className="text-gray-400 text-[11px] shrink-0">API Host</span>
+              <span className="text-gray-800 dark:text-gray-200 text-[11px] flex items-center justify-between sm:justify-end gap-2 truncate">
+                <span className="truncate">{`http://localhost:${config?.port || 4000}/api`}</span>
                 <button
                   onClick={() => copyToClipboard(`http://localhost:${config?.port || 4000}/api`, 'api')}
-                  className="text-gray-400 hover:text-white cursor-pointer"
+                  className="text-gray-400 hover:text-white cursor-pointer shrink-0"
                 >
                   {copiedKey === 'api' ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
                 </button>
               </span>
             </div>
 
-            <div className="flex items-center justify-between p-2.5 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-100 dark:border-white/5 font-mono">
-              <span className="text-gray-400 text-[11px]">Frontend Host</span>
-              <span className="text-gray-800 dark:text-gray-200 text-[11px] flex items-center gap-2">
-                {config?.frontendUrl || 'http://localhost:5173'}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-2.5 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-100 dark:border-white/5 font-mono gap-1 sm:gap-2">
+              <span className="text-gray-400 text-[11px] shrink-0">Frontend Host</span>
+              <span className="text-gray-800 dark:text-gray-200 text-[11px] flex items-center justify-between sm:justify-end gap-2 truncate">
+                <span className="truncate">{config?.frontendUrl || 'http://localhost:5173'}</span>
                 <button
                   onClick={() => copyToClipboard(config?.frontendUrl || 'http://localhost:5173', 'frontend')}
-                  className="text-gray-400 hover:text-white cursor-pointer"
+                  className="text-gray-400 hover:text-white cursor-pointer shrink-0"
                 >
                   {copiedKey === 'frontend' ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
                 </button>
               </span>
             </div>
 
-            <div className="flex items-center justify-between p-2.5 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-100 dark:border-white/5 font-mono">
-              <span className="text-gray-400 text-[11px]">Engine Version</span>
-              <span className="text-gray-800 dark:text-gray-200 text-[11px]">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-2.5 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-100 dark:border-white/5 font-mono gap-1 sm:gap-2">
+              <span className="text-gray-400 text-[11px] shrink-0">Engine Version</span>
+              <span className="text-gray-800 dark:text-gray-200 text-[11px] truncate">
                 v{config?.version || '1.0.0'} (Release Candidate)
               </span>
             </div>

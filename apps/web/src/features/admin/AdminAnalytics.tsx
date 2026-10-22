@@ -34,7 +34,7 @@ export const AdminAnalytics: React.FC = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Category Breakdown */}
-        <div className="p-6 rounded-3xl bg-white dark:bg-[#11131A] border border-[#E8EAEF] dark:border-white/10 space-y-5">
+        <div className="p-4 sm:p-6 rounded-2xl sm:rounded-3xl bg-white dark:bg-[#11131A] border border-[#E8EAEF] dark:border-white/10 space-y-5">
           <h3 className="text-sm font-bold text-[#161722] dark:text-white flex items-center gap-2">
             <Layers className="w-4 h-4 text-[#5B4FF5]" />
             Components by Vocabulary Category
@@ -62,13 +62,13 @@ export const AdminAnalytics: React.FC = () => {
         </div>
 
         {/* Status Distribution */}
-        <div className="p-6 rounded-3xl bg-white dark:bg-[#11131A] border border-[#E8EAEF] dark:border-white/10 space-y-5">
+        <div className="p-4 sm:p-6 rounded-2xl sm:rounded-3xl bg-white dark:bg-[#11131A] border border-[#E8EAEF] dark:border-white/10 space-y-5">
           <h3 className="text-sm font-bold text-[#161722] dark:text-white flex items-center gap-2">
             <CheckCircle2 className="w-4 h-4 text-emerald-500" />
             Component Lifecycle Status
           </h3>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {data.statusDistribution.map((st) => (
               <div
                 key={st.status}
@@ -91,9 +91,9 @@ export const AdminAnalytics: React.FC = () => {
             </h4>
             <div className="divide-y divide-[#E8EAEF] dark:divide-white/5">
               {data.recentReleases.map((rel, i) => (
-                <div key={i} className="py-2.5 flex items-center justify-between text-xs">
-                  <span className="font-mono text-[#5B4FF5]">{rel.componentSlug}</span>
-                  <div className="flex items-center gap-2">
+                <div key={i} className="py-2.5 flex items-center justify-between gap-2 text-xs">
+                  <span className="font-mono text-[#5B4FF5] truncate pr-2">{rel.componentSlug}</span>
+                  <div className="flex items-center gap-2 shrink-0">
                     <span className="font-mono text-[11px] px-2 py-0.5 rounded bg-gray-100 dark:bg-white/5 text-gray-300">
                       v{rel.version}
                     </span>

@@ -61,7 +61,7 @@ export const AdminUsers: React.FC = () => {
         </p>
       </div>
 
-      <div className="p-6 rounded-3xl bg-white dark:bg-[#11131A] border border-[#E8EAEF] dark:border-white/10 shadow-xs space-y-4">
+      <div className="p-4 sm:p-6 rounded-3xl bg-white dark:bg-[#11131A] border border-[#E8EAEF] dark:border-white/10 shadow-xs space-y-4">
         {users.length === 0 ? (
           <div className="p-12 text-center text-xs text-gray-400">
             No registered users found in database directory.
@@ -71,11 +71,11 @@ export const AdminUsers: React.FC = () => {
           {users.map((u) => (
             <div key={u.id} className="py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-xs">
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-2xl bg-purple-500/10 text-[#5B4FF5] flex items-center justify-center font-bold">
+                <div className="w-9 h-9 rounded-2xl bg-purple-500/10 text-[#5B4FF5] flex items-center justify-center font-bold shrink-0">
                   {u.role === 'admin' ? <Shield className="w-4 h-4 text-amber-400" /> : <User className="w-4 h-4" />}
                 </div>
                 <div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <span className="font-semibold text-[#161722] dark:text-white text-sm">{u.name}</span>
                     <span
                       className={`text-[10px] font-mono px-2 py-0.5 rounded-full font-semibold uppercase ${
@@ -91,8 +91,8 @@ export const AdminUsers: React.FC = () => {
                 </div>
               </div>
 
-              <div className="flex items-center gap-4 text-xs text-gray-400">
-                <div className="flex items-center gap-1.5">
+              <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs text-gray-400">
+                <div className="flex items-center gap-1.5 flex-wrap">
                   {u.hasGithub && (
                     <span className="px-2 py-0.5 rounded-full bg-gray-100 dark:bg-white/5 text-[10px] font-mono">
                       GitHub Linked

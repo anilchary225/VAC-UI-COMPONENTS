@@ -89,6 +89,17 @@ export const ComponentInspectorModal: React.FC<ComponentInspectorModalProps> = (
     setTimeout(() => setCopiedKey(null), 2000);
   };
 
+  // Close modal on Escape key
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [onClose]);
+
   // 1. Load published versions list on component mount
   useEffect(() => {
     let isMounted = true;
@@ -200,11 +211,11 @@ export const ComponentInspectorModal: React.FC<ComponentInspectorModalProps> = (
   return (
     <div
       onClick={onClose}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in"
+      className="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-4 bg-black/60 backdrop-blur-xs animate-fade-in"
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-4xl bg-white dark:bg-[#11131A] rounded-3xl p-6 sm:p-7 shadow-2xl border border-[#E8EAEF] dark:border-white/10 space-y-5 max-h-[92vh] overflow-y-auto"
+        className="w-full max-w-4xl bg-white dark:bg-[#11131A] rounded-2xl sm:rounded-3xl p-4 sm:p-7 shadow-2xl border border-[#E8EAEF] dark:border-white/10 space-y-5 max-h-[92vh] overflow-y-auto"
       >
         {/* ============================================================== */}
         {/* MODAL HEADER & ACTIONS                                         */}
@@ -361,10 +372,10 @@ export const ComponentInspectorModal: React.FC<ComponentInspectorModalProps> = (
         {/* ============================================================== */}
         {/* NAVIGATION TABS                                                */}
         {/* ============================================================== */}
-        <div className="flex items-center gap-2 border-b border-[#E8EAEF] dark:border-white/10 pb-2">
+        <div className="flex items-center gap-2 border-b border-[#E8EAEF] dark:border-white/10 pb-2 overflow-x-auto scrollbar-none">
           <button
             onClick={() => setActiveTab('preview')}
-            className={`px-4 py-2 rounded-full text-xs font-medium transition-all flex items-center gap-1.5 ${
+            className={`px-4 py-2 rounded-full text-xs font-medium transition-all flex items-center gap-1.5 shrink-0 ${
               activeTab === 'preview'
                 ? 'bg-[#5B4FF5] text-white shadow-md'
                 : 'text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'
@@ -376,7 +387,7 @@ export const ComponentInspectorModal: React.FC<ComponentInspectorModalProps> = (
 
           <button
             onClick={() => setActiveTab('history')}
-            className={`px-4 py-2 rounded-full text-xs font-medium transition-all flex items-center gap-1.5 ${
+            className={`px-4 py-2 rounded-full text-xs font-medium transition-all flex items-center gap-1.5 shrink-0 ${
               activeTab === 'history'
                 ? 'bg-[#5B4FF5] text-white shadow-md'
                 : 'text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'
@@ -391,7 +402,7 @@ export const ComponentInspectorModal: React.FC<ComponentInspectorModalProps> = (
 
           <button
             onClick={() => setActiveTab('compare')}
-            className={`px-4 py-2 rounded-full text-xs font-medium transition-all flex items-center gap-1.5 ${
+            className={`px-4 py-2 rounded-full text-xs font-medium transition-all flex items-center gap-1.5 shrink-0 ${
               activeTab === 'compare'
                 ? 'bg-[#5B4FF5] text-white shadow-md'
                 : 'text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'
@@ -481,8 +492,8 @@ export const ComponentInspectorModal: React.FC<ComponentInspectorModalProps> = (
               <h4 className="text-xs font-semibold text-[#161722] dark:text-white uppercase tracking-wider mb-2">
                 Supported Props (v{selectedVersion})
               </h4>
-              <div className="rounded-2xl border border-[#E8EAEF] dark:border-white/10 overflow-hidden text-xs">
-                <table className="w-full text-left">
+              <div className="rounded-2xl border border-[#E8EAEF] dark:border-white/10 overflow-x-auto text-xs">
+                <table className="w-full min-w-[500px] text-left">
                   <thead className="bg-gray-50 dark:bg-white/[0.03] text-gray-500 border-b border-[#E8EAEF] dark:border-white/10">
                     <tr>
                       <th className="p-2.5 font-medium">Prop</th>
@@ -712,10 +723,10 @@ export const ComponentInspectorModal: React.FC<ComponentInspectorModalProps> = (
             )}
 
             {/* Sub-view navigation for compare */}
-            <div className="flex items-center gap-2 border-b border-[#E8EAEF] dark:border-white/10 pb-2">
+            <div className="flex items-center gap-2 border-b border-[#E8EAEF] dark:border-white/10 pb-2 overflow-x-auto scrollbar-none">
               <button
                 onClick={() => setCompareSubView('files')}
-                className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-colors ${
+                className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-colors shrink-0 whitespace-nowrap ${
                   compareSubView === 'files'
                     ? 'bg-purple-500/15 text-[#5B4FF5] font-semibold'
                     : 'text-gray-400 hover:text-white'
@@ -725,7 +736,7 @@ export const ComponentInspectorModal: React.FC<ComponentInspectorModalProps> = (
               </button>
               <button
                 onClick={() => setCompareSubView('dependencies')}
-                className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-colors ${
+                className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-colors shrink-0 whitespace-nowrap ${
                   compareSubView === 'dependencies'
                     ? 'bg-purple-500/15 text-[#5B4FF5] font-semibold'
                     : 'text-gray-400 hover:text-white'
@@ -735,7 +746,7 @@ export const ComponentInspectorModal: React.FC<ComponentInspectorModalProps> = (
               </button>
               <button
                 onClick={() => setCompareSubView('props')}
-                className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-colors ${
+                className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-colors shrink-0 whitespace-nowrap ${
                   compareSubView === 'props'
                     ? 'bg-purple-500/15 text-[#5B4FF5] font-semibold'
                     : 'text-gray-400 hover:text-white'
@@ -745,7 +756,7 @@ export const ComponentInspectorModal: React.FC<ComponentInspectorModalProps> = (
               </button>
               <button
                 onClick={() => setCompareSubView('notes')}
-                className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-colors ${
+                className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-colors shrink-0 whitespace-nowrap ${
                   compareSubView === 'notes'
                     ? 'bg-purple-500/15 text-[#5B4FF5] font-semibold'
                     : 'text-gray-400 hover:text-white'

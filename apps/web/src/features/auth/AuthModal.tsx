@@ -17,6 +17,18 @@ export const AuthModal: React.FC = () => {
     setError(null);
   }, [authModalMode, isAuthModalOpen]);
 
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        closeAuthModal();
+      }
+    };
+    if (isAuthModalOpen) {
+      window.addEventListener('keydown', handleKeyDown);
+    }
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isAuthModalOpen, closeAuthModal]);
+
   if (!isAuthModalOpen) return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -39,9 +51,12 @@ export const AuthModal: React.FC = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in">
+    <div
+      onClick={closeAuthModal}
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-xs animate-fade-in"
+    >
       <div 
-        className="w-full max-w-md bg-white dark:bg-[#11131A] border border-gray-100 dark:border-white/10 rounded-3xl shadow-2xl overflow-hidden p-6 relative"
+        className="w-full max-w-md bg-white dark:bg-[#11131A] border border-gray-100 dark:border-white/10 rounded-2xl sm:rounded-3xl shadow-2xl overflow-y-auto max-h-[92vh] p-5 sm:p-6 relative"
         onClick={(e) => e.stopPropagation()}
       >
         <button

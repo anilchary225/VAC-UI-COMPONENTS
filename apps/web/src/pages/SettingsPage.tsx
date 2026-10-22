@@ -54,7 +54,7 @@ export const SettingsPage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6 sm:space-y-8">
       <div>
         <h1 className="text-2xl font-bold tracking-tight text-[#161722] dark:text-white">
           Preferences & Settings
@@ -67,7 +67,7 @@ export const SettingsPage: React.FC = () => {
       <div className="space-y-6">
         {/* Profile Card (when authenticated) */}
         {user ? (
-          <div className="p-6 rounded-2xl border border-[#E8EAEF] dark:border-white/10 bg-white dark:bg-[#11131A] space-y-4 shadow-xs">
+          <div className="p-4 sm:p-6 rounded-2xl border border-[#E8EAEF] dark:border-white/10 bg-white dark:bg-[#11131A] space-y-4 shadow-xs">
             <div className="flex items-center gap-2">
               <User className="w-4 h-4 text-[#5B4FF5]" />
               <h2 className="text-sm font-semibold text-[#161722] dark:text-white">
@@ -103,7 +103,7 @@ export const SettingsPage: React.FC = () => {
             </div>
           </div>
         ) : (
-          <div className="p-6 rounded-2xl border border-dashed border-[#E8EAEF] dark:border-white/10 bg-white dark:bg-[#11131A] flex items-center justify-between">
+          <div className="p-4 sm:p-6 rounded-2xl border border-dashed border-[#E8EAEF] dark:border-white/10 bg-white dark:bg-[#11131A] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <h3 className="text-sm font-semibold text-[#161722] dark:text-white">Guest Session</h3>
               <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
@@ -112,7 +112,7 @@ export const SettingsPage: React.FC = () => {
             </div>
             <button
               onClick={() => openAuthModal('login')}
-              className="px-4 py-2 rounded-full bg-[#181A25] hover:bg-black text-white text-xs font-semibold shadow-sm transition-all"
+              className="self-start sm:self-auto px-4 py-2 rounded-full bg-[#181A25] hover:bg-black text-white text-xs font-semibold shadow-sm transition-all shrink-0 cursor-pointer"
             >
               Sign In
             </button>
@@ -120,7 +120,7 @@ export const SettingsPage: React.FC = () => {
         )}
 
         {/* Theme Settings */}
-        <div className="p-6 rounded-2xl border border-[#E8EAEF] dark:border-white/10 bg-white dark:bg-[#11131A] space-y-4 shadow-xs">
+        <div className="p-4 sm:p-6 rounded-2xl border border-[#E8EAEF] dark:border-white/10 bg-white dark:bg-[#11131A] space-y-4 shadow-xs">
           <h2 className="text-sm font-semibold text-[#161722] dark:text-white">
             Interface Theme
           </h2>
@@ -158,7 +158,7 @@ export const SettingsPage: React.FC = () => {
         </div>
 
         {/* Code Format Preference */}
-        <div className="p-6 rounded-2xl border border-[#E8EAEF] dark:border-white/10 bg-white dark:bg-[#11131A] space-y-4 shadow-xs">
+        <div className="p-4 sm:p-6 rounded-2xl border border-[#E8EAEF] dark:border-white/10 bg-white dark:bg-[#11131A] space-y-4 shadow-xs">
           <div className="flex items-center gap-2">
             <Code className="w-4 h-4 text-[#5B4FF5]" />
             <h2 className="text-sm font-semibold text-[#161722] dark:text-white">
@@ -169,7 +169,7 @@ export const SettingsPage: React.FC = () => {
             Selected variant is prioritized when copying source or viewing component code tabs.
           </p>
 
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
             <button
               onClick={() => setCodePreference('typescript')}
               className={`px-4 py-2 rounded-full text-xs font-medium border transition-colors cursor-pointer ${

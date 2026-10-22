@@ -135,7 +135,7 @@ export const AdminDashboardPage: React.FC = () => {
   // If not admin, render clean security barrier
   if (!isAdmin) {
     return (
-      <div className="max-w-xl mx-auto px-4 py-24 text-center space-y-4">
+      <div className="max-w-xl mx-auto px-4 py-16 sm:py-24 text-center space-y-4">
         <div className="w-14 h-14 rounded-3xl bg-amber-500/10 text-amber-500 flex items-center justify-center mx-auto mb-2 border border-amber-500/20 shadow-lg">
           <Shield className="w-7 h-7" />
         </div>
@@ -146,17 +146,17 @@ export const AdminDashboardPage: React.FC = () => {
           The Component Studio, Registry, and platform configuration are strictly restricted to verified administrative users.
           Sign in with an administrative account or authenticate using the pre-configured admin profile.
         </p>
-        <div className="flex items-center justify-center gap-3">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
           <button
             onClick={handleDemoAdminSignIn}
-            className="px-6 py-2.5 rounded-full bg-[#5B4FF5] hover:bg-[#4F46E5] text-white text-xs font-semibold shadow-md transition-all flex items-center gap-2 cursor-pointer"
+            className="w-full sm:w-auto px-6 py-2.5 rounded-full bg-[#5B4FF5] hover:bg-[#4F46E5] text-white text-xs font-semibold shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
           >
             <Sparkles className="w-3.5 h-3.5" />
             <span>Sign In as Demo Admin</span>
           </button>
           <button
             onClick={() => openAuthModal('login')}
-            className="px-6 py-2.5 rounded-full bg-gray-100 hover:bg-gray-200 dark:bg-white/10 dark:hover:bg-white/15 text-gray-800 dark:text-white text-xs font-semibold transition-all cursor-pointer"
+            className="w-full sm:w-auto px-6 py-2.5 rounded-full bg-gray-100 hover:bg-gray-200 dark:bg-white/10 dark:hover:bg-white/15 text-gray-800 dark:text-white text-xs font-semibold transition-all cursor-pointer text-center"
           >
             Custom Sign In
           </button>
@@ -178,7 +178,7 @@ export const AdminDashboardPage: React.FC = () => {
   ];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6 sm:space-y-8">
       {/* Admin Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
@@ -206,7 +206,7 @@ export const AdminDashboardPage: React.FC = () => {
       </div>
 
       {/* Admin Navigation Tabs */}
-      <div className="flex items-center gap-1.5 border-b border-[#E8EAEF] dark:border-white/10 pb-2 text-xs font-medium overflow-x-auto">
+      <div className="flex items-center gap-1.5 border-b border-[#E8EAEF] dark:border-white/10 pb-2 text-xs font-medium overflow-x-auto scrollbar-none flex-nowrap">
         {tabs.map((t) => {
           const Icon = t.icon;
           const isActive = activeTab === t.id;
@@ -215,7 +215,7 @@ export const AdminDashboardPage: React.FC = () => {
             <button
               key={t.id}
               onClick={() => handleTabChange(t.id)}
-              className={`px-3.5 py-2 rounded-2xl transition-all flex items-center gap-2 whitespace-nowrap cursor-pointer ${
+              className={`px-3.5 py-2 rounded-2xl transition-all flex items-center gap-2 whitespace-nowrap cursor-pointer shrink-0 ${
                 isActive
                   ? 'bg-[#5B4FF5] text-white shadow-xs font-semibold'
                   : 'text-gray-500 hover:text-black dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'
